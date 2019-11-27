@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 /**
- *
+ *管理所有活动
  */
 public class BaseActivity extends AppCompatActivity {
     @Override

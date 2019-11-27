@@ -191,13 +191,13 @@
     </android.support.constraint.ConstraintLayout>
 
     <TextView
-        android:id="@+id/iv_common_login"
+        android:id="@+id/iv_common_register"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
         android:text="立即注册"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/Red"
         android:textSize="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

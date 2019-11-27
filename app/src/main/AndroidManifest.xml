@@ -25,6 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.RegisterActivity"/>
+        <activity android:name=".activity.TotalActivity"/>
     </application>
 
 </manifest>

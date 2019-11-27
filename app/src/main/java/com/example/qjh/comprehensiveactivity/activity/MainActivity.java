@@ -19,6 +19,7 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter mBluetoothAdapter = null;
     private BluetoothSocket bluetoothSocket = null;
+    //唯一的标识
     private static final UUID MY_UUID_SECURE = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 //    private String blueAddress = "00:87:63:12:37:35";//蓝牙模块的MAC地址
     private String blueAddress = "98:D3:31:F7:34:F8";//蓝牙模块的MAC地址

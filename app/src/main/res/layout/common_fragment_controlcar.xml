@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginTop="50dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--蓝牙按键控制模式--"
+                android:textSize="35sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="20dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <ImageButton
+                        android:layout_height="60dp"
+                        android:layout_width="60dp"
+                        android:id="@+id/imagebutton6"
+                        android:src="@mipmap/common_fragemnt_car"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="70dp"
+                        >
+                    </ImageButton>
+
+                    <ImageButton
+                        android:layout_height="60dp"
+                        android:layout_width="60dp"
+                        android:id="@+id/imagebutton7"
+                        android:src="@mipmap/common_fragemnt_car"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        >
+                    </ImageButton>
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="↑蓝牙模式         寻迹模式↑"
+                    android:textSize="20dp"
+                    android:layout_marginBottom="10dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+                <ImageButton
+                    android:id="@+id/imagebutton1"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/up"
+                    android:layout_gravity="center"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <ImageButton
+                        android:id="@+id/imagebutton2"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/up"
+                        android:layout_marginRight="30dp"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/imagebutton5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/imagebutton3"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/up"
+                        android:layout_marginLeft="30dp"
+                        />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/imagebutton4"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/up"
+                    android:layout_gravity="center"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>
