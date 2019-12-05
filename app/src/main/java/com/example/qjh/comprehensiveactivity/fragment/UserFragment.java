@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.qjh.comprehensiveactivity.R;
 import com.example.qjh.comprehensiveactivity.activity.LoginActivity;
+import com.example.qjh.comprehensiveactivity.utils.CreamUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ public class UserFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         user_enter = (RelativeLayout) view.findViewById(R.id.user_enter);
         userName = (TextView) view.findViewById(R.id.User_Msg);
         message_image = (CircleImageView) view.findViewById(R.id.message_image);
