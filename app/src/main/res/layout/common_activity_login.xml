@@ -136,15 +136,16 @@
                         android:maxLines="1"
                         android:textColor="@android:color/black"
                         android:textSize="15sp" />
-                </android.support.design.widget.TextInputLayout>
 
+                </android.support.design.widget.TextInputLayout>
                 <ImageView
-                    android:id="@+id/iv_mima"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/iv_common_hide"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp" />
+                    android:layout_marginRight="10dp"
+                    android:src="@mipmap/common_activity_login_hide" />
 
             </RelativeLayout>
 
@@ -197,7 +198,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
         android:text="立即注册"
-        android:textColor="@color/Red"
+        android:textColor="@color/Blue"
         android:textSize="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

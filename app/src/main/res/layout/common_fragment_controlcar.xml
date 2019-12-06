@@ -38,44 +38,16 @@
                 android:gravity="center"
                 android:layout_marginBottom="20dp">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    >
 
-                    <ImageButton
-                        android:layout_height="60dp"
-                        android:layout_width="60dp"
-                        android:id="@+id/imagebutton6"
-                        android:src="@mipmap/common_fragemnt_car"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="70dp"
-                        >
-                    </ImageButton>
-
-                    <ImageButton
-                        android:layout_height="60dp"
-                        android:layout_width="60dp"
-                        android:id="@+id/imagebutton7"
-                        android:src="@mipmap/common_fragemnt_car"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"
-                        >
-                    </ImageButton>
-
-                </LinearLayout>
+                <ImageButton
+                    android:id="@+id/imagebutton6"
+                    android:layout_width="79dp"
+                    android:layout_height="60dp"
+                    android:src="@mipmap/common_fragemnt_car" />
 
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="↑蓝牙模式         寻迹模式↑"
-                    android:textSize="20dp"
-                    android:layout_marginBottom="10dp"
-                    />
             </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

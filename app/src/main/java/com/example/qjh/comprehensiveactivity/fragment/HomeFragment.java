@@ -20,6 +20,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.qjh.comprehensiveactivity.R;
 import com.example.qjh.comprehensiveactivity.utils.CreamUtils;
+import com.parkingwang.keyboard.KeyboardInputController;
+import com.parkingwang.keyboard.OnInputChangedListener;
+import com.parkingwang.keyboard.PopupKeyboard;
+import com.parkingwang.keyboard.view.InputView;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.loader.ImageLoader;
@@ -33,6 +37,7 @@ public class HomeFragment extends Fragment implements OnBannerListener {
     private Banner banner;
     private List pictures = new ArrayList<>();
     private Context context;
+    private InputView input_view;
 
     @Nullable
     @Override
@@ -48,13 +53,13 @@ public class HomeFragment extends Fragment implements OnBannerListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         context = getActivity().getApplicationContext();
         initData(view);
 
-        pictures.add("http://www.tianyaguet.club/group1/M00/00/02/rBAACV2YEU2AIrYvAAVWOhuF4pk490.png");
-        pictures.add("http://www.tianyaguet.club/group1/M00/00/02/rBAACV2YEU2AIrYvAAVWOhuF4pk490.png");
-        pictures.add("http://www.tianyaguet.club/group1/M00/00/02/rBAACV2YEYKAYax1AAOg6sQMWAI717.png");
+        pictures.add("http://img2.imgtn.bdimg.com/it/u=2338912499,2258710075&fm=26&gp=0.jpg");
+        pictures.add("http://pic1.win4000.com/wallpaper/8/5804428f565ea.jpg");
+        pictures.add("http://pic1.win4000.com/wallpaper/8/580442a15e0c4.jpg");
+        pictures.add("http://pic1.win4000.com/wallpaper/8/5804428543900.jpg");
         banner.setImages(pictures).setImageLoader(new GlideImageLoader()).start();
         banner.setOnBannerListener(this);
 
@@ -88,6 +93,27 @@ public class HomeFragment extends Fragment implements OnBannerListener {
      */
     private void initData(View view) {
         banner=(Banner) view.findViewById(R.id.banner);
+        input_view=(InputView) view.findViewById(R.id.input_view);
+       final PopupKeyboard  mPopupKeyboard = new PopupKeyboard(getContext());
+// 弹出键盘内部包含一个KeyboardView，在此绑定输入两者关联。
+        mPopupKeyboard.attach(input_view,getActivity() );
+
+// KeyboardInputController提供一个默认实现的新能源车牌锁定按钮
+        mPopupKeyboard.getController()
+                .setDebugEnabled(true)
+                .addOnInputChangedListener(new OnInputChangedListener() {
+                    @Override
+                    public void onChanged(String number, boolean isCompleted) {
+                        if (isCompleted) {
+                            mPopupKeyboard.dismiss(getActivity().getWindow());
+                        }
+                    }
+
+                    @Override
+                    public void onCompleted(String number, boolean isAutoCompleted) {
+                        mPopupKeyboard.dismiss(getActivity().getWindow());
+                    }
+                });
     }
     @Override
     public void onPause() {

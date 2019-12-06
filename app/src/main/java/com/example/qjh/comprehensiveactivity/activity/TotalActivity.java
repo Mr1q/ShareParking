@@ -1,6 +1,7 @@
 package com.example.qjh.comprehensiveactivity.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,6 +35,7 @@ public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChan
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.common_activity_total);
+        CreamUtils.translucentStatusBars(TotalActivity.this);
         initData();
 
 
@@ -76,6 +78,15 @@ public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChan
     private void initData() {
         viewPager = (ViewPager) findViewById(R.id.vp);
         navigation_home = (BottomNavigationView) findViewById(R.id.navigation_home);
+
+        Intent intent=getIntent();
+        Bundle bundle = new Bundle();
+        if (intent != null) {
+            bundle.putString(LoginActivity.EXTRA_KEY_User_USERNAME, intent.getStringExtra(LoginActivity.EXTRA_KEY_User_USERNAME));
+            bundle.putString(LoginActivity.EXTRA_KEY_User_PHONE, intent.getStringExtra(LoginActivity.EXTRA_KEY_User_PHONE));
+            UserFragment  users = new UserFragment();
+            users.setArguments(bundle);
+        }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -86,7 +97,7 @@ public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChan
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     viewPager.setCurrentItem(0);
-                    CreamUtils.translucentStatusBar(TotalActivity.this,false);
+                    CreamUtils.translucentStatusBars(TotalActivity.this);
                     return true;
                 case R.id.navigation_share:
                     viewPager.setCurrentItem(1);
@@ -119,7 +130,7 @@ public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChan
         switch (i)
         {
             case 0:
-                CreamUtils.translucentStatusBar(TotalActivity.this,false);
+                CreamUtils.translucentStatusBars(TotalActivity.this);
                 break;
             case 1:
                 CreamUtils.translucentStatusBar(TotalActivity.this,true);
