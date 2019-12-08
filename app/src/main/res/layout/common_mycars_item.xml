@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/Background" />
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:layout_marginRight="5dp"
+                android:layout_gravity="center_vertical"
+                android:textColor="@android:color/black"
+                android:text="车牌号:"/>
+            <TextView
+                android:id="@+id/tv_MyCarNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textColor="@android:color/black"
+                android:text="粤A  12345"/>
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:layout_marginRight="5dp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@android:color/black"
+            android:text="停车地址:"/>
+        <TextView
+            android:id="@+id/tv_MyCarAddress"
+            android:layout_marginTop="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:textColor="@android:color/black"
+            android:text="桂林电子科技大学"/>
+    </LinearLayout>
+
+    </LinearLayout>
+    <com.example.qjh.comprehensiveactivity.utils.CircleCheckBox
+        android:id="@+id/cir_chbox"
+        android:layout_margin="5dp"
+        android:layout_gravity="right|center_vertical"
+        android:layout_width="120dp"
+        android:layout_height="45dp"
+        android:paddingLeft="5dp"
+        app:borderThickness="2dp"
+        app:circleBorderColor="#00CFAD"
+        app:innerCircleColor="#00CFAD"
+        app:innerCircleRadius="10dp"
+        app:outerCircleColor="#6400CFAD"
+        app:outerCircleRadius="6dp"
+        app:showOuterCircle="true"
+        app:textColor="#000000"
+        app:textLeftPadding="5dp"
+        app:textSize="16dp"
+        app:tickColor="#ffffff"
+        app:tickThickness="1dp"
+        app:text="默认车辆" />
+
+
+</FrameLayout>

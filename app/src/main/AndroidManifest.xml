@@ -43,6 +43,12 @@
         </activity>
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.TotalActivity" />
+        <activity android:name=".activity.UserActivity"/>
+        <activity android:name=".activity.SettingActivity"/>
+        <activity android:name=".activity.ModifyActivityAll"/>
+        <activity android:name=".activity.AboutAppActivity"/>
+        <activity android:name=".activity.MyCarActivity"/>
+        <activity android:name=".activity.AddCarActivity"/>
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

@@ -30,7 +30,7 @@ public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChan
     private BottomNavigationView navigation_home;
     private MenuItem menuItem;
     private ViewpageAdapter viewpageAdapter;
-
+    private  UserFragment  users = new UserFragment();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +69,7 @@ public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChan
         viewpageAdapter.AddFragment(new HomeFragment());  //测试
         viewpageAdapter.AddFragment(new MapFragment());  //测试
         viewpageAdapter.AddFragment(new ControlCarFragment());  //控制蓝牙小车移动
-        viewpageAdapter.AddFragment(new UserFragment());  //用户界面
+        viewpageAdapter.AddFragment(users);  //用户界面
         viewPager.setAdapter(viewpageAdapter);
         viewPager.setOnPageChangeListener(this);
         viewPager.setOffscreenPageLimit(3);
@@ -84,7 +84,8 @@ public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChan
         if (intent != null) {
             bundle.putString(LoginActivity.EXTRA_KEY_User_USERNAME, intent.getStringExtra(LoginActivity.EXTRA_KEY_User_USERNAME));
             bundle.putString(LoginActivity.EXTRA_KEY_User_PHONE, intent.getStringExtra(LoginActivity.EXTRA_KEY_User_PHONE));
-            UserFragment  users = new UserFragment();
+            bundle.putString(LoginActivity.EXTRA_KEY_User_ADDRESS, intent.getStringExtra(LoginActivity.EXTRA_KEY_User_ADDRESS));
+            bundle.putString(LoginActivity.EXTRA_KEY_User_NAME, intent.getStringExtra(LoginActivity.EXTRA_KEY_User_NAME));
             users.setArguments(bundle);
         }
     }

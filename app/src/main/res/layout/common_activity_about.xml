@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <RelativeLayout
+        android:id="@+id/about_llyt1"
+        android:layout_marginTop="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/app_logos" />
+
+        <TextView
+            android:id="@+id/logos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/logo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="150dp"
+            android:text="开发团队：钱锦辉 黄荣寸 李林海"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/logos"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="GitHub:873060404@qq.com"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+
+
+    </RelativeLayout>
+
+</LinearLayout>

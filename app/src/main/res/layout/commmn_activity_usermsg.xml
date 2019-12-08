@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/RTU"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+
+            android:clickable="true"
+            android:src="@mipmap/common_activity_user_back" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:text="个人信息"
+            android:textColor="@color/White"
+            android:textSize="18dp" />
+        <Button
+            android:id="@+id/bt_userfragment_save"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="保存"
+            android:textSize="15dp"
+            android:textColor="@color/White"
+            android:layout_gravity="right"
+            android:background="@drawable/common_modify_commit"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:background="@color/Background" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:id="@+id/Photo"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/common_usermessage_select"
+                android:clickable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="7dp"
+                    android:text="头像"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="15dp"
+
+                    />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/head_imgae"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/top"
+                    android:src="@mipmap/app_logos" />
+
+                <ImageView
+                    android:id="@+id/top"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:src="@mipmap/common_fragment_enter" />
+
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/Background" />
+
+
+            <RelativeLayout
+                android:id="@+id/rl_username"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/common_usermessage_select"
+                android:clickable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="7dp"
+                    android:text="昵称"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="15dp"
+
+                    />
+
+                <TextView
+                    android:id="@+id/Username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="1dp"
+                    android:layout_toLeftOf="@+id/tops"
+                    android:gravity="center_vertical"
+                    android:text="Mr.Qsky"
+                    android:textSize="15dp" />
+
+                <ImageView
+                    android:id="@+id/tops"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:src="@mipmap/common_fragment_enter" />
+
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/Background" />
+
+            <RelativeLayout
+                android:id="@+id/rl_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/common_usermessage_select"
+                android:clickable="true">
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="7dp"
+                    android:text="姓名"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="15dp"
+
+                    />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="1dp"
+                    android:layout_toLeftOf="@+id/iv_tops"
+                    android:gravity="center_vertical"
+                    android:text="Mr.Qsky"
+                    android:textSize="15dp" />
+
+                <ImageView
+                    android:id="@+id/iv_tops"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:src="@mipmap/common_fragment_enter" />
+
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/Background" />
+
+            <RelativeLayout
+                android:id="@+id/rl_phone"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/common_usermessage_select"
+                android:clickable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="7dp"
+                    android:text="手机号"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="15dp"
+
+                    />
+
+                <TextView
+                    android:id="@+id/phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@+id/topss"
+                    android:gravity="center_vertical"
+                    android:text="Mr.Qsky"
+                    android:textSize="15dp" />
+
+                <ImageView
+                    android:id="@+id/topss"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:src="@mipmap/common_fragment_enter" />
+
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/Background" />
+
+            <RelativeLayout
+                android:id="@+id/rl_address"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/common_usermessage_select"
+                android:clickable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="7dp"
+                    android:text="地址"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="15dp"
+
+                    />
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@+id/topsss"
+                    android:gravity="center_vertical"
+                    android:text="Mr.Qsky"
+                    android:textSize="15dp" />
+
+                <ImageView
+                    android:id="@+id/topsss"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:src="@mipmap/common_fragment_enter" />
+
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Background" />
+    </LinearLayout>
+</LinearLayout>

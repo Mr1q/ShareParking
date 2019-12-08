@@ -72,14 +72,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public static final String EXTRA_KEY_User_PASSWORD = "EXTRA_KEY_User_PASSWORD";
     public static final String EXTRA_KEY_User_CHECKED = "EXTRA_KEY_User_CHECKED";
     //持久化技术
-    private SharedPreferences sharedPreferences;
+    public static SharedPreferences sharedPreferences;
     public SharedPreferences.Editor editor;
+    public static Boolean isLogin=true;
 
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SUCCESS:
+                    Toast("登录成功");
                     if (cb_login_Rember.isChecked()) {
                         editor.putBoolean(EXTRA_KEY_User_CHECKED, true);
                         editor.putString(EXTRA_KEY_User_USERNAME, user.getMyusername());
@@ -95,6 +97,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     editor.apply();
                     Intent intent = new Intent(LoginActivity.this, TotalActivity.class);
                     intent.putExtra(EXTRA_KEY_User_USERNAME, user.getMyusername());
+                    Log.d("login_class", "handleMessage: "+user.getMyusername());
                     intent.putExtra(EXTRA_KEY_User_PHONE, user.getMyphone());
                     intent.putExtra(EXTRA_KEY_User_MYID, user.getMyid());
                     intent.putExtra(EXTRA_KEY_User_NAME, user.getMyname());
@@ -132,6 +135,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         iv_common_hide.setOnClickListener(this);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPreferences.edit();
+        if(!isLogin)  //退出登录，返回登录界面
+        {
+            editor.clear();
+            editor.apply();
+
+        }
         Boolean checkeds = sharedPreferences.getBoolean(EXTRA_KEY_User_CHECKED, false);
         if (checkeds) {
             String username = sharedPreferences.getString(EXTRA_KEY_User_USERNAME, "");
@@ -151,7 +160,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             intent.putExtra(EXTRA_KEY_User_PASSWORD, pasword);
             startActivity(intent);
             finish();
-          
+
 
         }
     }
@@ -184,7 +193,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void tologin() {
-
         NewsRequest newsRequest = new NewsRequest();
         newsRequest.setUsername(et_login_username.getText().toString().trim());
         newsRequest.setPassword(et_login_password.getText().toString().trim());
@@ -214,6 +222,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             BaseResponse<List<User>> newsListResponese
                                     = gson.fromJson(body, jsontype);
                             user = newsListResponese.getData().get(0);
+
                             handler.sendEmptyMessage(SUCCESS);
                         }
                     } else {
