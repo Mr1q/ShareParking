@@ -6,8 +6,12 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +41,8 @@ public class HomeFragment extends Fragment implements OnBannerListener {
     private Banner banner;
     private List pictures = new ArrayList<>();
     private Context context;
-    private InputView input_view;
+    private AppBarLayout appBarLayout;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
 
     @Nullable
     @Override
@@ -55,7 +60,6 @@ public class HomeFragment extends Fragment implements OnBannerListener {
         super.onViewCreated(view, savedInstanceState);
         context = getActivity().getApplicationContext();
         initData(view);
-
         pictures.add("http://img2.imgtn.bdimg.com/it/u=2338912499,2258710075&fm=26&gp=0.jpg");
         pictures.add("http://pic1.win4000.com/wallpaper/8/5804428f565ea.jpg");
         pictures.add("http://pic1.win4000.com/wallpaper/8/580442a15e0c4.jpg");
@@ -93,27 +97,27 @@ public class HomeFragment extends Fragment implements OnBannerListener {
      */
     private void initData(View view) {
         banner=(Banner) view.findViewById(R.id.banner);
-        input_view=(InputView) view.findViewById(R.id.input_view);
-       final PopupKeyboard  mPopupKeyboard = new PopupKeyboard(getContext());
-// 弹出键盘内部包含一个KeyboardView，在此绑定输入两者关联。
-        mPopupKeyboard.attach(input_view,getActivity() );
+//        appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar);
+//        collapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.CTL);
+//        final Toolbar toolbar_base = (Toolbar) view.findViewById(R.id.toolbar);
+//        //设置TOOLBAR
+//        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar_base);
+//        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+//            @Override
+//            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+//                Log.d("asd", verticalOffset + "  ");
+//                if (verticalOffset <= -200) {
+//                    collapsingToolbarLayout.setTitle("首页");//设置标题
+//                    //使用下面两个CollapsingToolbarLayout的方法设置展开透明->折叠时你想要的颜色
+//                    //  CTL.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+//                    collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.White));
+//
+//                } else {
+//                    collapsingToolbarLayout.setTitle("");
+//                }
+//            }
+//        });
 
-// KeyboardInputController提供一个默认实现的新能源车牌锁定按钮
-        mPopupKeyboard.getController()
-                .setDebugEnabled(true)
-                .addOnInputChangedListener(new OnInputChangedListener() {
-                    @Override
-                    public void onChanged(String number, boolean isCompleted) {
-                        if (isCompleted) {
-                            mPopupKeyboard.dismiss(getActivity().getWindow());
-                        }
-                    }
-
-                    @Override
-                    public void onCompleted(String number, boolean isAutoCompleted) {
-                        mPopupKeyboard.dismiss(getActivity().getWindow());
-                    }
-                });
     }
     @Override
     public void onPause() {

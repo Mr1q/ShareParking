@@ -20,6 +20,7 @@ import com.example.qjh.comprehensiveactivity.controler.BaseActivity;
 import com.example.qjh.comprehensiveactivity.fragment.ControlCarFragment;
 import com.example.qjh.comprehensiveactivity.fragment.HomeFragment;
 import com.example.qjh.comprehensiveactivity.fragment.MapFragment;
+import com.example.qjh.comprehensiveactivity.fragment.SurroundFragment;
 import com.example.qjh.comprehensiveactivity.fragment.ThirdFragment;
 import com.example.qjh.comprehensiveactivity.fragment.UserFragment;
 import com.example.qjh.comprehensiveactivity.utils.CreamUtils;
@@ -67,7 +68,8 @@ public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChan
         viewpageAdapter = new ViewpageAdapter(getSupportFragmentManager());
 
         viewpageAdapter.AddFragment(new HomeFragment());  //测试
-        viewpageAdapter.AddFragment(new MapFragment());  //测试
+//        viewpageAdapter.AddFragment(new MapFragment());  //测试
+        viewpageAdapter.AddFragment(new SurroundFragment());  //测试
         viewpageAdapter.AddFragment(new ControlCarFragment());  //控制蓝牙小车移动
         viewpageAdapter.AddFragment(users);  //用户界面
         viewPager.setAdapter(viewpageAdapter);
@@ -98,11 +100,11 @@ public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChan
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     viewPager.setCurrentItem(0);
-                    CreamUtils.translucentStatusBars(TotalActivity.this);
+                   CreamUtils.translucentStatusBars(TotalActivity.this);
                     return true;
                 case R.id.navigation_share:
                     viewPager.setCurrentItem(1);
-                    CreamUtils.translucentStatusBar(TotalActivity.this,true);
+                    CreamUtils.translucentStatusBar(TotalActivity.this,false);
                     return true;
                 case R.id.navigation_connect:
                     viewPager.setCurrentItem(2);
@@ -134,7 +136,7 @@ public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChan
                 CreamUtils.translucentStatusBars(TotalActivity.this);
                 break;
             case 1:
-                CreamUtils.translucentStatusBar(TotalActivity.this,true);
+                CreamUtils.translucentStatusBar(TotalActivity.this,false);
                 break;
             case 2:
                 CreamUtils.translucentStatusBar(TotalActivity.this,false);

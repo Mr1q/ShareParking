@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.qjh.comprehensiveactivity.R;
 import com.example.qjh.comprehensiveactivity.adapter.CarAllAdapter;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 public class MyCarActivity extends BaseActivity implements View.OnClickListener {
     private RecyclerView rl_allcar;
     private Button bt_carfragment_add;
+    private ImageView RTU;
     private ArrayList<Car> carArrayList = new ArrayList<>();
     private final int SUCCESSS = 0;
     private CarAllAdapter carAllAdapter;
@@ -89,6 +91,8 @@ public class MyCarActivity extends BaseActivity implements View.OnClickListener 
     private void initData() {
         rl_allcar = (RecyclerView) findViewById(R.id.rl_allcar);
         bt_carfragment_add = (Button) findViewById(R.id.bt_carfragment_add);
+        RTU = (ImageView) findViewById(R.id.RTU);
+        RTU.setOnClickListener(this);
         carArrayList = new ArrayList<Car>();
         bt_carfragment_add.setOnClickListener(this);
     }
@@ -100,6 +104,9 @@ public class MyCarActivity extends BaseActivity implements View.OnClickListener 
             case R.id.bt_carfragment_add:
                 Intent intent = new Intent(MyCarActivity.this, AddCarActivity.class);
                 startActivityForResult(intent, SUCCESSS);
+                break;
+            case R.id.RTU:
+                finish();
                 break;
 
         }

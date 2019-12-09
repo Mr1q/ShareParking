@@ -1,24 +1,16 @@
-package com.example.qjh.comprehensiveactivity.fragment;
+package com.example.qjh.comprehensiveactivity.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
@@ -31,7 +23,6 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
-import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
@@ -39,30 +30,25 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.example.qjh.comprehensiveactivity.R;
-import com.example.qjh.comprehensiveactivity.utils.CreamUtils;
+import com.example.qjh.comprehensiveactivity.controler.BaseActivity;
+import com.example.qjh.comprehensiveactivity.fragment.MapFragment;
 
-public class MapFragment extends Fragment {
-
+public class MapActivity extends BaseActivity {
     private static final int BAIDU_READ_PHONE_STATE = 100;//定位权限请求
     private MapView mapView;
     private FloatingActionButton common_fa_loc;
     private LocationClient locationClient;
     private BaiduMap baiduMap;
-
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        SDKInitializer.initialize(getActivity().getApplicationContext());
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        SDKInitializer.initialize(getApplicationContext());
         SDKInitializer.setCoordType(CoordType.BD09LL);
-        View view = inflater.inflate(R.layout.common_fragment_map, container, false);
-        return view;
-    }
+        setContentView(R.layout.common_fragment_map);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mapView = view.findViewById(R.id.mapview);
-        common_fa_loc = (FloatingActionButton) view.findViewById(R.id.common_fa_loc);
+
+        mapView = findViewById(R.id.mapview);
+        common_fa_loc = (FloatingActionButton)findViewById(R.id.common_fa_loc);
         Doing();
         requestPermission();
         initLocationOption();
@@ -108,10 +94,10 @@ public class MapFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
+    public void onDestroy() {
         locationClient.stop();
         mapView.onDestroy();
-        super.onDestroyView();
+        super.onDestroy();
     }
 
 
@@ -121,9 +107,9 @@ public class MapFragment extends Fragment {
     private void requestPermission() {
 
         if (Build.VERSION.SDK_INT >= 23) { //判断是否为android6.0系统版本，如果是，需要动态添加权限
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {// 没有权限，申请权限。
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         BAIDU_READ_PHONE_STATE);
             }
 
@@ -139,7 +125,7 @@ public class MapFragment extends Fragment {
                     //  startLocaion();//开始定位
                 } else {
                     //用户拒绝之后,当然我们也可以弹出一个窗口,直接跳转到系统设置页面
-                    Toast.makeText(getActivity(), "未开启定位权限,请手动到设置去开启权限", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "未开启定位权限,请手动到设置去开启权限", Toast.LENGTH_LONG).show();
                 }
                 break;
             default:
@@ -153,7 +139,7 @@ public class MapFragment extends Fragment {
 
     private void initLocationOption() {
         //定位服务的客户端。宿主程序在客户端声明此类，并调用，目前只支持在主线程中启动
-        locationClient = new LocationClient(getActivity().getApplicationContext());
+        locationClient = new LocationClient(getApplicationContext());
         //声明LocationClient类实例并配置定位参数
         LocationClientOption locationOption = new LocationClientOption();
         locationOption.setOpenGps(true);
@@ -225,27 +211,13 @@ public class MapFragment extends Fragment {
                     .latitude(location.getLatitude())
                     .longitude(location.getLongitude()).build();
             baiduMap.setMyLocationData(locData);
-//            //获取定位精度，默认值为0.0f
-//            float radius = location.getRadius();
-//            //获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
-//            String coorType = location.getCoorType();
-//            //获取定位类型、定位错误返回码，具体信息可参照类参考中BDLocation类中的说明
-//            int errorCode = location.getLocType();
-//
-//          // 构造定位数据
-//            MyLocationData locData = new MyLocationData.Builder()
-//                    .accuracy(location.getRadius())
-//                    // 此处设置开发者获取到的方向信息，顺时针0-360
-//                    .direction(100)
-//                    .latitude(location.getLatitude())
-//                    .longitude(location.getLongitude()).build();
 
 
 
-                LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
-                MapStatus.Builder builder = new MapStatus.Builder();
-                builder.target(ll).zoom(18.0f);
-                baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+            LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
+            MapStatus.Builder builder = new MapStatus.Builder();
+            builder.target(ll).zoom(18.0f);
+            baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
 
 
         }

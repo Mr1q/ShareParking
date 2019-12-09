@@ -21,6 +21,14 @@ android {
             jniLibs.srcDirs=[ 'libs']
         }
     }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 }
 
 dependencies {
@@ -46,4 +54,5 @@ dependencies {
     implementation 'com.parkingwang:keyboard:0.7.3'
     implementation 'com.google.code.gson:gson:2.7'
     implementation 'com.lxj:xpopup:1.8.10'
+
 }

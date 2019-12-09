@@ -1,9 +1,9 @@
 package com.example.qjh.comprehensiveactivity.beans;
 
 public class ParkingLot {
-    //  停车场名称
+    //  私家车位名称
     String park_name;
-    // * 停车场地址
+    // * 私家车位地址
     String park_address;
     // * 价格
     int park_price;

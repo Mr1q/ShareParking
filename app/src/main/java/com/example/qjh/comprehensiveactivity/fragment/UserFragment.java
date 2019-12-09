@@ -28,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.example.qjh.comprehensiveactivity.R;
 import com.example.qjh.comprehensiveactivity.activity.AboutAppActivity;
 import com.example.qjh.comprehensiveactivity.activity.LoginActivity;
+import com.example.qjh.comprehensiveactivity.activity.MyAddressActivity;
 import com.example.qjh.comprehensiveactivity.activity.MyCarActivity;
 import com.example.qjh.comprehensiveactivity.activity.UserActivity;
 import com.example.qjh.comprehensiveactivity.controler.ActivityCollecter;
@@ -65,8 +66,8 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout curior;
     private RelativeLayout order_history;
     private RelativeLayout about_app;
-    private RelativeLayout modify_tation;
     private RelativeLayout rl_mycars;
+    private RelativeLayout rl_myaddress;
     private RelativeLayout advice;
     public TextView station_id;
     public Button bt_userfragment_logout;
@@ -104,7 +105,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         message_image = (CircleImageView) view.findViewById(R.id.message_image);
         setting = (ImageView) view.findViewById(R.id.setting);
         rl_mycars = (RelativeLayout) view.findViewById(R.id.rl_mycars);
-        modify_tation = (RelativeLayout) view.findViewById(R.id.modify_tation);
+        rl_myaddress = (RelativeLayout) view.findViewById(R.id.rl_myaddress);
         advice = (RelativeLayout) view.findViewById(R.id.advice);
         order_history = (RelativeLayout) view.findViewById(R.id.order_history);
         about_app = (RelativeLayout) view.findViewById(R.id.about_app);
@@ -148,6 +149,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
         about_app.setOnClickListener(this);
         rl_mycars.setOnClickListener(this);
+        rl_myaddress.setOnClickListener(this);
     }
 
 
@@ -200,6 +202,10 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.rl_mycars:
                 intent2 = new Intent(getContext(), MyCarActivity.class);
+                startActivity(intent2);
+                break;
+            case R.id.rl_myaddress:
+                intent2 = new Intent(getContext(), MyAddressActivity.class);
                 startActivity(intent2);
                 break;
         }

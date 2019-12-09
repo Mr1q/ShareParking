@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,89 +19,105 @@
 
 
     </LinearLayout>
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_marginTop="50dp">
+    <com.example.qjh.comprehensiveactivity.utils.view.WaveView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+       android:layout_gravity="center"
+        app:wv_density="3"
+        app:wv_fill_color="@color/Blue"
+        app:wv_radius="60"
+        app:wv_revert="false"
+        app:wv_speed="3"
+        app:wv_text="点击连接"
+        app:wv_stroke_color="#ff5050"
+        app:wv_stroke_width="8"
+        app:wv_wave_color="@color/Blue"
+        app:wv_wave_size="60" />
 
+    <!--    <android.support.constraint.ConstraintLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
 
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_marginBottom="20dp">
-
-
-                <ImageButton
-                    android:id="@+id/imagebutton6"
-                    android:layout_width="79dp"
-                    android:layout_height="60dp"
-                    android:src="@mipmap/common_fragemnt_car" />
-
-
-            </LinearLayout>
+<!--        <LinearLayout-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:gravity="center"-->
+<!--            android:layout_marginTop="50dp">-->
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                >
 
-                <ImageButton
-                    android:id="@+id/imagebutton1"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_centerHorizontal="true"
-                    android:src="@drawable/up"
-                    android:layout_gravity="center"
-                    />
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical"-->
+<!--                android:gravity="center"-->
+<!--                android:layout_marginBottom="20dp">-->
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
 
-                    <ImageButton
-                        android:id="@+id/imagebutton2"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:src="@drawable/up"
-                        android:layout_marginRight="30dp"
-                        />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/imagebutton6"-->
+<!--                    android:layout_width="79dp"-->
+<!--                    android:layout_height="60dp"-->
+<!--                    android:src="@mipmap/common_fragemnt_car" />-->
 
-                    <ImageButton
-                        android:id="@+id/imagebutton5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="25dp"
-                        />
 
-                    <ImageButton
-                        android:id="@+id/imagebutton3"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:src="@drawable/up"
-                        android:layout_marginLeft="30dp"
-                        />
-                </LinearLayout>
+<!--            </LinearLayout>-->
 
-                <ImageButton
-                    android:id="@+id/imagebutton4"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/up"
-                    android:layout_gravity="center"
-                    />
-            </LinearLayout>
-        </LinearLayout>
-    </android.support.constraint.ConstraintLayout>
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:orientation="vertical"-->
+<!--                >-->
+
+<!--                <ImageButton-->
+<!--                    android:id="@+id/imagebutton1"-->
+<!--                    android:layout_width="100dp"-->
+<!--                    android:layout_height="100dp"-->
+<!--                    android:layout_centerHorizontal="true"-->
+<!--                    android:src="@drawable/up"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    />-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center">-->
+
+<!--                    <ImageButton-->
+<!--                        android:id="@+id/imagebutton2"-->
+<!--                        android:layout_width="100dp"-->
+<!--                        android:layout_height="100dp"-->
+<!--                        android:src="@drawable/up"-->
+<!--                        android:layout_marginRight="30dp"-->
+<!--                        />-->
+
+<!--                    <ImageButton-->
+<!--                        android:id="@+id/imagebutton5"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="25dp"-->
+<!--                        />-->
+
+<!--                    <ImageButton-->
+<!--                        android:id="@+id/imagebutton3"-->
+<!--                        android:layout_width="100dp"-->
+<!--                        android:layout_height="100dp"-->
+<!--                        android:src="@drawable/up"-->
+<!--                        android:layout_marginLeft="30dp"-->
+<!--                        />-->
+<!--                </LinearLayout>-->
+
+<!--                <ImageButton-->
+<!--                    android:id="@+id/imagebutton4"-->
+<!--                    android:layout_width="100dp"-->
+<!--                    android:layout_height="100dp"-->
+<!--                    android:src="@drawable/up"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    />-->
+<!--            </LinearLayout>-->
+<!--        </LinearLayout>-->
+<!--    </android.support.constraint.ConstraintLayout>-->
 </android.support.design.widget.CoordinatorLayout>

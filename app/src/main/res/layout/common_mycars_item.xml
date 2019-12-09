@@ -5,10 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:background="@color/Background" />
+
     <LinearLayout
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
@@ -63,22 +60,26 @@
         android:id="@+id/cir_chbox"
         android:layout_margin="5dp"
         android:layout_gravity="right|center_vertical"
-        android:layout_width="120dp"
+        android:layout_width="100dp"
         android:layout_height="45dp"
         android:paddingLeft="5dp"
         app:borderThickness="2dp"
         app:circleBorderColor="#00CFAD"
         app:innerCircleColor="#00CFAD"
-        app:innerCircleRadius="10dp"
+        app:innerCircleRadius="7dp"
         app:outerCircleColor="#6400CFAD"
         app:outerCircleRadius="6dp"
         app:showOuterCircle="true"
         app:textColor="#000000"
         app:textLeftPadding="5dp"
-        app:textSize="16dp"
+        app:textSize="13dp"
         app:tickColor="#ffffff"
         app:tickThickness="1dp"
         app:text="默认车辆" />
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_gravity="bottom"
+        android:background="@color/Background" />
 
 </FrameLayout>
