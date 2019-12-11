@@ -30,6 +30,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/ly_bookparlot"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -50,6 +51,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ly_controlcar"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
@@ -94,6 +96,7 @@
         </android.support.v7.widget.CardView>
     </LinearLayout>
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

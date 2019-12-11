@@ -76,6 +76,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public SharedPreferences.Editor editor;
     public static Boolean isLogin=true;
 
+    public  static  String ID;
+
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -104,6 +106,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     intent.putExtra(EXTRA_KEY_User_ADDRESS, user.getMyaddress());
                     intent.putExtra(EXTRA_KEY_User_ADDTIME, user.getMyaddtime());
                     intent.putExtra(EXTRA_KEY_User_PASSWORD, user.getMypasswprd());
+                    ID=user.getMyid();
                     startActivity(intent);
                     finish();
                     break;
@@ -158,6 +161,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             intent.putExtra(EXTRA_KEY_User_ADDRESS, address);
             intent.putExtra(EXTRA_KEY_User_ADDTIME, addtime);
             intent.putExtra(EXTRA_KEY_User_PASSWORD, pasword);
+            ID=myid;
             startActivity(intent);
             finish();
 
@@ -196,8 +200,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         NewsRequest newsRequest = new NewsRequest();
         newsRequest.setUsername(et_login_username.getText().toString().trim());
         newsRequest.setPassword(et_login_password.getText().toString().trim());
+        RequestBody requestBody=new FormBody.Builder()
+                .add("username",et_login_username.getText().toString().trim())
+                .add("password",et_login_password.getText().toString().trim()).build();
         request = new Request.Builder().
-                url(Constants.Login + newsRequest.toString()).
+                post(requestBody).
+                url(Constants.Login).
                 build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override

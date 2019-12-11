@@ -1,6 +1,7 @@
 package com.example.qjh.comprehensiveactivity.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,18 +27,21 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.example.qjh.comprehensiveactivity.R;
 import com.example.qjh.comprehensiveactivity.controler.BaseActivity;
 import com.example.qjh.comprehensiveactivity.fragment.MapFragment;
+import com.example.qjh.comprehensiveactivity.fragment.SurroundFragment;
 
 public class MapActivity extends BaseActivity {
     private static final int BAIDU_READ_PHONE_STATE = 100;//定位权限请求
+    private LocationClient locationClient;
     private MapView mapView;
     private FloatingActionButton common_fa_loc;
-    private LocationClient locationClient;
+
     private BaiduMap baiduMap;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +49,7 @@ public class MapActivity extends BaseActivity {
         SDKInitializer.initialize(getApplicationContext());
         SDKInitializer.setCoordType(CoordType.BD09LL);
         setContentView(R.layout.common_fragment_map);
-
+        Intent intent=getIntent();
 
         mapView = findViewById(R.id.mapview);
         common_fa_loc = (FloatingActionButton)findViewById(R.id.common_fa_loc);
@@ -65,7 +69,21 @@ public class MapActivity extends BaseActivity {
         OverlayOptions option2 = new MarkerOptions()
                 .position(point2)
                 .icon(bitmap);
-        //在地图上添加Marker，并显示
+
+       if(intent!=null)
+       {
+           LatLng point3 = new LatLng(Double.valueOf(intent.getStringExtra(SurroundFragment.EXTRA_LAT))
+                   ,Double.valueOf(  intent.getStringExtra(SurroundFragment.EXTRA_LOG)));;
+           OverlayOptions option3 = new MarkerOptions()
+                   .position(point3)
+                   .icon(bitmap);
+           MapStatus.Builder builder = new MapStatus.Builder();
+           builder.target(point3).zoom(18.0f);
+           baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+           baiduMap.addOverlay(option3);
+       }
+
+
         baiduMap.addOverlay(option);
         baiduMap.addOverlay(option2);
     }
@@ -74,6 +92,11 @@ public class MapActivity extends BaseActivity {
         common_fa_loc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                LatLng point = new LatLng(25.320883, 110.423171);
+//              //  intent.getStringExtra("123");
+//                MapStatus.Builder builder = new MapStatus.Builder();
+//                builder.target(point).zoom(18.0f);
+//                baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
                 locationClient.start();
                 Log.d("location_class", "onReceiveLocation: 启动");
             }
@@ -178,7 +201,7 @@ public class MapActivity extends BaseActivity {
 //开始定位
         baiduMap = mapView.getMap();
         baiduMap.setMyLocationEnabled(true);
-        locationClient.start();
+        //locationClient.start();
 
     }
 
@@ -203,7 +226,7 @@ public class MapActivity extends BaseActivity {
             double longitude = location.getLongitude();
             Log.d("location_class", "onReceiveLocation: " + latitude);
             Log.d("location_class", "onReceiveLocation: " + longitude);
-
+            Toast(latitude+" "+longitude);
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
                     // 此处设置开发者获取到的方向信息，顺时针0-360

@@ -14,6 +14,77 @@ public class ParkingLot {
     // * 持有人id
     int park_ownerId;
 
+    // * 是否共享车位
+    String park_share;
+
+    // * 车位状态
+    String park_use;
+
+    //收藏数
+    String favoriteNumber;
+
+    public String getFavoriteNumber() {
+        return favoriteNumber;
+    }
+
+    public void setFavoriteNumber(String favoriteNumber) {
+        this.favoriteNumber = favoriteNumber;
+    }
+
+    public String getParklotImage() {
+        return parklotImage;
+    }
+
+    public void setParklotImage(String parklotImage) {
+        this.parklotImage = parklotImage;
+    }
+
+    String park_longitude; //经度
+    String park_latitude; //纬度
+    String parklotImage;  //停车图片
+
+    public String getPark_share() {
+        return park_share;
+    }
+
+    public String getPark_use() {
+        return park_use;
+    }
+
+    public String getPark_longitude() {
+        return park_longitude;
+    }
+
+    public String getPark_latitude() {
+        return park_latitude;
+    }
+
+    public void setPark_longitude(String park_longitude) {
+        this.park_longitude = park_longitude;
+    }
+
+    public void setPark_latitude(String park_latitude) {
+        this.park_latitude = park_latitude;
+    }
+
+    public String getShare() {
+        return park_share;
+    }
+
+    public void setShare(String share) {
+        park_share = share;
+    }
+
+
+    public String getStatus() {
+        return park_use;
+    }
+
+    public void setStatus(String park_use) {
+        this.park_use = park_use;
+    }
+
+
     public String getPark_name() {
         return park_name;
     }
@@ -62,25 +133,6 @@ public class ParkingLot {
         this.park_ownerId = park_ownerId;
     }
 
-    public double getPark_longitude() {
-        return park_longitude;
-    }
 
-    public void setPark_longitude(double park_longitude) {
-        this.park_longitude = park_longitude;
-    }
-
-    public double getPark_latitude() {
-        return park_latitude;
-    }
-
-    public void setPark_latitude(double park_latitude) {
-        this.park_latitude = park_latitude;
-    }
-
-    // * 经度
-    double park_longitude;
-    // * 纬度
-    double park_latitude;
 
 }

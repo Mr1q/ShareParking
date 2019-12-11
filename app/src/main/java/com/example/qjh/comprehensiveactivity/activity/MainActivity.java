@@ -21,27 +21,28 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothSocket bluetoothSocket = null;
     //唯一的标识
     private static final UUID MY_UUID_SECURE = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-//    private String blueAddress = "00:87:63:12:37:35";//蓝牙模块的MAC地址
+    //    private String blueAddress = "00:87:63:12:37:35";//蓝牙模块的MAC地址
     private String blueAddress = "98:D3:31:F7:34:F8";//蓝牙模块的MAC地址
     private Button send;
     private EditText input;
- private OutputStream outputStream;
+    private OutputStream outputStream;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(blueAddress);
-        send=findViewById(R.id.send);
-        input=findViewById(R.id.input);
+        send = findViewById(R.id.send);
+        input = findViewById(R.id.input);
 
         try {
             bluetoothSocket = device.createRfcommSocketToServiceRecord(MY_UUID_SECURE);
             mBluetoothAdapter.cancelDiscovery();
             bluetoothSocket.connect();
-            Toast.makeText(MainActivity.this,"连接成功",Toast.LENGTH_LONG).show();
-        }catch (Exception e)
-        {
+            Toast.makeText(MainActivity.this, "连接成功", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -49,12 +50,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                        outputStream=bluetoothSocket.getOutputStream();
-                        byte[] buffer;
-                        String message=input.getText().toString();
-                        buffer=message.getBytes();
-                        outputStream.write(buffer);
-                    Toast.makeText(MainActivity.this,"发送成功",Toast.LENGTH_LONG).show();
+                    outputStream = bluetoothSocket.getOutputStream();
+                    byte[] buffer;
+                    String message = input.getText().toString();
+                    buffer = message.getBytes();
+                    outputStream.write(buffer);
+                    Toast.makeText(MainActivity.this, "发送成功", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -26,20 +26,21 @@ import com.example.qjh.comprehensiveactivity.fragment.UserFragment;
 import com.example.qjh.comprehensiveactivity.utils.CreamUtils;
 
 
-public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChangeListener{
+public class TotalActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
     private ViewPager viewPager;
     private BottomNavigationView navigation_home;
     private MenuItem menuItem;
     private ViewpageAdapter viewpageAdapter;
-    private  UserFragment  users = new UserFragment();
+    private UserFragment users = new UserFragment();
+    private HomeFragment homeFragment = new HomeFragment();
+    private ControlCarFragment controlCarFragment = new ControlCarFragment();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.common_activity_total);
         CreamUtils.translucentStatusBars(TotalActivity.this);
         initData();
-
-
         navigation_home.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -66,22 +67,38 @@ public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChan
         });
 
         viewpageAdapter = new ViewpageAdapter(getSupportFragmentManager());
+        homeFragment.setOnItemClick(new HomeFragment.OnItemClickListener() {
+            @Override
+            public void OnItemClick(int id) {
+                switch (id) {
+                    case R.id.ly_bookparlot:
+                        viewPager.setCurrentItem(1);
+                        break;
+                    case R.id.ly_controlcar:
+                        viewPager.setCurrentItem(2);
+                        break;
+                }
 
-        viewpageAdapter.AddFragment(new HomeFragment());  //测试
+            }
+        });
+
+
+        viewpageAdapter.AddFragment(homeFragment);  //测试
 //        viewpageAdapter.AddFragment(new MapFragment());  //测试
         viewpageAdapter.AddFragment(new SurroundFragment());  //测试
-        viewpageAdapter.AddFragment(new ControlCarFragment());  //控制蓝牙小车移动
+        viewpageAdapter.AddFragment(controlCarFragment);  //控制蓝牙小车移动
         viewpageAdapter.AddFragment(users);  //用户界面
         viewPager.setAdapter(viewpageAdapter);
         viewPager.setOnPageChangeListener(this);
         viewPager.setOffscreenPageLimit(3);
+
     }
 
     private void initData() {
         viewPager = (ViewPager) findViewById(R.id.vp);
         navigation_home = (BottomNavigationView) findViewById(R.id.navigation_home);
 
-        Intent intent=getIntent();
+        Intent intent = getIntent();
         Bundle bundle = new Bundle();
         if (intent != null) {
             bundle.putString(LoginActivity.EXTRA_KEY_User_USERNAME, intent.getStringExtra(LoginActivity.EXTRA_KEY_User_USERNAME));
@@ -100,26 +117,24 @@ public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChan
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     viewPager.setCurrentItem(0);
-                   CreamUtils.translucentStatusBars(TotalActivity.this);
+                    CreamUtils.translucentStatusBars(TotalActivity.this);
                     return true;
                 case R.id.navigation_share:
                     viewPager.setCurrentItem(1);
-                    CreamUtils.translucentStatusBar(TotalActivity.this,false);
+                    CreamUtils.translucentStatusBar(TotalActivity.this, false);
                     return true;
                 case R.id.navigation_connect:
                     viewPager.setCurrentItem(2);
-                    CreamUtils.translucentStatusBar(TotalActivity.this,false);
+                    CreamUtils.translucentStatusBar(TotalActivity.this, false);
                     return true;
                 case R.id.navigation_person:
                     viewPager.setCurrentItem(3);
-                    CreamUtils.translucentStatusBar(TotalActivity.this,false);
+                    CreamUtils.translucentStatusBar(TotalActivity.this, false);
                     return true;
             }
             return false;
         }
     };
-
-
 
 
     @Override
@@ -129,20 +144,19 @@ public class TotalActivity extends BaseActivity implements  ViewPager.OnPageChan
 
     @Override
     public void onPageSelected(int i) {
-        Log.d("current id","id:"+i);
-        switch (i)
-        {
+        Log.d("current id", "id:" + i);
+        switch (i) {
             case 0:
                 CreamUtils.translucentStatusBars(TotalActivity.this);
                 break;
             case 1:
-                CreamUtils.translucentStatusBar(TotalActivity.this,false);
+                CreamUtils.translucentStatusBar(TotalActivity.this, false);
                 break;
             case 2:
-                CreamUtils.translucentStatusBar(TotalActivity.this,false);
+                CreamUtils.translucentStatusBar(TotalActivity.this, false);
                 break;
             case 3:
-                CreamUtils.translucentStatusBar(TotalActivity.this,false);
+                CreamUtils.translucentStatusBar(TotalActivity.this, false);
                 break;
         }
     }

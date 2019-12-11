@@ -43,7 +43,7 @@ public class MyAddressActivity extends BaseActivity implements View.OnClickListe
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.common_activity_myaddress);
-        SDKInitializer.initialize(this);
+        SDKInitializer.initialize(getApplicationContext());
         SDKInitializer.setCoordType(CoordType.BD09LL);
         initData();
         bt_getlocatioin.setOnClickListener(this);
