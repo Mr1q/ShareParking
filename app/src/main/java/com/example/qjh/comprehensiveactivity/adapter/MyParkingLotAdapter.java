@@ -77,7 +77,7 @@ public class MyParkingLotAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         /*注意参数*/
         public void OnItemAddImage();
     }
-    String url1 = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1548777981087&di=0618a101655e57c675c7c21b4ef55f00&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fitbbs%2F1504%2F06%2Fc70%2F5014635_1428321310010_mthumb.jpg";
+
     @Override
     public int getItemViewType(int position) {
         if (isShowAdd(position)) {

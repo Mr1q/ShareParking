@@ -6,7 +6,7 @@ public class BaseResponse<T> {
     private String msg;
     private int state;
     public final static int RESPONSE_SUCCESS = 0;
-    @SerializedName("userData")
+    @SerializedName("parkData")
     private T data;
     public BaseResponse() {
     }

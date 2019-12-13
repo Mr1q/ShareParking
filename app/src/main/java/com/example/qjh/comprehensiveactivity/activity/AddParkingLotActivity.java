@@ -35,7 +35,10 @@ import com.jph.takephoto.app.TakePhotoActivity;
 import com.jph.takephoto.app.TakePhotoImpl;
 import com.jph.takephoto.compress.CompressConfig;
 import com.jph.takephoto.model.CropOptions;
+import com.jph.takephoto.model.InvokeParam;
+import com.jph.takephoto.model.TContextWrap;
 import com.jph.takephoto.model.TResult;
+import com.jph.takephoto.permission.PermissionManager;
 import com.jph.takephoto.permission.TakePhotoInvocationHandler;
 
 import org.json.JSONObject;
@@ -43,12 +46,15 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import cn.qqtheme.framework.picker.NumberPicker;
 import cn.qqtheme.framework.picker.OptionPicker;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -72,7 +78,12 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
     private EditText et_name;
     private Button bt_sure;
     private static Uri uri;
-    private OkHttpClient okHttpClient = new OkHttpClient();
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+            .connectTimeout(20, TimeUnit.SECONDS)
+            .readTimeout(20, TimeUnit.SECONDS)
+            .writeTimeout(20, TimeUnit.SECONDS)
+            .build();
+
     private Request request;
     private  String price;
     private static final int SUCCESS = 0;
@@ -93,12 +104,14 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
             }
         }
     };
+    private InvokeParam invokeParam;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        getTakePhoto().onCreate(savedInstanceState);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.common_activity_add_parklot);
-        uri = Uri.fromFile(new File(getExternalCacheDir(), "a" + ".jpg"));
+        uri = Uri.fromFile(new File(getExternalCacheDir(), System.currentTimeMillis() + ".jpg"));
         initData();
     }
 
@@ -108,6 +121,8 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
         super.onSaveInstanceState(outState);
 
     }
+
+
 
     private void initData() {
         ly_addImage = (LinearLayout) findViewById(R.id.ly_addImage);
@@ -175,6 +190,7 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
                         CropOptions cropOptions = new CropOptions.Builder()
                                 .setOutputX(size).setOutputX(size).
                                         setWithOwnCrop(true).create();
+                        configCompress(takePhoto);
                         //相机获取照片并剪裁
                         takePhoto.onPickFromCaptureWithCrop(uri, cropOptions);
 
@@ -232,14 +248,26 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
     }
 
     private void toCommit() {
-        RequestBody requestBody = new FormBody.Builder()
-                .add("park_name", et_parklotname.getText().toString().trim())
-                .add("park_address", et_address.getText().toString().trim())
-                .add("park_price", price)  //每小时的价钱
-                .add("park_ownerName", et_name.getText().toString().trim())
-                .add("park_ownerId", LoginActivity.ID)
-                .add("park_longitude", tv_log.getText().toString().trim())
-                .add("park_latitude", tv_lat.getText().toString().trim())
+//        RequestBody requestBody = new MultipartBody.Builder()
+//                .setType(MultipartBody.FORM)
+//                .addFormDataPart("id", Id)
+//                .addFormDataPart("file", uri.getPath(),
+//                        RequestBody.create(MediaType.parse("image/jpg"), new File(uri.getPath())))
+//                .build();
+
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("park_name", et_parklotname.getText().toString().trim())
+                .addFormDataPart("park_address", et_address.getText().toString().trim())
+                .addFormDataPart("park_ownerName", et_name.getText().toString().trim())
+                .addFormDataPart("park_ownerId", LoginActivity.ID)
+                .addFormDataPart("park_longitude", tv_log.getText().toString().trim())
+                .addFormDataPart("park_latitude", tv_lat.getText().toString().trim())
+                .addFormDataPart("park_latitude", tv_lat.getText().toString().trim())
+                .addFormDataPart("park_distance", "123")
+                .addFormDataPart("park_price", "123")
+                .addFormDataPart("file","car_photourl",
+                        RequestBody.create(MediaType.parse("image/jpg"), new File(uri.getPath())))
                 .build();
         request = new Request.Builder().
                 url(Constants.CreatePark)
@@ -248,14 +276,17 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                Log.d("shiabi_class", "onFailure: "+e.getMessage());
+
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 try {
+                    String body = response.body().string();
                     if (response.isSuccessful()) {
-                        String body = response.body().string();
+
                         Log.d("onResponse_body", "onResponse: " + body);
                         Gson gson = new Gson();
                         JSONObject jsonObject = new JSONObject(body);
@@ -266,6 +297,7 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
                             handler.sendEmptyMessage(SUCCESS);
                         }
                     } else {
+                        Log.d("onResponse_body", "onResponse: " + body);
                         handler.sendEmptyMessage(FAIL);
                     }
                 } catch (Exception e) {
@@ -279,22 +311,27 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
 
     }
 
+
+
+
     private void take(TakePhoto takePhoto) {
         configCompress(takePhoto);
         int size = Math.min(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
         CropOptions cropOptions = new CropOptions.Builder().setOutputX(size).setOutputX(size).setWithOwnCrop(false).create();
         //Log.d("uri_user", "take: " + uri.toString());
         takePhoto.onPickFromGalleryWithCrop(uri, cropOptions);
+
     }
 
     private void configCompress(TakePhoto takePhoto) {
-        int maxSize = Integer.parseInt("409600");//最大 压缩
-        int width = Integer.parseInt("800");//宽
-        int height = Integer.parseInt("800");//高
+        int maxSize = Integer.parseInt("102400");//最大 压缩
+        int width = Integer.parseInt("600");//宽
+        int height = Integer.parseInt("600");//高
         CompressConfig config;
         config = new CompressConfig.Builder().setMaxSize(maxSize)
                 .setMaxPixel(width >= height ? width : height)
                 .enableReserveRaw(false)//拍照压缩后是否显示原图
+                .enablePixelCompress(true)
                 .create();
         takePhoto.onEnableCompress(config, true);//是否显示进度条
 

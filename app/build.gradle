@@ -2,20 +2,40 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
+    useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.example.qjh.comprehensiveactivity"
-        minSdkVersion 23
+        minSdkVersion 22
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        // 导航SDK内部使用了annotationProcessor，需要添加下面代码，防止编译异常
+        javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
+        ndk {
+            abiFilters "armeabi"
+        }
+        javaCompileOptions{
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
+
     }
+
+    configurations {
+        cleanedAnnotations
+        compile.exclude group: 'org.jetbrains' , module:'annotations'
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     sourceSets {
         main {
             jniLibs.srcDirs=[ 'libs']
@@ -29,6 +49,7 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+
 }
 
 dependencies {
@@ -57,5 +78,10 @@ dependencies {
     implementation 'com.github.zcweng:switch-button:0.0.3@aar'
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'com.github.wenqin-231:StatusView:v0.35'
-    implementation 'cn.qqtheme.framework:AndroidPicker:latest.integration' //选择器
+    implementation 'cn.qqtheme.framework:AndroidPicker:latest.integration'
+    implementation files('NaviTts.aar')
+    implementation files('onsdk_all.aar') //选择器
+    //implementation.exclude group: 'org.jetbrains' , module:'annotations'
+
+
 }

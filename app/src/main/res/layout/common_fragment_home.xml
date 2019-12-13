@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="80dp"
@@ -95,10 +96,16 @@
             </LinearLayout>
         </android.support.v7.widget.CardView>
     </LinearLayout>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_parklot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

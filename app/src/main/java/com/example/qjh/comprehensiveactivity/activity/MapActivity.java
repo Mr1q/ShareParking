@@ -1,17 +1,24 @@
 package com.example.qjh.comprehensiveactivity.activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
@@ -31,10 +38,22 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.navisdk.adapter.BNRoutePlanNode;
+import com.baidu.navisdk.adapter.BNaviCommonParams;
+import com.baidu.navisdk.adapter.BaiduNaviManagerFactory;
+import com.baidu.navisdk.adapter.IBNRoutePlanManager;
+import com.baidu.navisdk.adapter.IBaiduNaviManager;
+import com.baidu.navisdk.adapter.impl.BaiduNaviManager;
+import com.example.qjh.comprehensiveactivity.Baiduapi.DemoGuideActivity;
+import com.example.qjh.comprehensiveactivity.Baiduapi.ForegroundService;
 import com.example.qjh.comprehensiveactivity.R;
 import com.example.qjh.comprehensiveactivity.controler.BaseActivity;
 import com.example.qjh.comprehensiveactivity.fragment.MapFragment;
 import com.example.qjh.comprehensiveactivity.fragment.SurroundFragment;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MapActivity extends BaseActivity {
     private static final int BAIDU_READ_PHONE_STATE = 100;//定位权限请求
@@ -49,6 +68,7 @@ public class MapActivity extends BaseActivity {
         SDKInitializer.initialize(getApplicationContext());
         SDKInitializer.setCoordType(CoordType.BD09LL);
         setContentView(R.layout.common_fragment_map);
+        startService(new Intent(this, ForegroundService.class));
         Intent intent=getIntent();
 
         mapView = findViewById(R.id.mapview);
@@ -72,15 +92,19 @@ public class MapActivity extends BaseActivity {
 
        if(intent!=null)
        {
-           LatLng point3 = new LatLng(Double.valueOf(intent.getStringExtra(SurroundFragment.EXTRA_LAT))
-                   ,Double.valueOf(  intent.getStringExtra(SurroundFragment.EXTRA_LOG)));;
-           OverlayOptions option3 = new MarkerOptions()
-                   .position(point3)
-                   .icon(bitmap);
-           MapStatus.Builder builder = new MapStatus.Builder();
-           builder.target(point3).zoom(18.0f);
-           baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
-           baiduMap.addOverlay(option3);
+           if(intent.getStringExtra(SurroundFragment.EXTRA_LAT)!=null)
+           {
+               LatLng point3 = new LatLng(Double.valueOf(intent.getStringExtra(SurroundFragment.EXTRA_LAT))
+                       ,Double.valueOf(  intent.getStringExtra(SurroundFragment.EXTRA_LOG)));;
+               OverlayOptions option3 = new MarkerOptions()
+                       .position(point3)
+                       .icon(bitmap);
+               MapStatus.Builder builder = new MapStatus.Builder();
+               builder.target(point3).zoom(18.0f);
+               baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+               baiduMap.addOverlay(option3);
+           }
+
        }
 
 
@@ -99,11 +123,149 @@ public class MapActivity extends BaseActivity {
 //                baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
                 locationClient.start();
                 Log.d("location_class", "onReceiveLocation: 启动");
+                Tonavigate();
             }
         });
 
     }
+    private void Tonavigate()
+    {
 
+        BaiduNaviManagerFactory.getBaiduNaviManager().init(this,
+                "qjh", "com.example.qjh.comprehensiveactivity",
+                new IBaiduNaviManager.INaviInitListener() {
+
+                    @Override
+                    public void onAuthResult(int status, String msg) {
+                        Log.d("initStart_class", "initStart: "+status);
+                        if (0 == status) {
+                            Log.d("initStart_class", "initStart: "+"haha");
+                           // authinfo = "key校验成功!";
+                        } else {
+                          //  authinfo = "key校验失败, " + msg;
+                        }
+
+                    }
+
+                    @Override
+                    public void initStart() {
+                        Log.d("initStart_class", "initStart: "+"start");
+                    }
+
+                    @Override
+                    public void initSuccess() {
+                        MapActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (BaiduNaviManagerFactory.getBaiduNaviManager().isInited()) {
+                                    View dialogView = View.inflate(MapActivity.this, R.layout
+                                            .dialog_node, null);
+                                    final EditText editStart = dialogView.findViewById(R.id.edit_start);
+                                    final EditText editEnd = dialogView.findViewById(R.id.edit_end);
+                                    new AlertDialog.Builder(MapActivity.this)
+                                            .setView(dialogView)
+                                            .setPositiveButton("导航", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    String startPoint = editStart.getText().toString().trim();
+                                                    String endPoint = editEnd.getText().toString().trim();
+                                                    if (!checkValid(startPoint, endPoint)) {
+                                                        Toast.makeText(MapActivity.this, "填写格式有误", Toast
+                                                                .LENGTH_SHORT).show();
+                                                        return;
+                                                    }
+                                                    String[] starts = startPoint.split(",");
+                                                    String[] ends = endPoint.split(",");
+                                                    BNRoutePlanNode sNode = new BNRoutePlanNode.Builder()
+                                                            .latitude(Double.parseDouble(starts[1]))
+                                                            .longitude(Double.parseDouble(starts[0]))
+                                                            .coordinateType(BNRoutePlanNode.CoordinateType.WGS84)
+                                                            .build();
+                                                    BNRoutePlanNode eNode = new BNRoutePlanNode.Builder()
+                                                            .latitude(Double.parseDouble(ends[1]))
+                                                            .longitude(Double.parseDouble(ends[0]))
+                                                            .coordinateType(BNRoutePlanNode.CoordinateType.WGS84)
+                                                            .build();
+
+                                                    routePlanToNavi(sNode, eNode);
+                                                }
+                                            })
+                                            .show();
+                                }
+                            }
+                        });
+                        Log.d("initStart_class", "initStart: "+"success");
+                        // 初始化tts
+
+                    }
+
+                    @Override
+                    public void initFailed(int errCode) {
+                        Log.d("initStart_class", "initStart: "+"fail");
+                    }
+
+                });
+
+    }
+    private void routePlanToNavi(BNRoutePlanNode sNode, BNRoutePlanNode eNode) {
+        List<BNRoutePlanNode> list = new ArrayList<>();
+        list.add(sNode);
+        list.add(eNode);
+
+        BaiduNaviManagerFactory.getRoutePlanManager().routeplanToNavi(
+                list,
+                IBNRoutePlanManager.RoutePlanPreference.ROUTE_PLAN_PREFERENCE_DEFAULT,
+                null,
+                new Handler(Looper.getMainLooper()) {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        switch (msg.what) {
+                            case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_START:
+                                Toast.makeText(MapActivity.this.getApplicationContext(),
+                                        "算路开始", Toast.LENGTH_SHORT).show();
+                                break;
+                            case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_SUCCESS:
+                                Toast.makeText(MapActivity.this.getApplicationContext(),
+                                        "算路成功", Toast.LENGTH_SHORT).show();
+                                // 躲避限行消息
+                                Bundle infoBundle = (Bundle) msg.obj;
+                                if (infoBundle != null) {
+                                    String info = infoBundle.getString(
+                                            BNaviCommonParams.BNRouteInfoKey.TRAFFIC_LIMIT_INFO
+                                    );
+                                    Log.d("OnSdkDemo", "info = " + info);
+                                }
+                                break;
+                            case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_FAILED:
+                                Toast.makeText(MapActivity.this.getApplicationContext(),
+                                        "算路失败", Toast.LENGTH_SHORT).show();
+                                break;
+                            case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_TO_NAVI:
+                                Toast.makeText(MapActivity.this.getApplicationContext(),
+                                        "算路成功准备进入导航", Toast.LENGTH_SHORT).show();
+
+                                Intent intent = new Intent(MapActivity.this,
+                                        DemoGuideActivity.class);
+
+                               startActivity(intent);
+                                break;
+                            default:
+                                // nothing
+                                break;
+                        }
+                    }
+                });
+    }
+    private boolean checkValid(String startPoint, String endPoint) {
+        if (TextUtils.isEmpty(startPoint) || TextUtils.isEmpty(endPoint)) {
+            return false;
+        }
+
+        if (!startPoint.contains(",") || !endPoint.contains(",")) {
+            return false;
+        }
+        return true;
+    }
     @Override
     public void onPause() {
         super.onPause();

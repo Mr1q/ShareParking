@@ -1,6 +1,7 @@
 package com.example.qjh.comprehensiveactivity.controler;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
+import com.example.qjh.comprehensiveactivity.Baiduapi.ForegroundService;
 import com.example.qjh.comprehensiveactivity.activity.MapActivity;
 
 import java.util.ArrayList;
@@ -41,6 +43,30 @@ public class BaseActivity extends AppCompatActivity {
         SDKInitializer.initialize(getApplicationContext());
         SDKInitializer.setCoordType(CoordType.BD09LL);
         ActivityCollecter.AddActivity(this);
+        // 开启前台服务防止应用进入后台gps挂掉
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ArrayList<String> permissions = new ArrayList<>();
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            }
+            if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.RECORD_AUDIO);
+            }
+
+            if (permissions.size() != 0) {
+                requestPermissionsForM(permissions);
+            }
+        }
+    }
+    private void requestPermissionsForM(final ArrayList<String> per) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(per.toArray(new String[per.size()]), 1);
+        }
     }
 
     public  void Toast(String msg)
@@ -60,6 +86,7 @@ public class BaseActivity extends AppCompatActivity {
 
         }
     }
+
     /**
      *清除所有活动
      */
@@ -67,6 +94,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ActivityCollecter.removeActivity(this);
+        stopService(new Intent(this, ForegroundService.class));
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
