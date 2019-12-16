@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,14 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int VIEW = 1;
     private static final int ADD_VIEW = 2;
     private Context context;
+    //上拉加载更多
+    public static final int PULLUP_LOAD_MORE = 0;
+    //正在加载中
+    public static final int LOADING_MORE     = 1;
+    //没有加载更多 隐藏
+    public static final int NO_LOAD_MORE     = 2;
+    //上拉加载更多状态-默认为0
+    private int mLoadMoreStatus = 0;
 
     public SurroundAdapter(Context context, List<ParkingLot> items) {
         this.context = context;
@@ -72,7 +81,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public void OnItemClick(ParkingLot items, int id);
 
         public void OnItemClick(ParkingLot items);
-
+        public void OnItemClickToDetail(ParkingLot items);
         public void OnItemClick2(ParkingLot items, int id, Boolean Sch, SwitchButton switchButton);
     }
 
@@ -81,7 +90,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public void OnItemAddImage();
     }
 
-    String url1 = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1548777981087&di=0618a101655e57c675c7c21b4ef55f00&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fitbbs%2F1504%2F06%2Fc70%2F5014635_1428321310010_mthumb.jpg";
+
 
     @Override
     public int getItemViewType(int position) {
@@ -102,7 +111,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             final ViewHolderOne viewHolder = new ViewHolderOne(view);
             return viewHolder;
         } else {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_item_fragment_refresh,
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_fragment_upmore,
                     viewGroup, false);
             final ViewHolderTwo viewHolderTwo = new ViewHolderTwo(view);
             return viewHolderTwo;
@@ -117,13 +126,19 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 @Override
                 public void onClick(View v) {
                     new XPopup.Builder(context)
-                            .asImageViewer(((SurroundAdapter.ViewHolderOne) viewHolder).iv_carimage, items.getParklotImage(), true, -1, -1, 50, false
+                            .asImageViewer(((SurroundAdapter.ViewHolderOne) viewHolder).iv_carimage,
+                                    items.getParklotImage(),
+                                    true,
+                                    -1,
+                                    -1,
+                                    50,
+                                    false
                                     , new ImageLoader())
                             .show();
 
                 }
             });
-            ((ViewHolderOne) viewHolder).view.setOnClickListener(new View.OnClickListener() {
+            ((ViewHolderOne) viewHolder).ly_nagivation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int postition = viewHolder.getAdapterPosition();
@@ -131,10 +146,17 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     listener.OnItemClick(items);
                 }
             });
+            ((ViewHolderOne) viewHolder).view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int postition = viewHolder.getAdapterPosition();
+                    ParkingLot items = items_List.get(postition);
+                    listener.OnItemClickToDetail(items);
+                }
+            });
             ((ViewHolderOne) viewHolder).iv_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     if( switchs)
                     ((ViewHolderOne) viewHolder).iv_favorite.setImageResource(R.mipmap.common_item_zanpick);
                     else
@@ -144,7 +166,22 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             });
 
         } else if (viewHolder instanceof ViewHolderTwo) {
-
+            ViewHolderTwo viewHolderTwo=(ViewHolderTwo)viewHolder;
+            switch(mLoadMoreStatus)
+            {
+                case PULLUP_LOAD_MORE:
+                    viewHolderTwo.tv_loadmsg.setText("上拉加载更多...");
+                    viewHolderTwo.pb_load.setVisibility(View.GONE);
+                    break;
+                case LOADING_MORE:
+                    viewHolderTwo.tv_loadmsg.setText("正加载更多...");
+                    viewHolderTwo.pb_load.setVisibility(View.VISIBLE);
+                    break;
+                case NO_LOAD_MORE:
+                    //隐藏加载更多
+                    viewHolderTwo.ly_load.setVisibility(View.GONE);
+                    break;
+            }
         }
 
     }
@@ -159,7 +196,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount() {   //限制加载100个item
         if (items_List.size() < 100) {
             return items_List.size() + 1;
         } else {
@@ -167,7 +204,14 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
     }
-
+    /**
+     * 更新加载更多状态
+     * @param status
+     */
+    public void changeMoreStatus(int status){
+        mLoadMoreStatus=status;
+       notifyDataSetChanged();
+    }
     public static class ViewHolderOne extends RecyclerView.ViewHolder {
         TextView tv_parkLotName; //车位名字
         TextView tv_address; //车位地址状态
@@ -178,6 +222,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         SwitchButton switch_share;
         SwitchButton switch_open;
         ImageView iv_favorite; //收藏图标
+        LinearLayout ly_nagivation; //导航
 
         public ViewHolderOne(@NonNull View itemView) {
             super(itemView);
@@ -187,6 +232,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //            tv_status = (TextView) itemView.findViewById(R.id.tv_status);
             iv_carimage = (ImageView) itemView.findViewById(R.id.iv_carimage);
             iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
+            ly_nagivation = (LinearLayout) itemView.findViewById(R.id.ly_nagivation);
 //            iv_delete = (ImageView) itemView.findViewById(R.id.iv_delete);
 //            switch_share = (SwitchButton) itemView.findViewById(R.id.switch_share);  //共享
 //            switch_open = (SwitchButton) itemView.findViewById(R.id.switch_open);//开关
@@ -196,10 +242,14 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public static class ViewHolderTwo extends RecyclerView.ViewHolder {
-
+        private ProgressBar pb_load;
+        private TextView tv_loadmsg;
+        private LinearLayout ly_load;
         public ViewHolderTwo(@NonNull View itemView) {
             super(itemView);
-            //addimg = (LinearLayout) itemView.findViewById(R.id.addimg);
+            pb_load = (ProgressBar) itemView.findViewById(R.id.pb_load);
+            tv_loadmsg = (TextView) itemView.findViewById(R.id.tv_loadmsg);
+            ly_load = (LinearLayout) itemView.findViewById(R.id.ly_load);
         }
     }
 

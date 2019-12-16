@@ -16,7 +16,9 @@
         android:id="@+id/navigation_home"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
+        app:labelVisibilityMode="labeled"
+        android:background="#F3F3F3"
         app:menu="@menu/menu_home"
         >
     </android.support.design.widget.BottomNavigationView>

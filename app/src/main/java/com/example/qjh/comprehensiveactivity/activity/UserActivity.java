@@ -101,7 +101,7 @@ public class UserActivity extends BaseActivity implements View.OnClickListener {
         rl_phone = (RelativeLayout) findViewById(R.id.rl_phone);
         rl_address = (RelativeLayout) findViewById(R.id.rl_address);
         bt_userfragment_save = (Button) findViewById(R.id.bt_userfragment_save);
-        //rl_username.setOnClickListener(this);  昵称不能更改
+        //rl_username.setOnClickListener(this);  用户名不能改
         rl_name.setOnClickListener(this);
         rl_phone.setOnClickListener(this);
         rl_address.setOnClickListener(this);
@@ -153,6 +153,7 @@ public class UserActivity extends BaseActivity implements View.OnClickListener {
             case R.id.bt_userfragment_save:
                 toModify();
                 break;
+
         }
     }
 

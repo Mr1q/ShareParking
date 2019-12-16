@@ -33,8 +33,8 @@ import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
@@ -43,17 +43,16 @@ import com.baidu.navisdk.adapter.BNaviCommonParams;
 import com.baidu.navisdk.adapter.BaiduNaviManagerFactory;
 import com.baidu.navisdk.adapter.IBNRoutePlanManager;
 import com.baidu.navisdk.adapter.IBaiduNaviManager;
-import com.baidu.navisdk.adapter.impl.BaiduNaviManager;
 import com.example.qjh.comprehensiveactivity.Baiduapi.DemoGuideActivity;
 import com.example.qjh.comprehensiveactivity.Baiduapi.ForegroundService;
 import com.example.qjh.comprehensiveactivity.R;
 import com.example.qjh.comprehensiveactivity.controler.BaseActivity;
-import com.example.qjh.comprehensiveactivity.fragment.MapFragment;
+import com.example.qjh.comprehensiveactivity.controler.PagerBottomPopup;
 import com.example.qjh.comprehensiveactivity.fragment.SurroundFragment;
+import com.lxj.xpopup.XPopup;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MapActivity extends BaseActivity {
     private static final int BAIDU_READ_PHONE_STATE = 100;//定位权限请求
@@ -95,14 +94,17 @@ public class MapActivity extends BaseActivity {
            if(intent.getStringExtra(SurroundFragment.EXTRA_LAT)!=null)
            {
                LatLng point3 = new LatLng(Double.valueOf(intent.getStringExtra(SurroundFragment.EXTRA_LAT))
-                       ,Double.valueOf(  intent.getStringExtra(SurroundFragment.EXTRA_LOG)));;
+                       ,Double.valueOf(  intent.getStringExtra(SurroundFragment.EXTRA_LOG)));
                OverlayOptions option3 = new MarkerOptions()
                        .position(point3)
                        .icon(bitmap);
                MapStatus.Builder builder = new MapStatus.Builder();
                builder.target(point3).zoom(18.0f);
                baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
-               baiduMap.addOverlay(option3);
+               Bundle mBundle = new Bundle();
+               mBundle.putInt("id", 1);
+               Marker marker=(Marker) baiduMap.addOverlay(option3);
+               marker.setExtraInfo(mBundle);
            }
 
        }
@@ -110,6 +112,25 @@ public class MapActivity extends BaseActivity {
 
         baiduMap.addOverlay(option);
         baiduMap.addOverlay(option2);
+        baiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+            //marker被点击时回调的方法
+            //若响应点击事件，返回true，否则返回false
+            //默认返回false
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Bundle bundle=marker.getExtraInfo();
+//                if(bundle.getInt("id")==1)
+//                {
+//                    Toast("1");
+//                }
+                new XPopup.Builder(MapActivity.this)
+                        .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+                        .asCustom(new PagerBottomPopup(MapActivity.this))
+                        .show();
+
+                return true;
+            }
+        });
     }
 
     private void Doing() {

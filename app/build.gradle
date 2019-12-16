@@ -82,6 +82,8 @@ dependencies {
     implementation files('NaviTts.aar')
     implementation files('onsdk_all.aar') //选择器
     //implementation.exclude group: 'org.jetbrains' , module:'annotations'
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.4-7'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.4-7'
 
 
 }

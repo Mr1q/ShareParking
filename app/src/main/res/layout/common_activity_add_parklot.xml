@@ -337,8 +337,8 @@
             android:text="添加车位图片"/>
         <ImageView
             android:id="@+id/ivcar"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_marginTop="20dp"
             android:layout_gravity="center"
             android:src="@mipmap/common_item_add"/>

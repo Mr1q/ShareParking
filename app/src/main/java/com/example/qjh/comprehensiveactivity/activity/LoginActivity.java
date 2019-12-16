@@ -8,31 +8,23 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.internal.BottomNavigationItemView;
-import android.support.design.internal.BottomNavigationMenuView;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.view.ViewPager;
 import android.text.InputType;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.baidu.mapapi.http.HttpClient;
 import com.example.qjh.comprehensiveactivity.R;
 import com.example.qjh.comprehensiveactivity.beans.BaseResponse;
 import com.example.qjh.comprehensiveactivity.beans.User;
 import com.example.qjh.comprehensiveactivity.constant.Constants;
 import com.example.qjh.comprehensiveactivity.controler.BaseActivity;
 import com.example.qjh.comprehensiveactivity.utils.CreamUtils;
-import com.example.qjh.comprehensiveactivity.utils.NewsRequest;
+import com.example.qjh.comprehensiveactivity.beans.NewsRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -76,7 +68,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public SharedPreferences.Editor editor;
     public static Boolean isLogin=true;
 
-    public  static  String ID;
+    public  static  String ID; //用户ID
+    public  static  String Username;//用户名
 
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -107,6 +100,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     intent.putExtra(EXTRA_KEY_User_ADDTIME, user.getMyaddtime());
                     intent.putExtra(EXTRA_KEY_User_PASSWORD, user.getMypasswprd());
                     ID=user.getMyid();
+                    Username=user.getMyusername();
                     startActivity(intent);
                     finish();
                     break;
@@ -162,6 +156,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             intent.putExtra(EXTRA_KEY_User_ADDTIME, addtime);
             intent.putExtra(EXTRA_KEY_User_PASSWORD, pasword);
             ID=myid;
+            Username=username;
             startActivity(intent);
             finish();
 
@@ -229,7 +224,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             }.getType();
                             BaseResponse<List<User>> newsListResponese
                                     = gson.fromJson(body, jsontype);
-                            user = newsListResponese.getData().get(0);
+                            user = newsListResponese.getUserData().get(0);
 
                             handler.sendEmptyMessage(SUCCESS);
                         }

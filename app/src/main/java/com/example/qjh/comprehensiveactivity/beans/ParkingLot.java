@@ -43,7 +43,7 @@ public class ParkingLot {
     int park_price;
     // * 距离
     @SerializedName("park_distance")
-    int park_distance;
+    Double park_distance;
     // * 持有人姓名
     @SerializedName("park_ownerName")
     String park_ownerName;
@@ -154,11 +154,11 @@ public class ParkingLot {
         this.park_price = park_price;
     }
 
-    public int getPark_distance() {
+    public Double getPark_distance() {
         return park_distance;
     }
 
-    public void setPark_distance(int park_distance) {
+    public void setPark_distance(Double park_distance) {
         this.park_distance = park_distance;
     }
 

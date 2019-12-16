@@ -43,7 +43,7 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@mipmap/common_fragment_user_money" />
+                        android:src="@mipmap/common_item_book" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@mipmap/common_fragment_user_source" />
+                        android:src="@mipmap/common_item_control" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -74,6 +74,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ly_quickPark"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -85,7 +86,7 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@mipmap/common_fragment_user_storage" />
+                        android:src="@mipmap/common_item_quick" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -97,15 +98,33 @@
         </android.support.v7.widget.CardView>
     </LinearLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refresh_parklot"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_parklot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            app:elevation="6dp"
+            android:clickable="true"
+            app:borderWidth="0dp"
+            android:backgroundTint="@color/Blue"
+            app:rippleColor="#0097a7"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@mipmap/common_item_addcar"
+            app:pressedTranslationZ="12dp"
+            />
+    </FrameLayout>
 </LinearLayout>

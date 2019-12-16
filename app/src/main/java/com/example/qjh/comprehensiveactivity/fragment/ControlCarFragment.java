@@ -26,6 +26,7 @@ public class ControlCarFragment extends Fragment implements View.OnClickListener
     private Button bt_up;
     private Button bt_left;
     private Button bt_right;
+    private Button bt_stop;
 
     @Nullable
     @Override
@@ -42,12 +43,14 @@ public class ControlCarFragment extends Fragment implements View.OnClickListener
         bt_up = (Button) view.findViewById(R.id.bt_up);
         bt_left = (Button) view.findViewById(R.id.bt_left);
         bt_right = (Button) view.findViewById(R.id.bt_right);
+        bt_stop = (Button) view.findViewById(R.id.bt_stop);
         begin_connect.setOnClickListener(this);
 
         bt_up.setOnClickListener(this);
         bt_back.setOnClickListener(this);
         bt_right.setOnClickListener(this);
         bt_left.setOnClickListener(this);
+        bt_stop.setOnClickListener(this);
 
     }
 
@@ -70,6 +73,10 @@ public class ControlCarFragment extends Fragment implements View.OnClickListener
             case R.id.bt_back:
                 NetUtils.GO_BACK();
                 break;
+            case R.id.bt_stop:
+                NetUtils.GO_STOP();
+                break;
+
         }
     }
 

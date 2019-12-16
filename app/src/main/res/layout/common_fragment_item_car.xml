@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
-                android:src="@drawable/ic_cancel_black_24dp" />
+                android:src="@mipmap/common_item_delete" />
 
             <TextView
                 android:id="@+id/tv_parkLotName"
@@ -97,16 +97,16 @@
 
             <com.suke.widget.SwitchButton
                 android:id="@+id/switch_open"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/navi_dimens_50dp"
+                android:layout_height="@dimen/navi_dimens_30dp"
                 android:layout_below="@+id/tv_status"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@id/tv_open"  />
 
             <com.suke.widget.SwitchButton
                 android:id="@+id/switch_share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/navi_dimens_50dp"
+                android:layout_height="@dimen/navi_dimens_30dp"
                 android:layout_below="@+id/tv_open"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@id/tv_share" />

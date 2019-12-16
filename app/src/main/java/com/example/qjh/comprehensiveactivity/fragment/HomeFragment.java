@@ -1,11 +1,7 @@
 package com.example.qjh.comprehensiveactivity.fragment;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,38 +11,27 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.qjh.comprehensiveactivity.R;
-import com.example.qjh.comprehensiveactivity.activity.AddCarActivity;
 import com.example.qjh.comprehensiveactivity.activity.AddParkingLotActivity;
+import com.example.qjh.comprehensiveactivity.activity.BookParkLotActivity;
 import com.example.qjh.comprehensiveactivity.activity.LoginActivity;
-import com.example.qjh.comprehensiveactivity.activity.MyCarActivity;
 import com.example.qjh.comprehensiveactivity.adapter.MyParkingLotAdapter;
-import com.example.qjh.comprehensiveactivity.adapter.SurroundAdapter;
 import com.example.qjh.comprehensiveactivity.beans.BaseResponse;
 import com.example.qjh.comprehensiveactivity.beans.ParkingLot;
-import com.example.qjh.comprehensiveactivity.beans.User;
 import com.example.qjh.comprehensiveactivity.constant.Constants;
-import com.example.qjh.comprehensiveactivity.controler.BaseActivity;
-import com.example.qjh.comprehensiveactivity.utils.CreamUtils;
-import com.example.qjh.comprehensiveactivity.utils.NewsRequest;
+import com.example.qjh.comprehensiveactivity.beans.NewsRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lxj.xpopup.XPopup;
@@ -54,10 +39,6 @@ import com.lxj.xpopup.enums.PopupAnimation;
 import com.lxj.xpopup.impl.LoadingPopupView;
 import com.lxj.xpopup.interfaces.OnConfirmListener;
 import com.lxj.xpopup.interfaces.SimpleCallback;
-import com.parkingwang.keyboard.KeyboardInputController;
-import com.parkingwang.keyboard.OnInputChangedListener;
-import com.parkingwang.keyboard.PopupKeyboard;
-import com.parkingwang.keyboard.view.InputView;
 import com.suke.widget.SwitchButton;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
@@ -79,7 +60,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static android.support.constraint.Constraints.TAG;
 import static com.baidu.navisdk.module.future.interfaces.FutureTripParams.LoadingState.FAIL;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
@@ -96,6 +76,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private final int SUCCESS = 1;
     private final int DELETE_SUCCESS = 2;
     private final int DELETE_FAIL = -2;
+    private final int SHARE_SUCCESS = 3;
+    private final int SHARE_FAIL = -3;
+    private final int CANCELSHARE_SUCCESS = 4;
+    private final int CANCELSHARE_FAIL = -4;
     private List<ParkingLot> parkingLots = new ArrayList<>();
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -170,7 +154,30 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
                         @Override
                         public void OnItemClick2(ParkingLot items, int id, Boolean Sch, SwitchButton switchButton) {
+                                switch (id)
+                                {
+                                    case R.id.switch_share:
+                                        if(Sch)
+                                        {
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    toShare(items);
+                                                }
+                                            }, 1000);
 
+                                        }else
+                                        {
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    toCancelShare(items);
+                                                }
+                                            }, 1000);
+                                        }
+
+                                        break;
+                                }
                         }
                     });
                     myParkingLotAdapter.setOnItemClick_Add(new MyParkingLotAdapter.OnItemClickListenerAdd() {
@@ -182,55 +189,35 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     });
                     recyclerView.setAdapter(myParkingLotAdapter);
                     myParkingLotAdapter.notifyDataSetChanged();
-                    Toast.makeText(getContext(), "获取成功！！！", Toast.LENGTH_SHORT).show();
+                   //Toast.makeText(getContext(), "获取成功！！！", Toast.LENGTH_SHORT).show();
                     refresh_parklot.setRefreshing(false);
+                    break;
+                case SHARE_SUCCESS:
+                    getData();
+                    Toast.makeText(getContext(), "分享成功！！！", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case SHARE_FAIL:
+                    Toast.makeText(getContext(), "分享失败！！！", Toast.LENGTH_SHORT).show();
+                    break;
+                case CANCELSHARE_SUCCESS:
+                    getData();
+                    Toast.makeText(getContext(), "取消分享成功！！！", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case CANCELSHARE_FAIL:
+                    Toast.makeText(getContext(), "取消分享失败！！！", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
     };
-
-    private void toDelete(ParkingLot items) {
-        RequestBody requestBody=new FormBody.Builder()
-                .add("parkId",items.getPark_id()).build();
-        request = new Request.Builder().
-                url(Constants.DeleteMyParkingLot).
-                post(requestBody).
-                build();
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    if (response.isSuccessful()) {
-                        String body = response.body().string();
-                        Log.d("onResponse_body", "onResponse: " + body);
-                        Gson gson = new Gson();
-                        JSONObject jsonObject = new JSONObject(body);
-                        String state = jsonObject.optString("state");
-                        if (state.equals("0")) {
-                            handler.sendEmptyMessage(DELETE_FAIL);
-                        } else {
-                            handler.sendEmptyMessage(DELETE_SUCCESS);
-                        }
-                    } else {
-                        handler.sendEmptyMessage(DELETE_FAIL);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
     private int ID;
     private OnItemClickListener listener;
     private Request request;
     private OkHttpClient okHttpClient=new OkHttpClient();
     private ParkingLot parkinglot;
+    private LinearLayout ly_quickPark;
 
 
     @Nullable
@@ -281,6 +268,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             case R.id.ly_controlcar:
                 listener.OnItemClick(R.id.ly_controlcar);
                 break;
+            case R.id.ly_quickPark:
+                Intent intent=new Intent(getContext(), BookParkLotActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 
@@ -312,8 +303,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         ly_bookparlot = (LinearLayout) view.findViewById(R.id.ly_bookparlot);
         ly_controlcar = (LinearLayout) view.findViewById(R.id.ly_controlcar);
         refresh_parklot = (SwipeRefreshLayout) view.findViewById(R.id.refresh_parklot);
+        ly_quickPark = (LinearLayout) view.findViewById(R.id.ly_quickPark);
         ly_bookparlot.setOnClickListener(this);
         ly_controlcar.setOnClickListener(this);
+        ly_quickPark.setOnClickListener(this);
         LinearLayoutManager linearLayout = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayout);
 //        text();
@@ -384,7 +377,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         for (int i = 0; i < 3; i++) {
             ParkingLot parkingLot = new ParkingLot();
             parkingLot.setPark_address("1");
-            parkingLot.setPark_distance(123);
+            parkingLot.setPark_distance(123.0);
             parkingLot.setPark_latitude("12");
             parkingLot.setPark_longitude("12");
             parkingLot.setPark_name("12");
@@ -416,5 +409,116 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         banner.start();
 
 
+    }
+
+    private void toCancelShare(ParkingLot items) {
+        RequestBody requestBody=new FormBody.Builder()
+                .add("parkId",items.getPark_id()).build();
+        request = new Request.Builder().
+                url(Constants.CancelShareMyParkingLot).
+                post(requestBody).
+                build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if (response.isSuccessful()) {
+                        String body = response.body().string();
+                        Log.d("onResponse_body", "onResponse: " + body);
+                        Gson gson = new Gson();
+                        JSONObject jsonObject = new JSONObject(body);
+                        String state = jsonObject.optString("state");
+                        if (state.equals("0")) {
+                            handler.sendEmptyMessage(CANCELSHARE_FAIL);
+                        } else {
+                            handler.sendEmptyMessage(CANCELSHARE_SUCCESS);
+                        }
+                    } else {
+                        handler.sendEmptyMessage(CANCELSHARE_FAIL);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void toShare(ParkingLot items) {
+        RequestBody requestBody=new FormBody.Builder()
+                .add("parkId",items.getPark_id()).build();
+        request = new Request.Builder().
+                url(Constants.ShareMyParkingLot).
+                post(requestBody).
+                build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if (response.isSuccessful()) {
+                        String body = response.body().string();
+                        Log.d("onResponse_body", "onResponse: " + body);
+                        Gson gson = new Gson();
+                        JSONObject jsonObject = new JSONObject(body);
+                        String state = jsonObject.optString("state");
+                        if (state.equals("0")) {
+                            handler.sendEmptyMessage(SHARE_FAIL);
+                        } else {
+                            handler.sendEmptyMessage(SHARE_SUCCESS);
+                        }
+                    } else {
+                        handler.sendEmptyMessage(SHARE_FAIL);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void toDelete(ParkingLot items) {
+        RequestBody requestBody=new FormBody.Builder()
+                .add("parkId",items.getPark_id()).build();
+        request = new Request.Builder().
+                url(Constants.DeleteMyParkingLot).
+                post(requestBody).
+                build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if (response.isSuccessful()) {
+                        String body = response.body().string();
+                        Log.d("onResponse_body", "onResponse: " + body);
+                        Gson gson = new Gson();
+                        JSONObject jsonObject = new JSONObject(body);
+                        String state = jsonObject.optString("state");
+                        if (state.equals("0")) {
+                            handler.sendEmptyMessage(DELETE_FAIL);
+                        } else {
+                            handler.sendEmptyMessage(DELETE_SUCCESS);
+                        }
+                    } else {
+                        handler.sendEmptyMessage(DELETE_FAIL);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

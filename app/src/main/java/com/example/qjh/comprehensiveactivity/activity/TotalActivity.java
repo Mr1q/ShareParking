@@ -2,6 +2,7 @@ package com.example.qjh.comprehensiveactivity.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -107,6 +108,17 @@ public class TotalActivity extends BaseActivity implements ViewPager.OnPageChang
             bundle.putString(LoginActivity.EXTRA_KEY_User_NAME, intent.getStringExtra(LoginActivity.EXTRA_KEY_User_NAME));
             users.setArguments(bundle);
         }
+        int[][] states = new int[][]{
+                new int[]{-android.R.attr.state_checked},
+                new int[]{android.R.attr.state_checked}
+        };
+        int[] colors = new int[]{getResources().getColor(R.color.Black),
+                getResources().getColor(R.color.Blue)
+        };
+        ColorStateList csl = new ColorStateList(states, colors);
+        navigation_home.setItemTextColor(csl);
+        navigation_home.setItemIconTintList(csl);
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener

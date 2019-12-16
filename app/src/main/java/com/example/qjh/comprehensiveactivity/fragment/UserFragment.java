@@ -30,6 +30,7 @@ import com.example.qjh.comprehensiveactivity.activity.AboutAppActivity;
 import com.example.qjh.comprehensiveactivity.activity.LoginActivity;
 import com.example.qjh.comprehensiveactivity.activity.MyAddressActivity;
 import com.example.qjh.comprehensiveactivity.activity.MyCarActivity;
+import com.example.qjh.comprehensiveactivity.activity.SettingActivity;
 import com.example.qjh.comprehensiveactivity.activity.UserActivity;
 import com.example.qjh.comprehensiveactivity.controler.ActivityCollecter;
 import com.example.qjh.comprehensiveactivity.controler.BaseActivity;
@@ -62,7 +63,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private String name;
     private String username;
     private CircleImageView message_image;
-    private ImageView setting;
+    private RelativeLayout setting;
     private RelativeLayout curior;
     private RelativeLayout order_history;
     private RelativeLayout about_app;
@@ -103,7 +104,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         user_enter = (RelativeLayout) view.findViewById(R.id.user_enter);
         userName = (TextView) view.findViewById(R.id.User_Msg);
         message_image = (CircleImageView) view.findViewById(R.id.message_image);
-        setting = (ImageView) view.findViewById(R.id.setting);
+        setting = (RelativeLayout) view.findViewById(R.id.settings);
         rl_mycars = (RelativeLayout) view.findViewById(R.id.rl_mycars);
         rl_myaddress = (RelativeLayout) view.findViewById(R.id.rl_myaddress);
         advice = (RelativeLayout) view.findViewById(R.id.advice);
@@ -192,9 +193,10 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                 intent2.putExtra(LoginActivity.EXTRA_KEY_User_NAME, name);
                 startActivityForResult(intent2, MODIFY_TYPE);
                 break;
-            case R.id.setting:
-                //设置界面
-
+            case R.id.settings:
+                //设置界面S
+                intent2 = new Intent(getContext(), SettingActivity.class);
+                startActivity(intent2);
                 break;
             case R.id.about_app:
                 intent2 = new Intent(getContext(), AboutAppActivity.class);

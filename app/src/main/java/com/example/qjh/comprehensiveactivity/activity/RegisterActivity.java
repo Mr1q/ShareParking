@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.qjh.comprehensiveactivity.R;
@@ -35,6 +36,7 @@ import okhttp3.Response;
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
     private ImageView iv_register_showCode;
+
     private Button bt_register;
     private EditText et_register_username;
     private EditText et_register_password;

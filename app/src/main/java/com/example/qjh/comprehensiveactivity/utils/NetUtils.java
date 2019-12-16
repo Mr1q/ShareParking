@@ -61,6 +61,7 @@ public class NetUtils  {
         connectedThread.write(COMMAD_BACK.getBytes());
     }
 
+
     public static void GO_LEFT() {
         connectedThread.write(COMMAD_LEFT.getBytes());
 

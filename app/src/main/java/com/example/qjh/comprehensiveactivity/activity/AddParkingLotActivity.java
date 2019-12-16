@@ -90,6 +90,7 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
     private static final int FAIL = -1;
     private   LocationClient locationClient;
     private ImageView RTU;
+    private  String Path;
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -123,7 +124,9 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
     }
 
 
-
+    /**
+     * 初始化数据
+     */
     private void initData() {
         ly_addImage = (LinearLayout) findViewById(R.id.ly_addImage);
         RTU = (ImageView) findViewById(R.id.RTU);
@@ -169,10 +172,12 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
 
     @Override
     public void takeSuccess(TResult result) {
-        super.takeSuccess(result);
+
 
         Bitmap bitmap = BitmapFactory.decodeFile(result.getImage().getOriginalPath());
-        Glide.with(this).load(result.getImage().getOriginalPath()).into(ivcar);//.setImageBitmap(bitmap);
+        Path=result.getImage().getCompressPath();
+
+        Glide.with(this).load(bitmap).into(ivcar);//.setImageBitmap(bitmap);
     }
 
     @Override
@@ -248,12 +253,7 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
     }
 
     private void toCommit() {
-//        RequestBody requestBody = new MultipartBody.Builder()
-//                .setType(MultipartBody.FORM)
-//                .addFormDataPart("id", Id)
-//                .addFormDataPart("file", uri.getPath(),
-//                        RequestBody.create(MediaType.parse("image/jpg"), new File(uri.getPath())))
-//                .build();
+
 
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -267,7 +267,7 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
                 .addFormDataPart("park_distance", "123")
                 .addFormDataPart("park_price", "123")
                 .addFormDataPart("file","car_photourl",
-                        RequestBody.create(MediaType.parse("image/jpg"), new File(uri.getPath())))
+                        RequestBody.create(MediaType.parse("image/jpg"), new File(Path)))
                 .build();
         request = new Request.Builder().
                 url(Constants.CreatePark)
@@ -310,7 +310,6 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
         });
 
     }
-
 
 
 

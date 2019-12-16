@@ -69,7 +69,7 @@
 
         <RelativeLayout
             android:layout_margin="50dp"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom">
             <Button
@@ -87,6 +87,13 @@
                 android:layout_below="@id/bt_left"
                 android:layout_gravity="center"
                 android:background="@drawable/back" />
+            <Button
+                android:id="@+id/bt_stop"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentRight="true"
+                android:background="@mipmap/common_item_stop" />
+
 
         </RelativeLayout>
 
