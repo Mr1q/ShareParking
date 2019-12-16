@@ -77,6 +77,10 @@ public class NetUtils  {
 
     }
 
+    public  static  void  Cancel()
+    {
+        connectedThread.cancel();
+    }
 
     /*
     读取消息的Handler

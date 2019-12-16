@@ -11,8 +11,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.baidu.mapframework.nirvana.Utils;
 import com.example.qjh.comprehensiveactivity.R;
 import com.example.qjh.comprehensiveactivity.activity.ConnectActivity;
 import com.example.qjh.comprehensiveactivity.utils.NetUtils;
@@ -22,11 +24,12 @@ public class ControlCarFragment extends Fragment implements View.OnClickListener
 
     private WaveView begin_connect;
     private FrameLayout ly_control;
-    private Button bt_back;
-    private Button bt_up;
-    private Button bt_left;
-    private Button bt_right;
-    private Button bt_stop;
+    private ImageButton bt_back;
+    private ImageButton bt_up;
+    private ImageButton bt_left;
+    private ImageButton bt_right;
+    private ImageButton bt_stop;
+    private ImageButton ib_over;
 
     @Nullable
     @Override
@@ -39,11 +42,12 @@ public class ControlCarFragment extends Fragment implements View.OnClickListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         begin_connect = (WaveView) view.findViewById(R.id.begin_connect);
         ly_control = (FrameLayout) view.findViewById(R.id.ly_control);
-        bt_back = (Button) view.findViewById(R.id.bt_back);
-        bt_up = (Button) view.findViewById(R.id.bt_up);
-        bt_left = (Button) view.findViewById(R.id.bt_left);
-        bt_right = (Button) view.findViewById(R.id.bt_right);
-        bt_stop = (Button) view.findViewById(R.id.bt_stop);
+        bt_back = (ImageButton) view.findViewById(R.id.bt_back);
+        bt_up = (ImageButton) view.findViewById(R.id.bt_up);
+        bt_left = (ImageButton) view.findViewById(R.id.bt_left);
+        bt_right = (ImageButton) view.findViewById(R.id.bt_right);
+        bt_stop = (ImageButton) view.findViewById(R.id.bt_stop);
+        ib_over = (ImageButton) view.findViewById(R.id.ib_over);
         begin_connect.setOnClickListener(this);
 
         bt_up.setOnClickListener(this);
@@ -51,6 +55,7 @@ public class ControlCarFragment extends Fragment implements View.OnClickListener
         bt_right.setOnClickListener(this);
         bt_left.setOnClickListener(this);
         bt_stop.setOnClickListener(this);
+        ib_over.setOnClickListener(this);
 
     }
 
@@ -75,6 +80,11 @@ public class ControlCarFragment extends Fragment implements View.OnClickListener
                 break;
             case R.id.bt_stop:
                 NetUtils.GO_STOP();
+                break;
+            case R.id.ib_over:
+                NetUtils.Cancel();
+                begin_connect.setVisibility(View.VISIBLE);
+                ly_control.setVisibility(View.INVISIBLE);
                 break;
 
         }

@@ -13,11 +13,15 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
@@ -43,6 +47,10 @@ import com.lxj.xpopup.enums.PopupAnimation;
 import com.lxj.xpopup.impl.LoadingPopupView;
 import com.lxj.xpopup.interfaces.OnConfirmListener;
 import com.lxj.xpopup.interfaces.SimpleCallback;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.suke.widget.SwitchButton;
 
 import org.json.JSONException;
@@ -62,21 +70,24 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class SurroundFragment  extends Fragment {
+public class SurroundFragment extends Fragment {
     public static final String EXTRA_LOG = "EXTRA_LOG";
     public static final String EXTRA_LAT = "EXTRA_LAT";
     private ImageView iv_map;
     private RecyclerView rl_surroundCar;
-    private SwipeRefreshLayout swipe;
+    private EditText search_home;
+    private SmartRefreshLayout swipe;
     private int visitPosition;
     private SurroundAdapter surroundAdapter;
     private Request request;
-    private OkHttpClient okHttpClient=new OkHttpClient();
+    private OkHttpClient okHttpClient = new OkHttpClient();
     private final int SUCCESS = 1;
     private final int FAIL = -1;
-    private int PageNum=1; //第一页
+    private int PageNum = 1; //第一页
+    private int PageNumAdd = 1; //
     private String longitude;//经度
     private String latitude;//纬度
+    private String count = "-1";
 
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -84,8 +95,12 @@ public class SurroundFragment  extends Fragment {
             super.handleMessage(msg);
             switch (msg.what) {
                 case SUCCESS:
+                    if (count.equals(String.valueOf(parkingLots.size()))) {
+                        pageSize = String.valueOf(parkingLots.size());
+                        Log.d("handleMessages", "handleMessage: " + pageSize);
+                        swipe.setLoadmoreFinished(true);
+                    }
                     surroundAdapter.notifyDataSetChanged();
-
                     surroundAdapter.setOnItemClick(new SurroundAdapter.OnItemClickListener() {
                         @Override
                         public void OnItemClick(ParkingLot items, int id) {
@@ -94,17 +109,17 @@ public class SurroundFragment  extends Fragment {
 
                         @Override
                         public void OnItemClick(ParkingLot items) {
-                            Intent intent=new Intent(getContext(), MapActivity.class);
-                            Log.d("OnItemClick", "OnItemClick: "+items.getPark_longitude());
-                            Log.d("OnItemClick", "OnItemClick: "+items.getPark_latitude());
-                            intent.putExtra(EXTRA_LOG,items.getPark_longitude());
-                            intent.putExtra(EXTRA_LAT,items.getPark_latitude());
+                            Intent intent = new Intent(getContext(), MapActivity.class);
+                            Log.d("OnItemClick", "OnItemClick: " + items.getPark_longitude());
+                            Log.d("OnItemClick", "OnItemClick: " + items.getPark_latitude());
+                            intent.putExtra(EXTRA_LOG, items.getPark_longitude());
+                            intent.putExtra(EXTRA_LAT, items.getPark_latitude());
                             startActivity(intent);
                         }
 
                         @Override
                         public void OnItemClickToDetail(ParkingLot items) {
-                            Intent intent=new Intent(getContext(), DetailParklotActivity.class);
+                            Intent intent = new Intent(getContext(), DetailParklotActivity.class);
                             startActivity(intent);
                         }
 
@@ -113,15 +128,16 @@ public class SurroundFragment  extends Fragment {
 
                         }
                     });
-                   // Toast.makeText(getContext(), "取消分享成功！！！", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getContext(), "取消分享成功！！！", Toast.LENGTH_SHORT).show();
                     break;
                 case FAIL:
-                 //   Toast.makeText(getContext(), "取消分享失败！！！", Toast.LENGTH_SHORT).show();
+                    //   Toast.makeText(getContext(), "取消分享失败！！！", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
     };
-    private List<ParkingLot> parkingLots=new ArrayList<>();
+    private List<ParkingLot> parkingLots = new ArrayList<>();
+    private String pageSize = "2";
 
     @Nullable
     @Override
@@ -139,9 +155,9 @@ public class SurroundFragment  extends Fragment {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 surroundAdapter.changeMoreStatus(SurroundAdapter.PULLUP_LOAD_MORE);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE&&(visitPosition+1)==surroundAdapter.getItemCount()){
-                    if (!ViewCompat.canScrollVertically(recyclerView, 1)){
-                       // Toast.makeText(getContext(),"拉到底了",Toast.LENGTH_SHORT).show();
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && (visitPosition + 1) == surroundAdapter.getItemCount()) {
+                    if (!ViewCompat.canScrollVertically(recyclerView, 1)) {
+                        // Toast.makeText(getContext(),"拉到底了",Toast.LENGTH_SHORT).show();
                         surroundAdapter.changeMoreStatus(SurroundAdapter.LOADING_MORE);
                     }
                 }
@@ -150,63 +166,101 @@ public class SurroundFragment  extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager linearLayoutManager=(LinearLayoutManager)rl_surroundCar.getLayoutManager();
-                visitPosition=linearLayoutManager.findLastVisibleItemPosition();
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rl_surroundCar.getLayoutManager();
+                visitPosition = linearLayoutManager.findLastVisibleItemPosition();
             }
         });
         iv_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getContext(), MapActivity.class);
+                Intent intent = new Intent(getContext(), MapActivity.class);
                 startActivity(intent);
             }
         });
-        getData();
-        surroundAdapter=new SurroundAdapter(getContext(),parkingLots);
+        getData(false);
+        surroundAdapter = new SurroundAdapter(getContext(), parkingLots);
         rl_surroundCar.setAdapter(surroundAdapter);
     }
 
     private void initData(@NonNull View view) {
-        iv_map=view.findViewById(R.id.iv_map);
-        swipe=(SwipeRefreshLayout)view.findViewById(R.id.swipe);
-        rl_surroundCar=(RecyclerView) view.findViewById(R.id.rl_surroundCar);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getContext());
+        iv_map = view.findViewById(R.id.iv_map);
+        search_home = view.findViewById(R.id.search_home);
+        swipe = (SmartRefreshLayout) view.findViewById(R.id.swipe);
+        rl_surroundCar = (RecyclerView) view.findViewById(R.id.rl_surroundCar);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rl_surroundCar.setLayoutManager(linearLayoutManager);
-
         //getData();
-
-       // text(parkingLots);
-
-
-
-
-
-
-        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        // text(parkingLots);
+        swipe.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                       getData();
-                    }
-                }, 800);
+            public void onRefresh(RefreshLayout refreshlayout) {
+                PageNum = 1; //第一页
+                if (count.equals(String.valueOf(parkingLots.size()))) {
+                    pageSize = count;
+                }
+                getData(false);
+                refreshlayout.finishRefresh();
             }
         });
+        swipe.setOnLoadmoreListener(new OnLoadmoreListener() {
+            @Override
+            public void onLoadmore(RefreshLayout refreshlayout) {
+                PageNumAdd++;
+                PageNum = PageNumAdd;
+                getData(true);
+                refreshlayout.finishLoadmore();
+            }
+        });
+
+
+//        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                       getData();
+//                    }
+//                }, 800);
+//            }
+//        });
+        search_home.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    //如果actionId是搜索的id，则进行下一步的操作
+                    //doSomething();
+                    toSearch(v.getText().toString().trim());
+                }
+                return false;
+            }
+        });
+
     }
 
-    private void getData() {
-        NewsRequest newsRequest=new NewsRequest();
+    private void toSearch(String searchString) {
+        List<ParkingLot> parks = new ArrayList<>();
+        for (int i = 0; i < parkingLots.size(); i++) {
+            if (parkingLots.get(i).getPark_name().equals(searchString)) {
+                parks.add(parkingLots.get(i));
+            }
+        }
+        parkingLots = parks;
+        surroundAdapter.notifyDataSetChanged();
+    }
+
+    private void getData(Boolean loadMore) {
+        NewsRequest newsRequest = new NewsRequest();
         newsRequest.setDistance("100");
         newsRequest.setLatitude(latitude);
         newsRequest.setLongitude(longitude);
         newsRequest.setPageNo(String.valueOf(PageNum));
-        newsRequest.setPageSize("3");
+        newsRequest.setPageSize(pageSize);
         newsRequest.setUserId(LoginActivity.ID);
 
-        Log.d("route_class", "getData: "+Constants.FindSharePark+newsRequest.toStringShareParkLot());
+        Log.d("route_class", "getData: " + Constants.FindSharePark + newsRequest.toStringShareParkLot());
         request = new Request.Builder().
-                url(Constants.FindSharePark+newsRequest.toStringShareParkLot()).
+                url(Constants.FindSharePark + newsRequest.toStringShareParkLot()).
                 build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -223,7 +277,7 @@ public class SurroundFragment  extends Fragment {
                         Gson gson = new Gson();
                         JSONObject jsonObject = new JSONObject(body);
                         String state = jsonObject.optString("state");
-                        String count = jsonObject.optString("count");
+                        count = jsonObject.optString("count");
                         if (state.equals("0")) {
                             handler.sendEmptyMessage(FAIL);
                         } else {
@@ -231,7 +285,9 @@ public class SurroundFragment  extends Fragment {
                             }.getType();
                             BaseResponse<List<ParkingLot>> newsListResponese
                                     = gson.fromJson(body, jsontype);
-                            parkingLots.clear();
+                            if (!loadMore) {
+                                parkingLots.clear();
+                            }
                             for (ParkingLot parkingLot : newsListResponese.getData()) {
                                 parkingLots.add(parkingLot);
                             }
@@ -250,8 +306,8 @@ public class SurroundFragment  extends Fragment {
     }
 
     private void text(List<ParkingLot> parkingLots) {
-        for(int i=0;i<3;i++) {
-            ParkingLot parkingLot=new ParkingLot();
+        for (int i = 0; i < 3; i++) {
+            ParkingLot parkingLot = new ParkingLot();
             parkingLot.setPark_address("1");
             parkingLot.setPark_distance(12.3);
             parkingLot.setPark_latitude("25.310993");
@@ -273,7 +329,8 @@ public class SurroundFragment  extends Fragment {
 
     }
 
-    private   LocationClient locationClient;
+    private LocationClient locationClient;
+
     private void initLocationOption() {
         //定位服务的客户端。宿主程序在客户端声明此类，并调用，目前只支持在主线程中启动
         locationClient = new LocationClient(getContext().getApplicationContext());
@@ -284,7 +341,7 @@ public class SurroundFragment  extends Fragment {
 
         locationClient.registerLocationListener(myLocationListener);
 
-    //可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
+        //可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
         locationOption.setCoorType("bd09ll");
         //可选，默认0，即仅定位一次，设置发起连续定位请求的间隔需要大于等于1000ms才是有效的
         locationOption.setScanSpan(0);
@@ -316,6 +373,7 @@ public class SurroundFragment  extends Fragment {
         locationClient.start();
 
     }
+
     /**
      * 实现定位回调
      */
@@ -325,8 +383,8 @@ public class SurroundFragment  extends Fragment {
             double latitudes = location.getLatitude();
             //获取经度信息
             double longitudes = location.getLongitude();
-            longitude=String.valueOf(longitudes);
-            latitude=String.valueOf(latitudes);
+            longitude = String.valueOf(longitudes);
+            latitude = String.valueOf(latitudes);
             Log.d("location_class", "onReceiveLocation: " + latitude);
             Log.d("location_class", "onReceiveLocation: " + longitude);
         }

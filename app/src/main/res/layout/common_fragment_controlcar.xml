@@ -22,15 +22,15 @@
 
     <com.example.qjh.comprehensiveactivity.utils.view.WaveView
         android:id="@+id/begin_connect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_gravity="center"
         app:wv_density="3"
         app:wv_fill_color="@color/Blue"
         app:wv_radius="60"
         app:wv_revert="false"
         app:wv_speed="3"
-        app:wv_stroke_color="#ff5050"
+        app:wv_stroke_color="#52C527"
         app:wv_stroke_width="8"
         app:wv_text="点击连接"
         app:wv_wave_color="@color/Blue"
@@ -50,13 +50,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <Button
+            <ImageButton
                 android:id="@+id/bt_back"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:background="@drawable/left" />
 
-            <Button
+            <ImageButton
                 android:layout_marginLeft="30dp"
                 android:id="@+id/bt_up"
                 android:layout_width="100dp"
@@ -72,7 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom">
-            <Button
+            <ImageButton
                 android:id="@+id/bt_left"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -80,14 +80,14 @@
                 android:layout_marginBottom="30dp"
                 android:background="@drawable/up" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/bt_right"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_below="@id/bt_left"
                 android:layout_gravity="center"
                 android:background="@drawable/back" />
-            <Button
+            <ImageButton
                 android:id="@+id/bt_stop"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -97,6 +97,12 @@
 
         </RelativeLayout>
 
-
+        <ImageButton
+            android:id="@+id/ib_over"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="退出"
+            android:background="@mipmap/common_item_over"
+            android:layout_gravity="bottom|right"/>
     </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

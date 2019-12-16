@@ -35,9 +35,9 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     //上拉加载更多
     public static final int PULLUP_LOAD_MORE = 0;
     //正在加载中
-    public static final int LOADING_MORE     = 1;
+    public static final int LOADING_MORE = 1;
     //没有加载更多 隐藏
-    public static final int NO_LOAD_MORE     = 2;
+    public static final int NO_LOAD_MORE = 2;
     //上拉加载更多状态-默认为0
     private int mLoadMoreStatus = 0;
 
@@ -63,7 +63,9 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void setOnItemClick_Add(OnItemClickListenerAdd listener) {
         this.onItemClickListenerAdd = listener;
     }
-    Boolean switchs=false;
+
+    Boolean switchs = false;
+
     /**
      * 设置数据集
      *
@@ -81,7 +83,9 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public void OnItemClick(ParkingLot items, int id);
 
         public void OnItemClick(ParkingLot items);
+
         public void OnItemClickToDetail(ParkingLot items);
+
         public void OnItemClick2(ParkingLot items, int id, Boolean Sch, SwitchButton switchButton);
     }
 
@@ -91,37 +95,44 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
 
-
     @Override
     public int getItemViewType(int position) {
-        if (isShowAdd(position)) {
-            Log.d("getItemViewType", "getItemViewType: " + position);
-            return ADD_VIEW;
-        } else {
-            return VIEW;
-        }
+//        if (isShowAdd(position)) {
+//            Log.d("getItemViewType", "getItemViewType: " + position);
+//            return ADD_VIEW;
+//        } else {
+        return VIEW;
+        // }
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        if (i == VIEW) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_item_fragment_share_item,
-                    viewGroup, false);
-            final ViewHolderOne viewHolder = new ViewHolderOne(view);
-            return viewHolder;
-        } else {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_fragment_upmore,
-                    viewGroup, false);
-            final ViewHolderTwo viewHolderTwo = new ViewHolderTwo(view);
-            return viewHolderTwo;
-        }
+
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_item_fragment_share_item,
+                viewGroup, false);
+        final ViewHolderOne viewHolder = new ViewHolderOne(view);
+        return viewHolder;
+
+//        } else {
+//            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_fragment_upmore,
+//                    viewGroup, false);
+//            final ViewHolderTwo viewHolderTwo = new ViewHolderTwo(view);
+//            return viewHolderTwo;
+//        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof ViewHolderOne) {
             ParkingLot items = items_List.get(i);  //获取点击位置
+            ((SurroundAdapter.ViewHolderOne) viewHolder).tv_parkLotName.setText(items.getPark_name());
+            ((ViewHolderOne) viewHolder).tv_address.setText(items.getPark_address());
+            ((ViewHolderOne) viewHolder).tv_price.setText(items.getPark_price()+"/hour");
+
+
+
+            Glide.with(context).load(items.getParklotImage()).into(((SurroundAdapter.ViewHolderOne) viewHolder).iv_carimage);
             ((SurroundAdapter.ViewHolderOne) viewHolder).iv_carimage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -135,9 +146,10 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                     false
                                     , new ImageLoader())
                             .show();
-
                 }
             });
+
+
             ((ViewHolderOne) viewHolder).ly_nagivation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -157,18 +169,17 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ViewHolderOne) viewHolder).iv_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if( switchs)
-                    ((ViewHolderOne) viewHolder).iv_favorite.setImageResource(R.mipmap.common_item_zanpick);
+                    if (switchs)
+                        ((ViewHolderOne) viewHolder).iv_favorite.setImageResource(R.mipmap.common_item_zanpick);
                     else
                         ((ViewHolderOne) viewHolder).iv_favorite.setImageResource(R.mipmap.common_item_zan);
-                    switchs=!switchs;
+                    switchs = !switchs;
                 }
             });
 
         } else if (viewHolder instanceof ViewHolderTwo) {
-            ViewHolderTwo viewHolderTwo=(ViewHolderTwo)viewHolder;
-            switch(mLoadMoreStatus)
-            {
+            ViewHolderTwo viewHolderTwo = (ViewHolderTwo) viewHolder;
+            switch (mLoadMoreStatus) {
                 case PULLUP_LOAD_MORE:
                     viewHolderTwo.tv_loadmsg.setText("上拉加载更多...");
                     viewHolderTwo.pb_load.setVisibility(View.GONE);
@@ -187,37 +198,28 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
 
-    private boolean isShowAdd(int position) {
-//position=0 的时候  uris.size() 也等于0，返回 true，那么就是显示 添加的图片，postion =1，
-//uris.size()=3 (因为 position下标从 0 开始 而且最大数量是 9 张 那么就是有3张图片 返回 false)
-//以此类推
-        int size = items_List.size() == 0 ? 0 : items_List.size();
-        return position == size;
-    }
-
     @Override
     public int getItemCount() {   //限制加载100个item
-        if (items_List.size() < 100) {
-            return items_List.size() + 1;
-        } else {
-            return items_List.size();
-        }
-
+        return items_List.size();
     }
+
     /**
      * 更新加载更多状态
+     *
      * @param status
      */
-    public void changeMoreStatus(int status){
-        mLoadMoreStatus=status;
-       notifyDataSetChanged();
+    public void changeMoreStatus(int status) {
+        mLoadMoreStatus = status;
+        notifyDataSetChanged();
     }
+
     public static class ViewHolderOne extends RecyclerView.ViewHolder {
         TextView tv_parkLotName; //车位名字
         TextView tv_address; //车位地址状态
         TextView tv_status;//车位状态
         ImageView iv_carimage;//车位图片
-        ImageView iv_delete;//删除车位
+
+        TextView tv_price;//价格
         View view;
         SwitchButton switch_share;
         SwitchButton switch_open;
@@ -227,8 +229,9 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public ViewHolderOne(@NonNull View itemView) {
             super(itemView);
             view = itemView;
-//            tv_parkLotName = (TextView) itemView.findViewById(R.id.tv_parkLotName);
-//            tv_address = (TextView) itemView.findViewById(R.id.tv_address);
+            tv_parkLotName = (TextView) itemView.findViewById(R.id.tv_parkLotName);
+            tv_price = (TextView) itemView.findViewById(R.id.tv_price);
+            tv_address = (TextView) itemView.findViewById(R.id.tv_address);
 //            tv_status = (TextView) itemView.findViewById(R.id.tv_status);
             iv_carimage = (ImageView) itemView.findViewById(R.id.iv_carimage);
             iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
@@ -245,6 +248,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private ProgressBar pb_load;
         private TextView tv_loadmsg;
         private LinearLayout ly_load;
+
         public ViewHolderTwo(@NonNull View itemView) {
             super(itemView);
             pb_load = (ProgressBar) itemView.findViewById(R.id.pb_load);

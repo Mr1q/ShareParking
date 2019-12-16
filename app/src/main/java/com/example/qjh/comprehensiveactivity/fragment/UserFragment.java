@@ -30,6 +30,7 @@ import com.example.qjh.comprehensiveactivity.activity.AboutAppActivity;
 import com.example.qjh.comprehensiveactivity.activity.LoginActivity;
 import com.example.qjh.comprehensiveactivity.activity.MyAddressActivity;
 import com.example.qjh.comprehensiveactivity.activity.MyCarActivity;
+import com.example.qjh.comprehensiveactivity.activity.ParkHistoryActivity;
 import com.example.qjh.comprehensiveactivity.activity.SettingActivity;
 import com.example.qjh.comprehensiveactivity.activity.UserActivity;
 import com.example.qjh.comprehensiveactivity.controler.ActivityCollecter;
@@ -65,7 +66,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private CircleImageView message_image;
     private RelativeLayout setting;
     private RelativeLayout curior;
-    private RelativeLayout order_history;
+    private RelativeLayout rl_history;
     private RelativeLayout about_app;
     private RelativeLayout rl_mycars;
     private RelativeLayout rl_myaddress;
@@ -108,7 +109,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         rl_mycars = (RelativeLayout) view.findViewById(R.id.rl_mycars);
         rl_myaddress = (RelativeLayout) view.findViewById(R.id.rl_myaddress);
         advice = (RelativeLayout) view.findViewById(R.id.advice);
-        order_history = (RelativeLayout) view.findViewById(R.id.order_history);
+        rl_history = (RelativeLayout) view.findViewById(R.id.rl_history);
         about_app = (RelativeLayout) view.findViewById(R.id.about_app);
         station_id = (TextView) view.findViewById(R.id.station_id);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar);
@@ -151,6 +152,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         about_app.setOnClickListener(this);
         rl_mycars.setOnClickListener(this);
         rl_myaddress.setOnClickListener(this);
+        rl_history.setOnClickListener(this);
     }
 
 
@@ -208,6 +210,10 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.rl_myaddress:
                 intent2 = new Intent(getContext(), MyAddressActivity.class);
+                startActivity(intent2);
+                break;
+            case R.id.rl_history:
+                intent2 = new Intent(getContext(), ParkHistoryActivity.class);
                 startActivity(intent2);
                 break;
         }

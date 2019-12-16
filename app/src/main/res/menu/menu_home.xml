@@ -16,5 +16,4 @@
         android:id="@+id/navigation_person"
         android:icon="@mipmap/common_mainactivity_bgv"
         android:title="我的" />
-
 </menu>
