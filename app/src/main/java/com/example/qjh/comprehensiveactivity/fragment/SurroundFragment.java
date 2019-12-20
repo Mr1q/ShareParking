@@ -1,5 +1,6 @@
 package com.example.qjh.comprehensiveactivity.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +31,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.navisdk.ui.widget.likebutton.Utils;
 import com.example.qjh.comprehensiveactivity.R;
 import com.example.qjh.comprehensiveactivity.activity.AddParkingLotActivity;
 import com.example.qjh.comprehensiveactivity.activity.DetailParklotActivity;
@@ -69,6 +72,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.internal.Util;
 
 public class SurroundFragment extends Fragment {
     public static final String EXTRA_LOG = "EXTRA_LOG";
@@ -228,9 +232,9 @@ public class SurroundFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    //如果actionId是搜索的id，则进行下一步的操作
-                    //doSomething();
-                    toSearch(v.getText().toString().trim());
+                    toSearch(search_home.getText().toString().trim());
+                    hideKeyboard(search_home);
+                    return  true;
                 }
                 return false;
             }
@@ -238,20 +242,30 @@ public class SurroundFragment extends Fragment {
 
     }
 
+    /**
+     * 隐藏软键盘
+     * @param view
+     */
+    public static void hideKeyboard(View view) {
+        InputMethodManager manager = (InputMethodManager) view.getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
     private void toSearch(String searchString) {
-        List<ParkingLot> parks = new ArrayList<>();
+       // List<ParkingLot> parks = new ArrayList<>();
         for (int i = 0; i < parkingLots.size(); i++) {
-            if (parkingLots.get(i).getPark_name().equals(searchString)) {
-                parks.add(parkingLots.get(i));
+            if (!parkingLots.get(i).getPark_name().equals(searchString)) {
+              parkingLots.remove(i);
             }
         }
-        parkingLots = parks;
+
         surroundAdapter.notifyDataSetChanged();
     }
 
     private void getData(Boolean loadMore) {
         NewsRequest newsRequest = new NewsRequest();
-        newsRequest.setDistance("100");
+        newsRequest.setDistance("100");//提示用户输入
         newsRequest.setLatitude(latitude);
         newsRequest.setLongitude(longitude);
         newsRequest.setPageNo(String.valueOf(PageNum));

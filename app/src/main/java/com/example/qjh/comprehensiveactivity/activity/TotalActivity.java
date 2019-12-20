@@ -106,6 +106,7 @@ public class TotalActivity extends BaseActivity implements ViewPager.OnPageChang
             bundle.putString(LoginActivity.EXTRA_KEY_User_PHONE, intent.getStringExtra(LoginActivity.EXTRA_KEY_User_PHONE));
             bundle.putString(LoginActivity.EXTRA_KEY_User_ADDRESS, intent.getStringExtra(LoginActivity.EXTRA_KEY_User_ADDRESS));
             bundle.putString(LoginActivity.EXTRA_KEY_User_NAME, intent.getStringExtra(LoginActivity.EXTRA_KEY_User_NAME));
+            bundle.putString(LoginActivity.EXTRA_KEY_User_PHOTO, intent.getStringExtra(LoginActivity.EXTRA_KEY_User_PHOTO));
             users.setArguments(bundle);
         }
         int[][] states = new int[][]{

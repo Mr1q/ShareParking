@@ -63,6 +63,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public static final String EXTRA_KEY_User_ADDRESS = "EXTRA_KEY_User_ADDRESS";
     public static final String EXTRA_KEY_User_PASSWORD = "EXTRA_KEY_User_PASSWORD";
     public static final String EXTRA_KEY_User_CHECKED = "EXTRA_KEY_User_CHECKED";
+    public static final String EXTRA_KEY_User_PHOTO = "EXTRA_KEY_User_PHOTO";
     //持久化技术
     public static SharedPreferences sharedPreferences;
     public SharedPreferences.Editor editor;
@@ -86,6 +87,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         editor.putString(EXTRA_KEY_User_ADDRESS, user.getMyaddress());
                         editor.putString(EXTRA_KEY_User_ADDTIME, user.getMyaddtime());
                         editor.putString(EXTRA_KEY_User_PASSWORD, user.getMypasswprd());
+                        editor.putString(EXTRA_KEY_User_PHOTO, user.getHeadPhotoURL());
                     } else {
                         editor.clear();
                     }
@@ -99,6 +101,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     intent.putExtra(EXTRA_KEY_User_ADDRESS, user.getMyaddress());
                     intent.putExtra(EXTRA_KEY_User_ADDTIME, user.getMyaddtime());
                     intent.putExtra(EXTRA_KEY_User_PASSWORD, user.getMypasswprd());
+                    intent.putExtra(EXTRA_KEY_User_PHOTO, user.getHeadPhotoURL());
                     ID=user.getMyid();
                     Username=user.getMyusername();
                     startActivity(intent);
@@ -147,6 +150,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             String address = sharedPreferences.getString(EXTRA_KEY_User_ADDRESS, "");
             String addtime = sharedPreferences.getString(EXTRA_KEY_User_ADDTIME, "");
             String pasword = sharedPreferences.getString(EXTRA_KEY_User_PASSWORD, "");
+            String photo = sharedPreferences.getString(EXTRA_KEY_User_PHOTO, "");
             Intent intent = new Intent(LoginActivity.this, TotalActivity.class);
             intent.putExtra(EXTRA_KEY_User_USERNAME, username);
             intent.putExtra(EXTRA_KEY_User_PHONE, phone);
@@ -155,6 +159,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             intent.putExtra(EXTRA_KEY_User_ADDRESS, address);
             intent.putExtra(EXTRA_KEY_User_ADDTIME, addtime);
             intent.putExtra(EXTRA_KEY_User_PASSWORD, pasword);
+            intent.putExtra(EXTRA_KEY_User_PHOTO, photo);
             ID=myid;
             Username=username;
             startActivity(intent);

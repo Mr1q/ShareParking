@@ -77,28 +77,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#2E5DF1" />
-
-            <LinearLayout
+            <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:layout_height="50dp"
+                android:hint="输入车辆所属地址"
+                android:textSize="15dp"
+                android:textColorHint="@color/Red"
+                android:layout_margin="8dp"
+                android:id="@+id/et_carAddress"/>
 
-
-                <TextView
-                    android:id="@+id/tv_confirm"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:gravity="center"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:text="@string/ok"
-                    android:textColor="@android:color/white"
-                    android:background="#337ab7"
-                    android:textSize="16sp" />
-            </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="添加私家车图片"/>
+
+    <ImageView
+        android:id="@+id/iv_addcar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:src="@mipmap/common_item_add"/>
+
+
+    <Button
+        android:id="@+id/tv_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/borderlessButtonStyle"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:layout_margin="10dp"
+        android:text="@string/ok"
+        android:textColor="@android:color/white"
+        android:background="#337ab7"
+        android:textSize="16sp" />
 </LinearLayout>

@@ -31,6 +31,7 @@ import com.example.qjh.comprehensiveactivity.activity.LoginActivity;
 import com.example.qjh.comprehensiveactivity.activity.MyAddressActivity;
 import com.example.qjh.comprehensiveactivity.activity.MyCarActivity;
 import com.example.qjh.comprehensiveactivity.activity.ParkHistoryActivity;
+import com.example.qjh.comprehensiveactivity.activity.RecommendActivity;
 import com.example.qjh.comprehensiveactivity.activity.SettingActivity;
 import com.example.qjh.comprehensiveactivity.activity.UserActivity;
 import com.example.qjh.comprehensiveactivity.controler.ActivityCollecter;
@@ -70,11 +71,12 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout about_app;
     private RelativeLayout rl_mycars;
     private RelativeLayout rl_myaddress;
-    private RelativeLayout advice;
+    private RelativeLayout rl_advice;
     public TextView station_id;
     public Button bt_userfragment_logout;
     public static String stationid;
     private String Id;
+    private String photo;
 
     private OkHttpClient client = new OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(20, TimeUnit.SECONDS)
@@ -93,6 +95,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     };
 
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -108,7 +111,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         setting = (RelativeLayout) view.findViewById(R.id.settings);
         rl_mycars = (RelativeLayout) view.findViewById(R.id.rl_mycars);
         rl_myaddress = (RelativeLayout) view.findViewById(R.id.rl_myaddress);
-        advice = (RelativeLayout) view.findViewById(R.id.advice);
+        rl_advice = (RelativeLayout) view.findViewById(R.id.rl_advice);
         rl_history = (RelativeLayout) view.findViewById(R.id.rl_history);
         about_app = (RelativeLayout) view.findViewById(R.id.about_app);
         station_id = (TextView) view.findViewById(R.id.station_id);
@@ -117,7 +120,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         final Toolbar toolbar_base = (Toolbar) view.findViewById(R.id.toolbar);
         //设置TOOLBAR
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar_base);
-
 
         bt_userfragment_logout = (Button) view.findViewById(R.id.bt_userfragment_logout);
         bt_userfragment_logout.setOnClickListener(this);
@@ -130,6 +132,8 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             phone = bundle.getString(LoginActivity.EXTRA_KEY_User_PHONE);
             address = bundle.getString(LoginActivity.EXTRA_KEY_User_ADDRESS);
             name = bundle.getString(LoginActivity.EXTRA_KEY_User_NAME);
+            photo = bundle.getString(LoginActivity.EXTRA_KEY_User_PHOTO);
+            Glide.with(this).load(photo).into(message_image);
         }
 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -147,12 +151,11 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
-
-
         about_app.setOnClickListener(this);
         rl_mycars.setOnClickListener(this);
         rl_myaddress.setOnClickListener(this);
         rl_history.setOnClickListener(this);
+        rl_advice.setOnClickListener(this);
     }
 
 
@@ -193,6 +196,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                 intent2.putExtra(LoginActivity.EXTRA_KEY_User_PHONE, phone);
                 intent2.putExtra(LoginActivity.EXTRA_KEY_User_ADDRESS, address);
                 intent2.putExtra(LoginActivity.EXTRA_KEY_User_NAME, name);
+                intent2.putExtra(LoginActivity.EXTRA_KEY_User_PHOTO, photo);
                 startActivityForResult(intent2, MODIFY_TYPE);
                 break;
             case R.id.settings:
@@ -216,6 +220,10 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                 intent2 = new Intent(getContext(), ParkHistoryActivity.class);
                 startActivity(intent2);
                 break;
+            case R.id.rl_advice:
+                intent2 = new Intent(getContext(), RecommendActivity.class);
+                startActivity(intent2);
+                break;
         }
     }
 
@@ -229,6 +237,8 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                     address = data.getStringExtra(LoginActivity.EXTRA_KEY_User_ADDRESS);
                     name = data.getStringExtra(LoginActivity.EXTRA_KEY_User_NAME);
                     username = data.getStringExtra(LoginActivity.EXTRA_KEY_User_USERNAME);
+                    photo = data.getStringExtra(LoginActivity.EXTRA_KEY_User_PHOTO);
+                    Glide.with(this).load(photo).into(message_image);
                 }
                 break;
 

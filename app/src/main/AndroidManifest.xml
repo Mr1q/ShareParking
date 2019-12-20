@@ -77,6 +77,7 @@
         <activity android:name=".activity.DetailParklotActivity"/>
         <activity android:name=".activity.BookParkLotActivity"/>
         <activity android:name=".activity.ParkHistoryActivity"/>
+        <activity android:name=".activity.RecommendActivity"/>
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

@@ -1,5 +1,6 @@
 package com.example.qjh.comprehensiveactivity.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,8 +10,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.qjh.comprehensiveactivity.R;
 import com.example.qjh.comprehensiveactivity.beans.Car;
+import com.example.qjh.comprehensiveactivity.beans.ParkingLot;
 import com.example.qjh.comprehensiveactivity.utils.CircleCheckBox;
 
 
@@ -19,9 +22,12 @@ import java.util.List;
 public class CarAllAdapter extends RecyclerView.Adapter<CarAllAdapter.ViewHolder> {
     private List<Car> items_List;
     private OnItemClickListener listener;
+    private Context context;
 
-    public CarAllAdapter(List<Car> items) {
+    public CarAllAdapter(List<Car> items,Context context) {
         this.items_List = items;
+
+        this.context=context;
     }
 
     public void setOnItemClick(OnItemClickListener listener) {
@@ -63,6 +69,8 @@ public class CarAllAdapter extends RecyclerView.Adapter<CarAllAdapter.ViewHolder
             }
         });
 
+
+
         return viewHolder;
     }
 
@@ -71,8 +79,15 @@ public class CarAllAdapter extends RecyclerView.Adapter<CarAllAdapter.ViewHolder
         Car items = items_List.get(i);  //获取点击位置
         viewHolder.tv_MyCarAddress.setText(items.getCarAddress());
         viewHolder.tv_MyCarNumber.setText(items.getCarNumber());
-        viewHolder.cir_chbox.setChecked(items.getAlways());
+        if(items.getAlways().equals("1"))
+        {
+            viewHolder.cir_chbox.setChecked(true);
+        }else
+        {
+            viewHolder.cir_chbox.setChecked(false);
+        }
 
+        Glide.with(context).load(items.getCar_photoURL()).into(viewHolder.iv_car);
 
     }
 
@@ -82,9 +97,10 @@ public class CarAllAdapter extends RecyclerView.Adapter<CarAllAdapter.ViewHolder
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_MyCarAddress; //基站id
-        TextView tv_MyCarNumber;//基站位置
-        CircleCheckBox cir_chbox;
+        TextView tv_MyCarAddress; //车辆地址
+        TextView tv_MyCarNumber;//车牌号
+        CircleCheckBox cir_chbox; //是否设置为默认车辆
+        ImageView iv_car; //是否设置为默认车辆
         View view;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -92,6 +108,7 @@ public class CarAllAdapter extends RecyclerView.Adapter<CarAllAdapter.ViewHolder
             tv_MyCarAddress=(TextView)itemView.findViewById(R.id.tv_MyCarAddress);
             tv_MyCarNumber = (TextView) itemView.findViewById(R.id.tv_MyCarNumber);
             cir_chbox = (CircleCheckBox) itemView.findViewById(R.id.cir_chbox);
+            iv_car = (ImageView) itemView.findViewById(R.id.iv_car);
 
         }
     }

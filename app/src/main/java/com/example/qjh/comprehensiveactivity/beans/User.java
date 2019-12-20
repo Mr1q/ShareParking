@@ -28,6 +28,18 @@ public class User {
     @SerializedName("phone")
     private String myphone;
 
+    @SerializedName("headPhotoURL")
+    private String headPhotoURL;
+
+    public String getHeadPhotoURL() {
+        return prefix + headPhotoURL;
+    }
+
+    final public String prefix = "http://120.79.18.242:8080/test";
+
+    public void setHeadPhotoURL(String headPhotoURL) {
+        this.headPhotoURL = headPhotoURL;
+    }
 
     public String getMyaddtime() {
         return myaddtime;

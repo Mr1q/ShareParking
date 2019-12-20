@@ -16,6 +16,11 @@ public class NewsRequest {
         retValue = "?" + "&parkOwnerId=" +parkOwnerId;
         return retValue;
     }
+    public String toStringFindMyCar() {
+        String retValue;
+        retValue = "?" + "&userId=" +userId;
+        return retValue;
+    }
     public String toStringShareParkLot() {
         String retValue;
         retValue = "?longitude="+longitude+"&latitude="+latitude+"&distance="+distance+"&userId="+userId+"&pageNo="+

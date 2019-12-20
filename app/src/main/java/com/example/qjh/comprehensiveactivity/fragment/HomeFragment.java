@@ -175,7 +175,26 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                                 }
                                             }, 1000);
                                         }
+                                        break;
+                                    case R.id.switch_open:
+                                        if(Sch)
+                                        {
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    toUsingParkLot(items);
+                                                }
+                                            }, 1000);
 
+                                        }else
+                                        {
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    toUnUsingParkLot(items);
+                                                }
+                                            }, 1000);
+                                        }
                                         break;
                                 }
                         }
@@ -416,6 +435,80 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 .add("parkId",items.getPark_id()).build();
         request = new Request.Builder().
                 url(Constants.CancelShareMyParkingLot).
+                post(requestBody).
+                build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if (response.isSuccessful()) {
+                        String body = response.body().string();
+                        Log.d("onResponse_body", "onResponse: " + body);
+                        Gson gson = new Gson();
+                        JSONObject jsonObject = new JSONObject(body);
+                        String state = jsonObject.optString("state");
+                        if (state.equals("0")) {
+                            handler.sendEmptyMessage(CANCELSHARE_FAIL);
+                        } else {
+                            handler.sendEmptyMessage(CANCELSHARE_SUCCESS);
+                        }
+                    } else {
+                        handler.sendEmptyMessage(CANCELSHARE_FAIL);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void toUsingParkLot(ParkingLot items) {
+        RequestBody requestBody=new FormBody.Builder()
+                .add("parkId",items.getPark_id()).build();
+        request = new Request.Builder().
+                url(Constants.UsingParkLot).
+                post(requestBody).
+                build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if (response.isSuccessful()) {
+                        String body = response.body().string();
+                        Log.d("onResponse_body", "onResponse: " + body);
+                        Gson gson = new Gson();
+                        JSONObject jsonObject = new JSONObject(body);
+                        String state = jsonObject.optString("state");
+                        if (state.equals("0")) {
+                            handler.sendEmptyMessage(CANCELSHARE_FAIL);
+                        } else {
+                            handler.sendEmptyMessage(CANCELSHARE_SUCCESS);
+                        }
+                    } else {
+                        handler.sendEmptyMessage(CANCELSHARE_FAIL);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void toUnUsingParkLot(ParkingLot items) {
+        RequestBody requestBody=new FormBody.Builder()
+                .add("parkId",items.getPark_id()).build();
+        request = new Request.Builder().
+                url(Constants.UnUsingParkLot).
                 post(requestBody).
                 build();
         okHttpClient.newCall(request).enqueue(new Callback() {

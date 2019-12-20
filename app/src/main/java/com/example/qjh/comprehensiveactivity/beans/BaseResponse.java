@@ -11,6 +11,17 @@ public class BaseResponse<T> {
     @SerializedName("userData")
     private T userData;
 
+    @SerializedName("data") //返回私家车辆信息
+    private T carData;
+
+    public T getCarData() {
+        return carData;
+    }
+
+    public void setCarData(T carData) {
+        this.carData = carData;
+    }
+
     public BaseResponse() {
     }
 

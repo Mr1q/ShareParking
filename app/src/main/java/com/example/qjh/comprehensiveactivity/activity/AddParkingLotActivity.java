@@ -91,6 +91,7 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
     private   LocationClient locationClient;
     private ImageView RTU;
     private  String Path;
+
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -172,11 +173,8 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
 
     @Override
     public void takeSuccess(TResult result) {
-
-
         Bitmap bitmap = BitmapFactory.decodeFile(result.getImage().getOriginalPath());
         Path=result.getImage().getCompressPath();
-
         Glide.with(this).load(bitmap).into(ivcar);//.setImageBitmap(bitmap);
     }
 
@@ -184,45 +182,7 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ly_addImage:
-                final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(AddParkingLotActivity.this);
-                View view = LayoutInflater.from(AddParkingLotActivity.this).inflate(R.layout.common_item_photo, null);
-
-                view.findViewById(R.id.take_photo).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int size = Math.min(getResources().getDisplayMetrics().widthPixels,
-                                getResources().getDisplayMetrics().heightPixels);
-                        CropOptions cropOptions = new CropOptions.Builder()
-                                .setOutputX(size).setOutputX(size).
-                                        setWithOwnCrop(true).create();
-                        configCompress(takePhoto);
-                        //相机获取照片并剪裁
-                        takePhoto.onPickFromCaptureWithCrop(uri, cropOptions);
-
-                        //相机获取不剪裁
-                        //takePhoto.onPickFromCapture(uri);
-
-                        bottomSheetDialog.dismiss();
-                    }
-                });
-
-
-                view.findViewById(R.id.picture_choose).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        take(getTakePhoto());
-                        bottomSheetDialog.dismiss();
-                    }
-                });
-                view.findViewById(R.id.btn_cancle).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        bottomSheetDialog.dismiss();
-                    }
-                });
-
-                bottomSheetDialog.setContentView(view);
-                bottomSheetDialog.show();
+                toTakePhoto();
                 break;
             case R.id.ly_price:
                 NumberPicker pickers = new NumberPicker(this);
@@ -252,6 +212,47 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
         }
     }
 
+    private void toTakePhoto() {
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(AddParkingLotActivity.this);
+        View view = LayoutInflater.from(AddParkingLotActivity.this).inflate(R.layout.common_item_photo, null);
+        view.findViewById(R.id.take_photo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int size = Math.min(getResources().getDisplayMetrics().widthPixels,
+                        getResources().getDisplayMetrics().heightPixels);
+                CropOptions cropOptions = new CropOptions.Builder()
+                        .setOutputX(size).setOutputX(size).
+                                setWithOwnCrop(true).create();
+                configCompress(takePhoto);
+                //相机获取照片并剪裁
+                takePhoto.onPickFromCaptureWithCrop(uri, cropOptions);
+
+                //相机获取不剪裁
+                //takePhoto.onPickFromCapture(uri);
+
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+
+        view.findViewById(R.id.picture_choose).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                take(getTakePhoto());
+                bottomSheetDialog.dismiss();
+            }
+        });
+        view.findViewById(R.id.btn_cancle).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        bottomSheetDialog.setContentView(view);
+        bottomSheetDialog.show();
+    }
+
     private void toCommit() {
 
 
@@ -266,7 +267,7 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
                 .addFormDataPart("park_latitude", tv_lat.getText().toString().trim())
                 .addFormDataPart("park_distance", "123")
                 .addFormDataPart("park_price", "123")
-                .addFormDataPart("file","car_photourl",
+                .addFormDataPart("file","parklot_photourl",
                         RequestBody.create(MediaType.parse("image/jpg"), new File(Path)))
                 .build();
         request = new Request.Builder().

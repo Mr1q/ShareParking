@@ -19,6 +19,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
@@ -54,11 +55,18 @@ import com.lxj.xpopup.XPopup;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * 
+ * 地图导航
+ */
 public class MapActivity extends BaseActivity {
     private static final int BAIDU_READ_PHONE_STATE = 100;//定位权限请求
     private LocationClient locationClient;
     private MapView mapView;
     private FloatingActionButton common_fa_loc;
+    private TextView tv_parklotAddress;
+    private TextView tv_parkLotName;
 
     private BaiduMap baiduMap;
     @Override
@@ -68,10 +76,9 @@ public class MapActivity extends BaseActivity {
         SDKInitializer.setCoordType(CoordType.BD09LL);
         setContentView(R.layout.common_fragment_map);
         startService(new Intent(this, ForegroundService.class));
+        //初始化程序
+        intitData();
         Intent intent=getIntent();
-
-        mapView = findViewById(R.id.mapview);
-        common_fa_loc = (FloatingActionButton)findViewById(R.id.common_fa_loc);
         Doing();
         requestPermission();
         initLocationOption();
@@ -131,6 +138,13 @@ public class MapActivity extends BaseActivity {
                 return true;
             }
         });
+    }
+
+    private void intitData() {
+        mapView = findViewById(R.id.mapview);
+        common_fa_loc = (FloatingActionButton)findViewById(R.id.common_fa_loc);
+        tv_parklotAddress = (TextView) findViewById(R.id.tv_parklotAddress);
+        tv_parkLotName = (TextView) findViewById(R.id.tv_parkLotName);
     }
 
     private void Doing() {
@@ -277,6 +291,7 @@ public class MapActivity extends BaseActivity {
                     }
                 });
     }
+
     private boolean checkValid(String startPoint, String endPoint) {
         if (TextUtils.isEmpty(startPoint) || TextUtils.isEmpty(endPoint)) {
             return false;
@@ -287,6 +302,7 @@ public class MapActivity extends BaseActivity {
         }
         return true;
     }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -311,7 +327,6 @@ public class MapActivity extends BaseActivity {
      * 请求权限
      */
     private void requestPermission() {
-
         if (Build.VERSION.SDK_INT >= 23) { //判断是否为android6.0系统版本，如果是，需要动态添加权限
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {// 没有权限，申请权限。
@@ -350,18 +365,18 @@ public class MapActivity extends BaseActivity {
         LocationClientOption locationOption = new LocationClientOption();
         locationOption.setOpenGps(true);
         MyLocationListener myLocationListener = new MyLocationListener();
-//注册监听函数
+      //注册监听函数
         locationClient.registerLocationListener(myLocationListener);
 
-//可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
+     //可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
         locationOption.setCoorType("bd09ll");
-//可选，默认0，即仅定位一次，设置发起连续定位请求的间隔需要大于等于1000ms才是有效的
+    //可选，默认0，即仅定位一次，设置发起连续定位请求的间隔需要大于等于1000ms才是有效的
         locationOption.setScanSpan(0);
-//可选，设置是否需要地址信息，默认不需要
+   //可选，设置是否需要地址信息，默认不需要
         locationOption.setIsNeedAddress(true);
-//可选，设置是否需要地址描述
+   //可选，设置是否需要地址描述
         locationOption.setIsNeedLocationDescribe(true);
-//可选，设置是否需要设备方向结果
+   //可选，设置是否需要设备方向结果
         locationOption.setNeedDeviceDirect(true);
 
 //可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死

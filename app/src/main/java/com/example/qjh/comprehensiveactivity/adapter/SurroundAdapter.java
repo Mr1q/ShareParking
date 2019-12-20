@@ -23,6 +23,7 @@ import com.lxj.xpopup.interfaces.XPopupImageLoader;
 import com.suke.widget.SwitchButton;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -127,10 +128,11 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (viewHolder instanceof ViewHolderOne) {
             ParkingLot items = items_List.get(i);  //获取点击位置
             ((SurroundAdapter.ViewHolderOne) viewHolder).tv_parkLotName.setText(items.getPark_name());
+
             ((ViewHolderOne) viewHolder).tv_address.setText(items.getPark_address());
-            ((ViewHolderOne) viewHolder).tv_price.setText(items.getPark_price()+"/hour");
-
-
+            ((ViewHolderOne) viewHolder).tv_price.setText(items.getPark_price()+"元/hour");
+            ((ViewHolderOne) viewHolder).tv_distance.setText("距离"+String.format("%.2f", items.getPark_distance())+"米");
+            
 
             Glide.with(context).load(items.getParklotImage()).into(((SurroundAdapter.ViewHolderOne) viewHolder).iv_carimage);
             ((SurroundAdapter.ViewHolderOne) viewHolder).iv_carimage.setOnClickListener(new View.OnClickListener() {
@@ -216,7 +218,8 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static class ViewHolderOne extends RecyclerView.ViewHolder {
         TextView tv_parkLotName; //车位名字
         TextView tv_address; //车位地址状态
-        TextView tv_status;//车位状态
+
+        TextView tv_distance;//距离
         ImageView iv_carimage;//车位图片
 
         TextView tv_price;//价格
@@ -232,6 +235,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             tv_parkLotName = (TextView) itemView.findViewById(R.id.tv_parkLotName);
             tv_price = (TextView) itemView.findViewById(R.id.tv_price);
             tv_address = (TextView) itemView.findViewById(R.id.tv_address);
+            tv_distance = (TextView) itemView.findViewById(R.id.tv_distance);
 //            tv_status = (TextView) itemView.findViewById(R.id.tv_status);
             iv_carimage = (ImageView) itemView.findViewById(R.id.iv_carimage);
             iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
