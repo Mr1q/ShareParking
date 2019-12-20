@@ -3,6 +3,7 @@ package com.example.qjh.comprehensiveactivity.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,6 @@ public class CarAllAdapter extends RecyclerView.Adapter<CarAllAdapter.ViewHolder
 
     public CarAllAdapter(List<Car> items,Context context) {
         this.items_List = items;
-
         this.context=context;
     }
 
@@ -49,6 +49,7 @@ public class CarAllAdapter extends RecyclerView.Adapter<CarAllAdapter.ViewHolder
     public interface OnItemClickListener {
         /*注意参数*/
         public void OnItemClick(Car items,int postition);
+        public void OnLongItemClick(Car items);
     }
 
     @NonNull
@@ -65,6 +66,16 @@ public class CarAllAdapter extends RecyclerView.Adapter<CarAllAdapter.ViewHolder
                     int postition = viewHolder.getAdapterPosition();
                     Car items = items_List.get(postition);
                     listener.OnItemClick(items,postition);
+                }
+            }
+        });
+        viewHolder.iv_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    int postition = viewHolder.getAdapterPosition();
+                    Car items = items_List.get(postition);
+                    listener.OnLongItemClick(items);
                 }
             }
         });
@@ -88,7 +99,7 @@ public class CarAllAdapter extends RecyclerView.Adapter<CarAllAdapter.ViewHolder
         }
 
         Glide.with(context).load(items.getCar_photoURL()).into(viewHolder.iv_car);
-
+        Log.d("onBindViewHolder_class", "onBindViewHolder: "+items.getCar_photoURL());
     }
 
     @Override
@@ -101,6 +112,7 @@ public class CarAllAdapter extends RecyclerView.Adapter<CarAllAdapter.ViewHolder
         TextView tv_MyCarNumber;//车牌号
         CircleCheckBox cir_chbox; //是否设置为默认车辆
         ImageView iv_car; //是否设置为默认车辆
+        ImageView iv_delete; //是否设置为默认车辆
         View view;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -109,6 +121,7 @@ public class CarAllAdapter extends RecyclerView.Adapter<CarAllAdapter.ViewHolder
             tv_MyCarNumber = (TextView) itemView.findViewById(R.id.tv_MyCarNumber);
             cir_chbox = (CircleCheckBox) itemView.findViewById(R.id.cir_chbox);
             iv_car = (ImageView) itemView.findViewById(R.id.iv_car);
+            iv_delete = (ImageView) itemView.findViewById(R.id.iv_delete);
 
         }
     }

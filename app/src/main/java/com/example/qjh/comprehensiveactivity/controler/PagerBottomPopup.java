@@ -38,7 +38,7 @@ public class PagerBottomPopup extends BottomPopupView implements View.OnClickLis
     protected void onCreate() {
         super.onCreate();
         tv_parklotName = findViewById(R.id.tv_parklotName);
-        tv_bookDate = findViewById(R.id.tv_date);
+//        tv_bookDate = findViewById(R.id.tv_date);
         tv_time = findViewById(R.id.tv_time);
         tv_price = findViewById(R.id.tv_price);
         bt_book = findViewById(R.id.bt_book);

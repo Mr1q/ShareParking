@@ -24,6 +24,7 @@ public class ParkingLot {
     @SerializedName("park_name")
     String park_name;
 
+
     public String getPark_id() {
         return park_id;
     }
@@ -40,7 +41,7 @@ public class ParkingLot {
     String park_address;
     // * 价格
     @SerializedName("park_price")
-    int park_price;
+    String park_price;
     // * 距离
     @SerializedName("park_distance")
     Double park_distance;
@@ -59,9 +60,7 @@ public class ParkingLot {
     @SerializedName("park_use")
     String park_use;
 
-    //收藏数
 
-    String favoriteNumber;
     @SerializedName("park_longitude")
     String park_longitude; //经度
     @SerializedName("park_latitude")
@@ -69,15 +68,30 @@ public class ParkingLot {
     @SerializedName("park_photoURL")
     String parklotImage;  //停车图片
 
+
+    //收藏数
+    @SerializedName("park_collect")
+    String park_collect;
+
+    public void setPark_share(String park_share) {
+        this.park_share = park_share;
+    }
+
+    public void setPark_use(String park_use) {
+        this.park_use = park_use;
+    }
+
+    public String getPark_collect() {
+        return park_collect;
+    }
+
+    public void setPark_collect(String park_collect) {
+        this.park_collect = park_collect;
+    }
+
     final public String prefix = "http://120.79.18.242:8080/test";
 
-    public String getFavoriteNumber() {
-        return favoriteNumber;
-    }
 
-    public void setFavoriteNumber(String favoriteNumber) {
-        this.favoriteNumber = favoriteNumber;
-    }
 
     public String getParklotImage() {
         return prefix + parklotImage;
@@ -146,11 +160,11 @@ public class ParkingLot {
         this.park_address = park_address;
     }
 
-    public int getPark_price() {
+    public String getPark_price() {
         return park_price;
     }
 
-    public void setPark_price(int park_price) {
+    public void setPark_price(String park_price) {
         this.park_price = park_price;
     }
 

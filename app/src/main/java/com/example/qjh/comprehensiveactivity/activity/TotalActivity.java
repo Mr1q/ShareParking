@@ -109,6 +109,8 @@ public class TotalActivity extends BaseActivity implements ViewPager.OnPageChang
             bundle.putString(LoginActivity.EXTRA_KEY_User_PHOTO, intent.getStringExtra(LoginActivity.EXTRA_KEY_User_PHOTO));
             users.setArguments(bundle);
         }
+
+        //设置底部导航栏的颜色
         int[][] states = new int[][]{
                 new int[]{-android.R.attr.state_checked},
                 new int[]{android.R.attr.state_checked}

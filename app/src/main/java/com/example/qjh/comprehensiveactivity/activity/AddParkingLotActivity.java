@@ -174,7 +174,7 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
     @Override
     public void takeSuccess(TResult result) {
         Bitmap bitmap = BitmapFactory.decodeFile(result.getImage().getOriginalPath());
-        Path=result.getImage().getCompressPath();
+        Path=result.getImage().getCompressPath();//存放图片的路劲
         Glide.with(this).load(bitmap).into(ivcar);//.setImageBitmap(bitmap);
     }
 
@@ -254,7 +254,6 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
     }
 
     private void toCommit() {
-
 
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)

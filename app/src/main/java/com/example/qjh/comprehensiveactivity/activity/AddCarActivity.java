@@ -81,6 +81,11 @@ public class AddCarActivity extends TakePhotoActivity implements View.OnClickLis
             switch (msg.what) {
                 case SUCCESS:
                     Toast.makeText(AddCarActivity.this, "创建成功！！！", Toast.LENGTH_SHORT).show();
+                    // toSetDefaultCar();
+                    Intent intent = new Intent(AddCarActivity.this, MyCarActivity.class);
+                    // intent.putExtra(CARNUMBER, CarNumber);
+                    setResult(RESULT_OK, intent);
+                    finish();
                     break;
                 case UNSUCCESS:
                     Toast.makeText(AddCarActivity.this, "创建失败！！！", Toast.LENGTH_SHORT).show();
@@ -164,11 +169,6 @@ public class AddCarActivity extends TakePhotoActivity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.tv_confirm:
                 toCreateCar();
-                // toSetDefaultCar();
-                Intent intent = new Intent(AddCarActivity.this, MyCarActivity.class);
-                //      intent.putExtra(CARNUMBER, CarNumber);
-                //    setResult(RESULT_OK, intent);
-                finish();
                 break;
 
             case R.id.RTU:
@@ -224,7 +224,11 @@ public class AddCarActivity extends TakePhotoActivity implements View.OnClickLis
     }
 
     private void toCreateCar() {
-
+        if(Path==null)
+        {
+            Toast.makeText(AddCarActivity.this,"请添加图片",Toast.LENGTH_SHORT).show();
+            return;
+        }
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("car_address", et_carAddress.getText().toString())
@@ -246,8 +250,9 @@ public class AddCarActivity extends TakePhotoActivity implements View.OnClickLis
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 try {
+                    String body = response.body().string();
+                    Log.d("onResponse_body", "onResponse: " + body);
                     if (response.isSuccessful()) {
-                        String body = response.body().string();
                         Log.d("onResponse_body", "onResponse: " + body);
                         gson = new Gson();
                          jsonObject = new JSONObject(body);
@@ -267,45 +272,7 @@ public class AddCarActivity extends TakePhotoActivity implements View.OnClickLis
         });
     }
 
-    private void toSetDefaultCar() {
 
-        RequestBody requestBody = new FormBody.Builder()
-                .add("userId", LoginActivity.ID)
-                .add("carNumber", CarNumber)
-                .build();
-        request = new Request.Builder().
-                url(Constants.SetDefaultCar).
-                post(requestBody).
-                build();
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    if (response.isSuccessful()) {
-                        String body = response.body().string();
-                        Log.d("onResponse_body", "onResponse: " + body);
-                        Gson gson = new Gson();
-                        JSONObject jsonObject = new JSONObject(body);
-                        String state = jsonObject.optString("state");
-                        if (state.equals("0")) {
-                            handler.sendEmptyMessage(UNSUCCESS);
-                        } else {
-                            handler.sendEmptyMessage(SUCCESS);
-                        }
-                    } else {
-                        handler.sendEmptyMessage(UNSUCCESS);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
     private void take(TakePhoto takePhoto) {
         configCompress(takePhoto);

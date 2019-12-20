@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="6dp"
+    app:cardElevation="7dp">
 
-    android:orientation="vertical">
-
-    <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="7dp"
-        android:layout_margin="10dp"
-        app:cardCornerRadius="6dp">
-
-        <ImageView
-            android:id="@+id/iv_car"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="fitXY" />
+        android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -77,13 +71,19 @@
                 </LinearLayout>
 
             </LinearLayout>
-
+            <ImageView
+                android:id="@+id/iv_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:src="@mipmap/common_item_delete" />
             <com.example.qjh.comprehensiveactivity.utils.CircleCheckBox
                 android:id="@+id/cir_chbox"
                 android:layout_width="100dp"
-                android:layout_height="45dp"
+                android:layout_height="40dp"
                 android:layout_gravity="right|center_vertical"
-                android:layout_margin="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
                 android:paddingLeft="5dp"
                 app:borderThickness="2dp"
                 app:circleBorderColor="#00CFAD"
@@ -105,6 +105,14 @@
                 android:layout_gravity="bottom"
                 android:background="@color/Background" />
         </FrameLayout>
-    </android.support.v7.widget.CardView>
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/iv_car"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="fitXY" />
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
+
+

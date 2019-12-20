@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="12dp">
+
+    <ImageView
+        android:id="@+id/iv_headphoto"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginRight="12dp"
+        android:background="@mipmap/app_logos" />
+
+    <TextView
+        android:id="@+id/tv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/iv_headphoto"
+        android:text="知乎大神"
+        android:textColor="#3C3B3B"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="8dp"
+        android:text="2019年10月1日"
+        android:textColor="#888"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_time"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/iv_headphoto"
+        android:text="阿萨德撒"
+        android:textColor="@color/Black"
+        android:textSize="16sp" />
+
+
+
+</RelativeLayout>

@@ -12,8 +12,8 @@ public interface Constants {
 
 
     //final  String prefix="http://10.34.5.236:2080";
-    final public String prefix = "http://120.79.18.242:8080/test";
-    //  final public String prefix = "http://10.34.8.25:8080/test";
+    // final public String prefix = "http://120.79.18.242:8080/test";
+    final public String prefix = "http://10.34.7.132:8080/test";
 
     final String test = prefix + "/user/test";
     final String Login = prefix + "/user/login";
@@ -55,6 +55,23 @@ public interface Constants {
 
     //查找车辆
     final String FindMyCar = prefix + "/user/findMyCar";
+    //查出车辆信息
+    final String DeleteMyCar = prefix + "/user/deleteCar";
+
+    //查找最近车位，快速停车
+    final String QuickParklot = prefix + "/park/findClosePark";
+    //用户预订车位
+    final String OrderParklot = prefix + "/user/orderPark";
+
+    //评论车位
+    final String CommentParklot = prefix + "/user/commentPark";
+    //查找评论
+    final String FindCommentParklot = prefix + "/user/findComment";
+
+    //查看预约车位信息
+    final String FindorderParklot = prefix + "/user/findByOrderId";
+    //获取预约的车位信息
+    final String getOrderParklot = prefix + "/user/getOrderPark";
 
 
 }

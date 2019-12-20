@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/iv_carimage"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="170dp"
             android:scaleType="fitXY"
             android:src="@mipmap/text" />
 
@@ -54,7 +54,7 @@
                 android:layout_marginLeft="5dp"
                 android:text="2 元/时"
                 android:textColor="@color/Red"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -102,16 +102,17 @@
 
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/iv_commend"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
                 android:layout_toLeftOf="@+id/talk"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="5dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/iv_favorite"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -122,35 +123,32 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
-                    android:text="652"
-
-                    android:textSize="19dp" />
+                    android:text="评论"
+                    android:textSize="15dp" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/talk"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="5dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <ImageView
-
+                    android:id="@+id/iv_favorite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:src="@mipmap/common_item_zan" />
                 <TextView
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
                     android:text="652"
-
-                    android:textSize="19dp" />
+                    android:textSize="15dp" />
             </LinearLayout>
 
         </RelativeLayout>

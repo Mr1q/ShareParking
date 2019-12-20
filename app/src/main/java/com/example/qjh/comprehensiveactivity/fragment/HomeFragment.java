@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -51,6 +52,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -234,9 +236,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private int ID;
     private OnItemClickListener listener;
     private Request request;
-    private OkHttpClient okHttpClient=new OkHttpClient();
+    private OkHttpClient okHttpClient=new OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .build();
     private ParkingLot parkinglot;
     private LinearLayout ly_quickPark;
+    private FloatingActionButton fl_addcar;
 
 
     @Nullable
@@ -289,6 +295,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.ly_quickPark:
                 Intent intent=new Intent(getContext(), BookParkLotActivity.class);
+//                intent.getStringExtra()
                 startActivity(intent);
                 break;
         }
@@ -323,12 +330,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         ly_controlcar = (LinearLayout) view.findViewById(R.id.ly_controlcar);
         refresh_parklot = (SwipeRefreshLayout) view.findViewById(R.id.refresh_parklot);
         ly_quickPark = (LinearLayout) view.findViewById(R.id.ly_quickPark);
+        fl_addcar = (FloatingActionButton) view.findViewById(R.id.fl_addcar);
         ly_bookparlot.setOnClickListener(this);
         ly_controlcar.setOnClickListener(this);
         ly_quickPark.setOnClickListener(this);
         LinearLayoutManager linearLayout = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayout);
-//        text();
         getData();
         refresh_parklot.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -340,6 +347,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     }
                 }, 1000);//3秒后执行Runnable中的run方法
 
+            }
+        });
+        fl_addcar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), AddParkingLotActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -402,7 +416,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             parkingLot.setPark_name("12");
             parkingLot.setPark_ownerName("12");
             parkingLot.setPark_ownerId(1);
-            parkingLot.setPark_price(1);
+            parkingLot.setPark_price("1");
             parkingLot.setShare("1");
             parkingLot.setStatus("1");
 

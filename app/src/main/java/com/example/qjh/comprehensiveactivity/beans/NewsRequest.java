@@ -28,6 +28,28 @@ public class NewsRequest {
         return retValue;
     }
 
+    /**
+     *
+     * @return预约车辆请求
+     */
+    public String toStringFindOrderList() {
+        String retValue;
+        retValue = "?userId="+userId+"&pageNo="+pageNo+"&pageSize="+pageSize;
+        return retValue;
+    }
+
+    public String toStringFindCommentParkLot() {
+        String retValue;
+        retValue = "?parkId="+parkId;
+        return retValue;
+    }
+
+    //查找最近的车位
+    public String toStringFindClosePark() {
+        String retValue;
+        retValue = "?longitude="+longitude+"&latitude="+latitude+"&userId="+userId;
+        return retValue;
+    }
     public String getLongitude() {
         return longitude;
     }
@@ -82,7 +104,15 @@ public class NewsRequest {
     private String userId;  //用户ID
     private String pageNo;  //当前第几页
     private String pageSize; //当前页数
+    private  String parkId;//车位ID
 
+    public String getParkId() {
+        return parkId;
+    }
+
+    public void setParkId(String parkId) {
+        this.parkId = parkId;
+    }
 
     private String username;
 

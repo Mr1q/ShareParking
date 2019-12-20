@@ -33,6 +33,11 @@ import com.jph.takephoto.compress.CompressConfig;
 import com.jph.takephoto.model.CropOptions;
 import com.jph.takephoto.model.TResult;
 import com.jph.takephoto.permission.TakePhotoInvocationHandler;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.enums.PopupAnimation;
+import com.lxj.xpopup.impl.LoadingPopupView;
+import com.lxj.xpopup.interfaces.OnConfirmListener;
+import com.lxj.xpopup.interfaces.SimpleCallback;
 
 import org.json.JSONObject;
 
@@ -421,6 +426,8 @@ public class UserActivity extends TakePhotoActivity implements View.OnClickListe
         }
 
     }
+
+
 
 
 }

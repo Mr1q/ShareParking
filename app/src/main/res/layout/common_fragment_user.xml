@@ -131,6 +131,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
+                        android:id="@+id/ly_remain"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -151,6 +152,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ly_orderList"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"

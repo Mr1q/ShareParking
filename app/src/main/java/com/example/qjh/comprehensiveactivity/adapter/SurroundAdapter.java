@@ -30,6 +30,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<ParkingLot> items_List;
     private OnItemClickListener listener;
     private OnItemClickListenerAdd onItemClickListenerAdd;
+    private OnItemClickListenerAdd OnItemClickToCommend;
     private static final int VIEW = 1;
     private static final int ADD_VIEW = 2;
     private Context context;
@@ -87,6 +88,8 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public void OnItemClickToDetail(ParkingLot items);
 
+        public void OnItemClickToCommend(ParkingLot items);
+
         public void OnItemClick2(ParkingLot items, int id, Boolean Sch, SwitchButton switchButton);
     }
 
@@ -130,9 +133,9 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((SurroundAdapter.ViewHolderOne) viewHolder).tv_parkLotName.setText(items.getPark_name());
 
             ((ViewHolderOne) viewHolder).tv_address.setText(items.getPark_address());
-            ((ViewHolderOne) viewHolder).tv_price.setText(items.getPark_price()+"元/hour");
-            ((ViewHolderOne) viewHolder).tv_distance.setText("距离"+String.format("%.2f", items.getPark_distance())+"米");
-            
+            ((ViewHolderOne) viewHolder).tv_price.setText(items.getPark_price() + "元/hour");
+            ((ViewHolderOne) viewHolder).tv_distance.setText("距离" + String.format("%.2f", items.getPark_distance()) + "米");
+
 
             Glide.with(context).load(items.getParklotImage()).into(((SurroundAdapter.ViewHolderOne) viewHolder).iv_carimage);
             ((SurroundAdapter.ViewHolderOne) viewHolder).iv_carimage.setOnClickListener(new View.OnClickListener() {
@@ -178,6 +181,16 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     switchs = !switchs;
                 }
             });
+            ((ViewHolderOne) viewHolder).iv_commend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        int postition = viewHolder.getAdapterPosition();
+                        ParkingLot items = items_List.get(postition);
+                        listener.OnItemClickToCommend(items);
+                    }
+                }
+            });
 
         } else if (viewHolder instanceof ViewHolderTwo) {
             ViewHolderTwo viewHolderTwo = (ViewHolderTwo) viewHolder;
@@ -221,6 +234,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         TextView tv_distance;//距离
         ImageView iv_carimage;//车位图片
+        LinearLayout iv_commend;//评论
 
         TextView tv_price;//价格
         View view;
@@ -240,6 +254,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             iv_carimage = (ImageView) itemView.findViewById(R.id.iv_carimage);
             iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
             ly_nagivation = (LinearLayout) itemView.findViewById(R.id.ly_nagivation);
+            iv_commend = (LinearLayout) itemView.findViewById(R.id.iv_commend);
 //            iv_delete = (ImageView) itemView.findViewById(R.id.iv_delete);
 //            switch_share = (SwitchButton) itemView.findViewById(R.id.switch_share);  //共享
 //            switch_open = (SwitchButton) itemView.findViewById(R.id.switch_open);//开关

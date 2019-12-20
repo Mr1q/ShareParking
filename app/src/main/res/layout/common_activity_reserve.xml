@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/White"
     android:orientation="vertical"
     >
 
@@ -68,33 +69,14 @@
                     android:id="@+id/tv_parklotName"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
+                    android:text="点击获取车位名称"
+                    android:textColor="@color/Black"
                     android:background="@drawable/common_user_select"
-                    android:gravity="center_horizontal"
-                    android:spinnerMode="dialog" />
+                    android:gravity="center"
+                   />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="预定日期:"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/tv_date"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_horizontal"
-                    android:text="2016-05-09"
-                    android:textColor="@android:color/black" />
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -106,7 +88,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="预定时间:"
+                    android:text="预定日期:"
                     android:textSize="18sp" />
 
                 <TextView
@@ -114,7 +96,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
-                    android:gravity="center_horizontal"
+                    android:gravity="center"
                     android:text="18:00"
                     android:textColor="@android:color/black" />
             </LinearLayout>
@@ -136,18 +118,43 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
-                    android:gravity="center_horizontal"
-                    android:text="18:00"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/Red" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="车牌号:"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/tv_CarNumber"
+                    android:layout_width="0dp"
+                    android:background="@drawable/nsdk_drawable_divider_group"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textSize="@dimen/navi_dimens_13dp"
+                    android:gravity="center"
+                    android:text="选择车牌号"
                     android:textColor="@android:color/black" />
             </LinearLayout>
             <Button
                 android:id="@+id/bt_book"
-                style="?android:attr/borderlessButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
                 android:background="#337ab7"
                 android:text="预约"
+                android:textSize="15dp"
                 android:textColor="@android:color/white" />
 
 

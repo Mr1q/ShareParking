@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,22 +21,16 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.navisdk.ui.widget.likebutton.Utils;
 import com.example.qjh.comprehensiveactivity.R;
-import com.example.qjh.comprehensiveactivity.activity.AddParkingLotActivity;
 import com.example.qjh.comprehensiveactivity.activity.DetailParklotActivity;
 import com.example.qjh.comprehensiveactivity.activity.LoginActivity;
 import com.example.qjh.comprehensiveactivity.activity.MapActivity;
-import com.example.qjh.comprehensiveactivity.adapter.MyParkingLotAdapter;
 import com.example.qjh.comprehensiveactivity.adapter.SurroundAdapter;
 import com.example.qjh.comprehensiveactivity.beans.BaseResponse;
 import com.example.qjh.comprehensiveactivity.beans.NewsRequest;
@@ -46,10 +39,6 @@ import com.example.qjh.comprehensiveactivity.constant.Constants;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.enums.PopupAnimation;
-import com.lxj.xpopup.impl.LoadingPopupView;
-import com.lxj.xpopup.interfaces.OnConfirmListener;
-import com.lxj.xpopup.interfaces.SimpleCallback;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
@@ -62,17 +51,13 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.internal.Util;
 
 public class SurroundFragment extends Fragment {
     public static final String EXTRA_LOG = "EXTRA_LOG";
@@ -125,6 +110,11 @@ public class SurroundFragment extends Fragment {
                         public void OnItemClickToDetail(ParkingLot items) {
                             Intent intent = new Intent(getContext(), DetailParklotActivity.class);
                             startActivity(intent);
+                        }
+
+                        @Override
+                        public void OnItemClickToCommend(ParkingLot items) {
+                            toRecommend(items);
                         }
 
                         @Override
@@ -264,6 +254,7 @@ public class SurroundFragment extends Fragment {
     }
 
     private void getData(Boolean loadMore) {
+        //todo:提示用户输入
         NewsRequest newsRequest = new NewsRequest();
         newsRequest.setDistance("100");//提示用户输入
         newsRequest.setLatitude(latitude);
@@ -330,7 +321,7 @@ public class SurroundFragment extends Fragment {
             parkingLot.setPark_name("12");
             parkingLot.setPark_ownerName("12");
             parkingLot.setPark_ownerId(1);
-            parkingLot.setPark_price(1);
+            parkingLot.setPark_price("1");
             parkingLot.setShare("1");
             parkingLot.setStatus("1");
             parkingLot.setParklotImage("http://pic1.win4000.com/wallpaper/8/5804428543900.jpg");
@@ -403,4 +394,13 @@ public class SurroundFragment extends Fragment {
             Log.d("location_class", "onReceiveLocation: " + longitude);
         }
     }
+
+    private void toRecommend(ParkingLot parkingLot)
+    {
+        new XPopup.Builder(getContext())
+                .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+                .asCustom(new BottomCommentPopup(getContext(),parkingLot.getPark_id())/*.enableDrag(false)*/)
+                .show();
+    }
+
 }

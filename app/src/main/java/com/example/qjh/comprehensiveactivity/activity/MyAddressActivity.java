@@ -38,6 +38,9 @@ public class MyAddressActivity extends BaseActivity implements View.OnClickListe
     private TextView tv_lat;
     private TextView tv_log;
     private TextView tv_area;
+    public static String log;
+    public static String lat;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -159,9 +162,13 @@ public class MyAddressActivity extends BaseActivity implements View.OnClickListe
             //获取纬度信息
             //mapView 销毁后不在处理新接收的位置
 
+
             double latitude = location.getLatitude();
             //获取经度信息
             double longitude = location.getLongitude();
+
+            log=String.valueOf(longitude);
+            lat= String.valueOf(latitude);
             tv_lat.setText(String.valueOf(latitude));
             tv_log.setText(String.valueOf(longitude));
             tv_area.setText(String.valueOf(location.getLocationDescribe()));

@@ -31,6 +31,17 @@ public class User {
     @SerializedName("headPhotoURL")
     private String headPhotoURL;
 
+    @SerializedName("car_number")
+    private String car_number;
+
+    public String getCar_number() {
+        return car_number;
+    }
+
+    public void setCar_number(String car_number) {
+        this.car_number = car_number;
+    }
+
     public String getHeadPhotoURL() {
         return prefix + headPhotoURL;
     }

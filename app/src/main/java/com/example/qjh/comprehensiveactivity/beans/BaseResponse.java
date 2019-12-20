@@ -8,6 +8,7 @@ public class BaseResponse<T> {
     public final static int RESPONSE_SUCCESS = 0;
     @SerializedName("parkData")
     private T data;
+
     @SerializedName("userData")
     private T userData;
 

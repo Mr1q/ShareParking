@@ -26,6 +26,7 @@ import com.example.qjh.comprehensiveactivity.utils.DialogUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.enums.PopupAnimation;
 import com.lxj.xpopup.impl.LoadingPopupView;
 import com.lxj.xpopup.interfaces.OnConfirmListener;
 import com.lxj.xpopup.interfaces.SimpleCallback;
@@ -40,8 +41,10 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.baidu.navisdk.module.future.interfaces.FutureTripParams.LoadingState.FAIL;
@@ -62,61 +65,230 @@ public class MyCarActivity extends BaseActivity implements View.OnClickListener 
     private JSONObject jsonObject;
     private final int SUCCESS = 1;
     private final int UNSUCCESS = -1;
+    private final int DELETE_SUCCESS = 2;
+    private final int DELETE_FAIL = -2;
+    private final int SETDEFAULT_SUCCESS = 3;
+    private final int SETDEFAULT_FAIL = -3;
+    private LoadingPopupView loadingPopup;
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case SUCCESS:
-                    carAllAdapter = new CarAllAdapter(carArrayList,MyCarActivity.this);
+                    carAllAdapter = new CarAllAdapter(carArrayList, MyCarActivity.this);
                     rl_allcar.setAdapter(carAllAdapter);
+                    carAllAdapter.notifyDataSetChanged();
                     carAllAdapter.setOnItemClick(new CarAllAdapter.OnItemClickListener() {
                         @Override
                         public void OnItemClick(Car items, int postition) {
-                            final LoadingPopupView loadingPopup = (LoadingPopupView) new XPopup.Builder(MyCarActivity.this)
-                                    .dismissOnBackPressed(false)
-                                    .asLoading("正在保存中")
+                             new XPopup.Builder(MyCarActivity.this)
+                                    .popupAnimation(PopupAnimation.ScaleAlphaFromCenter)
+                                    .setPopupCallback(new SimpleCallback() {
+                                        //如果你自己想拦截返回按键事件，则重写这个方法，返回true即可
+                                        @Override
+                                        public boolean onBackPressed() {
+                                            // ToastUtils.showShort("我拦截的返回按键，按返回键XPopup不会关闭了");
+                                            return false;
+                                        }
+                                    }).asConfirm("提醒", "是否设置默认！！！！0.0",
+                                    "取消", "确定",
+                                    new OnConfirmListener() {
+                                        @Override
+                                        public void onConfirm() {
+                                              loadingPopup = (LoadingPopupView)
+                                                    new XPopup.Builder(MyCarActivity.this)
+                                                            .dismissOnBackPressed(false)
+                                                            .asLoading("正在保存中")
+                                                            .show();
+                                            toSetDefaultCar(items);
+
+                                        }
+                                    }, null, false)
                                     .show();
-                            loadingPopup.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    loadingPopup.setTitle("正在加载。。。");
-                                }
-                            }, 1000);
-                            for (int i = 0; i < carArrayList.size(); i++) {
-                                Log.d("OnItemClick", "OnItemClick: " + carArrayList.get(i).getAlways());
-                                if (i == postition) {
-                                    if (carArrayList.get(i).equals("0")) {
-                                        carArrayList.get(i).setAlways("0");
-                                    } else {
-                                        carArrayList.get(i).setAlways("1");
-                                    }
-                                } else {
-                                    if (carArrayList.get(i).equals("0")) {
-                                        carArrayList.get(i).setAlways("0");
-                                    }
-                                }
-                            }
+
+//                            final LoadingPopupView loadingPopup = (LoadingPopupView) new XPopup.Builder(MyCarActivity.this)
+//                                    .dismissOnBackPressed(false)
+//                                    .asLoading("正在保存中")
+//                                    .show();
+//                            loadingPopup.postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    loadingPopup.setTitle("正在加载。。。");
+//                                }
+//                            }, 1000);
+//                            for (int i = 0; i < carArrayList.size(); i++) {
+//                                Log.d("OnItemClick", "OnItemClick: " + carArrayList.get(i).getAlways());
+//                                if (i == postition) {
+//                                    if (carArrayList.get(i).equals("0")) {
+//                                        carArrayList.get(i).setAlways("0");
+//                                    } else {
+//                                        carArrayList.get(i).setAlways("1");
+//                                    }
+//                                } else {
+//                                    if (carArrayList.get(i).equals("0")) {
+//                                        carArrayList.get(i).setAlways("0");
+//                                    }
+//                                }
+//                            }
                             carAllAdapter.notifyDataSetChanged();
-                            loadingPopup.delayDismissWith(3000, new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast("保存成功！！！");
-                                }
-                            });
+//                            loadingPopup.delayDismissWith(3000, new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    //Toast("保存成功！！！");
+//                                }
+//                            });
+                        }
+
+                        @Override
+                        public void OnLongItemClick(Car items) {
+                            new XPopup.Builder(MyCarActivity.this)
+                                    .popupAnimation(PopupAnimation.ScaleAlphaFromCenter)
+                                    .setPopupCallback(new SimpleCallback() {
+                                        //如果你自己想拦截返回按键事件，则重写这个方法，返回true即可
+                                        @Override
+                                        public boolean onBackPressed() {
+                                            // ToastUtils.showShort("我拦截的返回按键，按返回键XPopup不会关闭了");
+                                            return false;
+                                        }
+                                    }).asConfirm("提醒", "是否删除！！！！0.0",
+                                    "取消", "确定",
+                                    new OnConfirmListener() {
+                                        @Override
+                                        public void onConfirm() {
+                                            final LoadingPopupView loadingPopup = (LoadingPopupView)
+                                                    new XPopup.Builder(MyCarActivity.this)
+                                                            .dismissOnBackPressed(false)
+                                                            .asLoading("正在删除中")
+                                                            .show();
+                                            loadingPopup.delayDismissWith(800, new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    toDelete(items);
+                                                }
+                                            });
+                                        }
+                                    }, null, false)
+                                    .show();
+
                         }
                     });
-                   // Toast.makeText(MyCarActivity.this, "创建成功！！！", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(MyCarActivity.this, "创建成功！！！", Toast.LENGTH_SHORT).show();
                     break;
                 case UNSUCCESS:
                     Toast.makeText(MyCarActivity.this, "创建失败！！！", Toast.LENGTH_SHORT).show();
                     break;
+                case DELETE_FAIL:
+                    Toast.makeText(MyCarActivity.this, "删除失败！！！", Toast.LENGTH_SHORT).show();
+                    break;
+                case DELETE_SUCCESS:
+                    getData();
 
+                    Toast.makeText(MyCarActivity.this, "删除成功！！！", Toast.LENGTH_SHORT).show();
+                    break;
+                case SETDEFAULT_FAIL:
+                    getData();
+                    Toast.makeText(MyCarActivity.this, "设置默认失败！！！", Toast.LENGTH_SHORT).show();
+                    break;
+                case SETDEFAULT_SUCCESS:
+                    getData();
+                    loadingPopup.dismiss();
+                    Toast.makeText(MyCarActivity.this, "设置默认成功！！！", Toast.LENGTH_SHORT).show();
+                    break;
 
             }
         }
     };
 
+
+    private void toDelete(Car car) {
+
+        RequestBody requestBody = new FormBody.Builder()
+                .add("carId", car.getCarId())
+                .add("carNumber",car.getCarNumber())
+                .add("userId",LoginActivity.ID)
+                .build();
+
+        request = new Request.Builder().
+                url(Constants.DeleteMyCar).
+                post(requestBody).
+                build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if (response.isSuccessful()) {
+                        String body = response.body().string();
+                        Log.d("onResponse_body", "onResponse: " + body);
+                        Gson gson = new Gson();
+                        JSONObject jsonObject = new JSONObject(body);
+                        String state = jsonObject.optString("state");
+                        if (state.equals("0")) {
+                            handler.sendEmptyMessage(DELETE_FAIL);
+                        } else {
+                            if(car.getAlways().equals("1"))
+                            {
+                                LoginActivity.defaultCar="";
+                            }
+                            handler.sendEmptyMessage(DELETE_SUCCESS);
+                        }
+                    } else {
+                        handler.sendEmptyMessage(DELETE_FAIL);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+    private void toSetDefaultCar(Car car) {
+
+        RequestBody requestBody = new FormBody.Builder()
+                .add("userId", LoginActivity.ID)
+                .add("carNumber", car.getCarNumber())
+                .add("carId", car.getCarId())
+                .build();
+        request = new Request.Builder().
+                url(Constants.SetDefaultCar).
+                post(requestBody).
+                build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    String body = response.body().string();
+                    Log.d("onResponse_class", "onResponse: " + body);
+                    if (response.isSuccessful()) {
+                        Gson gson = new Gson();
+                        JSONObject jsonObject = new JSONObject(body);
+                        String state = jsonObject.optString("state");
+                        if (state.equals("0")) {
+                            handler.sendEmptyMessage(SETDEFAULT_FAIL);
+                        } else {
+                            LoginActivity.defaultCar=car.getCarNumber();
+                            handler.sendEmptyMessage(SETDEFAULT_SUCCESS);
+                        }
+                    } else {
+                        handler.sendEmptyMessage(SETDEFAULT_FAIL);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -153,10 +325,9 @@ public class MyCarActivity extends BaseActivity implements View.OnClickListener 
                         if (state.equals("0")) {
                             handler.sendEmptyMessage(FAIL);
                         } else {
-
                             Type jsontype = new TypeToken<BaseResponse<List<Car>>>() {
                             }.getType();
-                            BaseResponse<List<Car>> car =gson.fromJson(body, jsontype);
+                            BaseResponse<List<Car>> car = gson.fromJson(body, jsontype);
                             carArrayList.clear();
                             for (Car parkingLot : car.getCarData()) {
                                 carArrayList.add(parkingLot);
@@ -203,9 +374,10 @@ public class MyCarActivity extends BaseActivity implements View.OnClickListener 
         switch (requestCode) {
             case SUCCESSS:
                 if (resultCode == RESULT_OK) {
-                   // Car car = new Car(data.getStringExtra(AddCarActivity.CARNUMBER), "", false);
-                   // carArrayList.add(car);
-                    carAllAdapter.notifyDataSetChanged();
+                    getData();
+                    // Car car = new Car(data.getStringExtra(AddCarActivity.CARNUMBER), "", false);
+                    // carArrayList.add(car);
+//                    carAllAdapter.notifyDataSetChanged();
                 }
                 break;
         }

@@ -28,7 +28,7 @@ public class Car {
     @SerializedName("car_photoURL")
     String car_photoURL;
 
-    final public String prefix = "http://120.79.18.242:8080/test";
+    final public String prefix = "http://120.79.18.242:8080/test/";
 
     public String getCarNumber() {
         return carNumber;

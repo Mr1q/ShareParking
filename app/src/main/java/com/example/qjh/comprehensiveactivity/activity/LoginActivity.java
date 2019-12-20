@@ -64,6 +64,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public static final String EXTRA_KEY_User_PASSWORD = "EXTRA_KEY_User_PASSWORD";
     public static final String EXTRA_KEY_User_CHECKED = "EXTRA_KEY_User_CHECKED";
     public static final String EXTRA_KEY_User_PHOTO = "EXTRA_KEY_User_PHOTO";
+    public static final String EXTRA_KEY_User_DEFAULTCAR = "EXTRA_KEY_User_DEFAULTCAR";
     //持久化技术
     public static SharedPreferences sharedPreferences;
     public SharedPreferences.Editor editor;
@@ -71,6 +72,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     public  static  String ID; //用户ID
     public  static  String Username;//用户名
+    public  static  String defaultCar;//默认车牌号
+    public  static  String userHeadPhoto;//用户头像路径
 
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -88,6 +91,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         editor.putString(EXTRA_KEY_User_ADDTIME, user.getMyaddtime());
                         editor.putString(EXTRA_KEY_User_PASSWORD, user.getMypasswprd());
                         editor.putString(EXTRA_KEY_User_PHOTO, user.getHeadPhotoURL());
+                        editor.putString(EXTRA_KEY_User_DEFAULTCAR, user.getCar_number());
                     } else {
                         editor.clear();
                     }
@@ -102,8 +106,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     intent.putExtra(EXTRA_KEY_User_ADDTIME, user.getMyaddtime());
                     intent.putExtra(EXTRA_KEY_User_PASSWORD, user.getMypasswprd());
                     intent.putExtra(EXTRA_KEY_User_PHOTO, user.getHeadPhotoURL());
+                    intent.putExtra(EXTRA_KEY_User_DEFAULTCAR, user.getCar_number());
                     ID=user.getMyid();
                     Username=user.getMyusername();
+                    defaultCar=user.getCar_number();
+                    userHeadPhoto=user.getHeadPhotoURL();
                     startActivity(intent);
                     finish();
                     break;
@@ -151,6 +158,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             String addtime = sharedPreferences.getString(EXTRA_KEY_User_ADDTIME, "");
             String pasword = sharedPreferences.getString(EXTRA_KEY_User_PASSWORD, "");
             String photo = sharedPreferences.getString(EXTRA_KEY_User_PHOTO, "");
+            String defaultCars = sharedPreferences.getString(EXTRA_KEY_User_DEFAULTCAR, "");
             Intent intent = new Intent(LoginActivity.this, TotalActivity.class);
             intent.putExtra(EXTRA_KEY_User_USERNAME, username);
             intent.putExtra(EXTRA_KEY_User_PHONE, phone);
@@ -160,8 +168,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             intent.putExtra(EXTRA_KEY_User_ADDTIME, addtime);
             intent.putExtra(EXTRA_KEY_User_PASSWORD, pasword);
             intent.putExtra(EXTRA_KEY_User_PHOTO, photo);
+            intent.putExtra(EXTRA_KEY_User_DEFAULTCAR, defaultCar);
             ID=myid;
             Username=username;
+            defaultCar=defaultCars;
+            userHeadPhoto=photo;
             startActivity(intent);
             finish();
 

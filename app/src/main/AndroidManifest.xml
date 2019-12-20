@@ -31,7 +31,7 @@
 
     <!-- 允许程序访问额外的定位提供者指令获取模拟定位信息 -->
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
 
     <!-- 更改wifi连状态 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -78,6 +78,7 @@
         <activity android:name=".activity.BookParkLotActivity"/>
         <activity android:name=".activity.ParkHistoryActivity"/>
         <activity android:name=".activity.RecommendActivity"/>
+        <activity android:name=".activity.OrderListActivity"/>
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

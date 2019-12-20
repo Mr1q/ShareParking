@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ import com.example.qjh.comprehensiveactivity.activity.AboutAppActivity;
 import com.example.qjh.comprehensiveactivity.activity.LoginActivity;
 import com.example.qjh.comprehensiveactivity.activity.MyAddressActivity;
 import com.example.qjh.comprehensiveactivity.activity.MyCarActivity;
+import com.example.qjh.comprehensiveactivity.activity.OrderListActivity;
 import com.example.qjh.comprehensiveactivity.activity.ParkHistoryActivity;
 import com.example.qjh.comprehensiveactivity.activity.RecommendActivity;
 import com.example.qjh.comprehensiveactivity.activity.SettingActivity;
@@ -37,6 +39,9 @@ import com.example.qjh.comprehensiveactivity.activity.UserActivity;
 import com.example.qjh.comprehensiveactivity.controler.ActivityCollecter;
 import com.example.qjh.comprehensiveactivity.controler.BaseActivity;
 import com.example.qjh.comprehensiveactivity.utils.CreamUtils;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.enums.PopupAnimation;
+import com.lxj.xpopup.interfaces.SimpleCallback;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,10 +59,10 @@ import static android.support.constraint.Constraints.TAG;
 import android.support.v7.widget.Toolbar;
 
 public class UserFragment extends Fragment implements View.OnClickListener {
+
     private final int SUCCESS = 110;
     private RelativeLayout user_enter;
     private TextView userName;
-
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private String phone;
@@ -72,8 +77,10 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rl_mycars;
     private RelativeLayout rl_myaddress;
     private RelativeLayout rl_advice;
+    private LinearLayout ly_orderList; //订单记录
     public TextView station_id;
     public Button bt_userfragment_logout;
+    public LinearLayout ly_remain;//剩余金额
     public static String stationid;
     private String Id;
     private String photo;
@@ -109,8 +116,10 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         userName = (TextView) view.findViewById(R.id.User_Msg);
         message_image = (CircleImageView) view.findViewById(R.id.message_image);
         setting = (RelativeLayout) view.findViewById(R.id.settings);
+        ly_orderList = (LinearLayout) view.findViewById(R.id.ly_orderList);
         rl_mycars = (RelativeLayout) view.findViewById(R.id.rl_mycars);
         rl_myaddress = (RelativeLayout) view.findViewById(R.id.rl_myaddress);
+        ly_remain = (LinearLayout) view.findViewById(R.id.ly_remain);
         rl_advice = (RelativeLayout) view.findViewById(R.id.rl_advice);
         rl_history = (RelativeLayout) view.findViewById(R.id.rl_history);
         about_app = (RelativeLayout) view.findViewById(R.id.about_app);
@@ -156,6 +165,8 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         rl_myaddress.setOnClickListener(this);
         rl_history.setOnClickListener(this);
         rl_advice.setOnClickListener(this);
+        ly_remain.setOnClickListener(this);
+        ly_orderList.setOnClickListener(this);
     }
 
 
@@ -224,6 +235,13 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                 intent2 = new Intent(getContext(), RecommendActivity.class);
                 startActivity(intent2);
                 break;
+            case R.id.ly_remain:
+                toConfirm();
+                break;
+            case R.id.ly_orderList:
+                intent2 = new Intent(getContext(), OrderListActivity.class);
+                startActivity(intent2);
+                break;
         }
     }
 
@@ -245,4 +263,12 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void toConfirm()
+    {
+        new XPopup.Builder(getContext())
+                .popupAnimation(PopupAnimation.ScaleAlphaFromCenter)
+                .setPopupCallback(new SimpleCallback()).asConfirm("提醒", "剩余金额:100元",
+                "取消", "确定",null,null, false)
+                .show();
+    }
 }
