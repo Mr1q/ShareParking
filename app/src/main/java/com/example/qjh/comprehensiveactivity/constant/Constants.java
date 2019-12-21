@@ -1,6 +1,7 @@
 package com.example.qjh.comprehensiveactivity.constant;
 
 
+import com.baidu.mapframework.nirvana.annotation.GET;
 import com.baidu.mapframework.nirvana.annotation.POST;
 
 /**
@@ -13,7 +14,8 @@ public interface Constants {
 
     //final  String prefix="http://10.34.5.236:2080";
     // final public String prefix = "http://120.79.18.242:8080/test";
-    final public String prefix = "http://10.34.7.132:8080/test";
+   // final public String prefix = "http://10.34.7.132:8080/test";
+    final public String prefix = "http://192.168.43.61:8080/test";
 
     final String test = prefix + "/user/test";
     final String Login = prefix + "/user/login";
@@ -72,6 +74,24 @@ public interface Constants {
     final String FindorderParklot = prefix + "/user/findByOrderId";
     //获取预约的车位信息
     final String getOrderParklot = prefix + "/user/getOrderPark";
+    //获取使用结束记录
+    final String getUsedParklot = prefix + "/user/getUsedPark";
 
+    //打开订单车位
+    final String OpenOrderParklot = prefix + "/user/useOrderPark";
+    //上锁结束订单
+    final String CloseOrderParklot = prefix + "/user/endOrderPark";
+
+    //收藏停车位
+    final String CollectParklot = prefix + "/user/collectPark";
+
+    //取消停车位
+    final String CancelCollectParklot = prefix + "/user/cancelCollect";
+    //获取收藏记录
+    final String CollectParklotHistory = prefix + "/user/collectPark";
+    //查找所有分享车位
+    final String FindAllPark = prefix + "/park/findAllPark";
+    //查找所有分享车位
+    final String Advice = prefix + "/user/suggestion";
 
 }

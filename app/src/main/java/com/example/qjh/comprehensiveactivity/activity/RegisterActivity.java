@@ -20,7 +20,10 @@ import com.example.qjh.comprehensiveactivity.constant.Constants;
 import com.example.qjh.comprehensiveactivity.controler.BaseActivity;
 import com.example.qjh.comprehensiveactivity.utils.Code;
 import com.example.qjh.comprehensiveactivity.utils.CreamUtils;
+import com.example.qjh.comprehensiveactivity.utils.LoginRegisterUtils;
 import com.google.gson.Gson;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.impl.LoadingPopupView;
 
 import org.json.JSONObject;
 
@@ -54,15 +57,19 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SUCCESS:
+                    loadingPopup.dismiss();
                     Toast("注册成功");
                     finish();
                     break;
                 case FAIL:
+                    loadingPopup.dismiss();
                     Toast("注册失败");
                     break;
             }
         }
     };
+    private LoadingPopupView loadingPopup;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +131,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             //注册按钮
             case R.id.bt_register:
                 if (isOk()) {
+                    loadingPopup = (LoadingPopupView) new XPopup.Builder(RegisterActivity.this)
+                            .dismissOnBackPressed(false)
+                            .asLoading("正在加载中")
+                            .show();
                     toRegister();
                 }else
                 {
@@ -148,7 +159,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private void toRegister() {
         RequestBody requestBody = new FormBody.Builder()
                 .add("username", et_register_username.getText().toString().trim())
-                .add("password", et_register_password.getText().toString().trim())
+                .add("password", LoginRegisterUtils.getMD5(et_register_password.getText().toString().trim()))
                 .build();
         request = new Request.Builder().
                 url(Constants.Register)

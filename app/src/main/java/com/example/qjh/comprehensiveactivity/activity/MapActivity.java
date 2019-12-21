@@ -47,17 +47,35 @@ import com.baidu.navisdk.adapter.IBaiduNaviManager;
 import com.example.qjh.comprehensiveactivity.Baiduapi.DemoGuideActivity;
 import com.example.qjh.comprehensiveactivity.Baiduapi.ForegroundService;
 import com.example.qjh.comprehensiveactivity.R;
+import com.example.qjh.comprehensiveactivity.adapter.HistoryAdapter;
+import com.example.qjh.comprehensiveactivity.beans.BaseResponse;
+import com.example.qjh.comprehensiveactivity.beans.NewsRequest;
+import com.example.qjh.comprehensiveactivity.beans.Order;
+import com.example.qjh.comprehensiveactivity.beans.ParkingLot;
+import com.example.qjh.comprehensiveactivity.constant.Constants;
 import com.example.qjh.comprehensiveactivity.controler.BaseActivity;
 import com.example.qjh.comprehensiveactivity.controler.PagerBottomPopup;
 import com.example.qjh.comprehensiveactivity.fragment.SurroundFragment;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.lxj.xpopup.XPopup;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 
 /**
- * 
  * 地图导航
  */
 public class MapActivity extends BaseActivity {
@@ -69,6 +87,50 @@ public class MapActivity extends BaseActivity {
     private TextView tv_parkLotName;
 
     private BaiduMap baiduMap;
+
+    private Request request;
+    private OkHttpClient okHttpClient = new OkHttpClient();
+    private final int SUCCESS = 1;
+    private final int FAIL = -1;
+    private List<ParkingLot> parkingLots = new ArrayList<>();
+
+    private Handler handler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case SUCCESS:
+                    //定义Maker坐标点
+                    Toast("获取成功");
+                    BitmapDescriptor bitmap = BitmapDescriptorFactory
+                            .fromResource(R.mipmap.common_fragment_map_marker);
+                    for (int i = 0; i < parkingLots.size(); i++) {
+                        LatLng point = new LatLng(Double.valueOf(parkingLots.get(i).getPark_latitude())
+                                , Double.valueOf(parkingLots.get(i).getPark_longitude()));
+                        OverlayOptions option = new MarkerOptions()
+                                .position(point)
+                                .icon(bitmap);
+                        Bundle mBundle = new Bundle();
+                        mBundle.putString("id", parkingLots.get(i).getPark_id());
+                        mBundle.putString("price", parkingLots.get(i).getPark_price());
+                        mBundle.putString("parkName", parkingLots.get(i).getPark_name());
+                        mBundle.putString("lat", parkingLots.get(i).getPark_latitude());
+                        mBundle.putString("lot", parkingLots.get(i).getPark_longitude());
+                        baiduMap.addOverlay(option);
+                        Marker marker = (Marker) baiduMap.addOverlay(option);
+                        marker.setExtraInfo(mBundle);
+                    }
+
+//                    parkingLots
+                    break;
+                case FAIL:
+
+                    break;
+            }
+        }
+    };
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,71 +140,102 @@ public class MapActivity extends BaseActivity {
         startService(new Intent(this, ForegroundService.class));
         //初始化程序
         intitData();
-        Intent intent=getIntent();
+        Intent intent = getIntent();
         Doing();
         requestPermission();
         initLocationOption();
-        //定义Maker坐标点
-        LatLng point = new LatLng(25.320883, 110.423171);
-        LatLng point2 = new LatLng(25.320583, 110.422271);
-        //构建Marker图标
-        BitmapDescriptor bitmap = BitmapDescriptorFactory
-                .fromResource(R.mipmap.common_fragment_map_marker);
-        //构建MarkerOption，用于在地图上添加Marker
-        OverlayOptions option = new MarkerOptions()
-                .position(point)
-                .icon(bitmap);
-        OverlayOptions option2 = new MarkerOptions()
-                .position(point2)
-                .icon(bitmap);
+        getData();
 
-       if(intent!=null)
-       {
-           if(intent.getStringExtra(SurroundFragment.EXTRA_LAT)!=null)
-           {
-               LatLng point3 = new LatLng(Double.valueOf(intent.getStringExtra(SurroundFragment.EXTRA_LAT))
-                       ,Double.valueOf(  intent.getStringExtra(SurroundFragment.EXTRA_LOG)));
-               OverlayOptions option3 = new MarkerOptions()
-                       .position(point3)
-                       .icon(bitmap);
-               MapStatus.Builder builder = new MapStatus.Builder();
-               builder.target(point3).zoom(18.0f);
-               baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
-               Bundle mBundle = new Bundle();
-               mBundle.putInt("id", 1);
-               Marker marker=(Marker) baiduMap.addOverlay(option3);
-               marker.setExtraInfo(mBundle);
-           }
+        if (intent != null) {
+            if (intent.getStringExtra(SurroundFragment.EXTRA_LAT) != null) {
+                LatLng point3 = new LatLng(Double.valueOf(intent.getStringExtra(SurroundFragment.EXTRA_LAT))
+                        , Double.valueOf(intent.getStringExtra(SurroundFragment.EXTRA_LOG)));
+                String address = intent.getStringExtra(SurroundFragment.EXTRA_ADDRESS);
+                String parkname = intent.getStringExtra(SurroundFragment.EXTRA_PARNAME);
+                String id = intent.getStringExtra(SurroundFragment.EXTRA_ID);
+                tv_parklotAddress.setText(address);
+                tv_parkLotName.setText(parkname);
+//               OverlayOptions option3 = new MarkerOptions()
+//                       .position(point3)
+//                       .icon(bitmap);
+                MapStatus.Builder builder = new MapStatus.Builder();
+                builder.target(point3).zoom(18.0f);
+                baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
 
-       }
+            }
+
+            //地图点击
+            if (intent.getStringExtra(SurroundFragment.EXTRA_MYADDRESS) != null) {
+
+                locationClient.start();
+            }
+            //导航
+            if (intent.getStringExtra(BookParkLotActivity.EXTRA_NAVI) != null) {
+
+                Tonavigate(MyAddressActivity.log, MyAddressActivity.lat,
+                        intent.getStringExtra("lot"), intent.getStringExtra("lat"));
+//               locationClient.start();
+            }
 
 
-        baiduMap.addOverlay(option);
-        baiduMap.addOverlay(option2);
+        }
+
         baiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             //marker被点击时回调的方法
             //若响应点击事件，返回true，否则返回false
             //默认返回false
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Bundle bundle=marker.getExtraInfo();
+
+                Bundle bundle = marker.getExtraInfo();
+                Toast(bundle.getString("id"));
+                Intent intent1 = new Intent(MapActivity.this, BookParkLotActivity.class);
+
+                intent1.putExtra("price", bundle.getString("price"));
+                intent1.putExtra("parkId", bundle.getString("id"));
+                intent1.putExtra("parkName", bundle.getString("parkName"));
+                intent1.putExtra("lat", bundle.getString("lat"));
+                intent1.putExtra("lot", bundle.getString("lot"));
+                startActivityForResult(intent1, 1);
+
+                // startActivityForResult(intent1, 1);
+                //TODO   这里要设置OK
+
 //                if(bundle.getInt("id")==1)
 //                {
 //                    Toast("1");
 //                }
-                new XPopup.Builder(MapActivity.this)
-                        .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
-                        .asCustom(new PagerBottomPopup(MapActivity.this))
-                        .show();
+                //todo这里要获取信息
+//                Intent intent1=new Intent(MapActivity.this,BookParkLotActivity.class);
+//                startActivity(intent1);
+//                new XPopup.Builder(MapActivity.this)
+//                        .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+//                        .asCustom(new PagerBottomPopup(MapActivity.this))
+//                        .show();
 
                 return true;
             }
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 1:
+                Toast("123");
+                if (resultCode == RESULT_OK) {
+                    Toast("1234");
+                    Tonavigate(MyAddressActivity.log, MyAddressActivity.lat,
+                            data.getStringExtra("lot"), data.getStringExtra("lat"));
+                }
+                break;
+        }
+    }
+
     private void intitData() {
         mapView = findViewById(R.id.mapview);
-        common_fa_loc = (FloatingActionButton)findViewById(R.id.common_fa_loc);
+        common_fa_loc = (FloatingActionButton) findViewById(R.id.common_fa_loc);
         tv_parklotAddress = (TextView) findViewById(R.id.tv_parklotAddress);
         tv_parkLotName = (TextView) findViewById(R.id.tv_parkLotName);
     }
@@ -158,13 +251,13 @@ public class MapActivity extends BaseActivity {
 //                baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
                 locationClient.start();
                 Log.d("location_class", "onReceiveLocation: 启动");
-                Tonavigate();
+                //   Tonavigate();
             }
         });
 
     }
-    private void Tonavigate()
-    {
+
+    private void Tonavigate(String log1, String lat1, String log2, String lat2) {
 
         BaiduNaviManagerFactory.getBaiduNaviManager().init(this,
                 "qjh", "com.example.qjh.comprehensiveactivity",
@@ -172,19 +265,18 @@ public class MapActivity extends BaseActivity {
 
                     @Override
                     public void onAuthResult(int status, String msg) {
-                        Log.d("initStart_class", "initStart: "+status);
+                        Log.d("initStart_class", "initStart: " + status);
                         if (0 == status) {
-                            Log.d("initStart_class", "initStart: "+"haha");
-                           // authinfo = "key校验成功!";
+                            Log.d("initStart_class", "initStart: " + "haha");
+                            // authinfo = "key校验成功!";
                         } else {
-                          //  authinfo = "key校验失败, " + msg;
+                            //  authinfo = "key校验失败, " + msg;
                         }
-
                     }
 
                     @Override
                     public void initStart() {
-                        Log.d("initStart_class", "initStart: "+"start");
+                        Log.d("initStart_class", "initStart: " + "start");
                     }
 
                     @Override
@@ -193,55 +285,36 @@ public class MapActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 if (BaiduNaviManagerFactory.getBaiduNaviManager().isInited()) {
-                                    View dialogView = View.inflate(MapActivity.this, R.layout
-                                            .dialog_node, null);
-                                    final EditText editStart = dialogView.findViewById(R.id.edit_start);
-                                    final EditText editEnd = dialogView.findViewById(R.id.edit_end);
-                                    new AlertDialog.Builder(MapActivity.this)
-                                            .setView(dialogView)
-                                            .setPositiveButton("导航", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    String startPoint = editStart.getText().toString().trim();
-                                                    String endPoint = editEnd.getText().toString().trim();
-                                                    if (!checkValid(startPoint, endPoint)) {
-                                                        Toast.makeText(MapActivity.this, "填写格式有误", Toast
-                                                                .LENGTH_SHORT).show();
-                                                        return;
-                                                    }
-                                                    String[] starts = startPoint.split(",");
-                                                    String[] ends = endPoint.split(",");
-                                                    BNRoutePlanNode sNode = new BNRoutePlanNode.Builder()
-                                                            .latitude(Double.parseDouble(starts[1]))
-                                                            .longitude(Double.parseDouble(starts[0]))
-                                                            .coordinateType(BNRoutePlanNode.CoordinateType.WGS84)
-                                                            .build();
-                                                    BNRoutePlanNode eNode = new BNRoutePlanNode.Builder()
-                                                            .latitude(Double.parseDouble(ends[1]))
-                                                            .longitude(Double.parseDouble(ends[0]))
-                                                            .coordinateType(BNRoutePlanNode.CoordinateType.WGS84)
-                                                            .build();
 
-                                                    routePlanToNavi(sNode, eNode);
-                                                }
-                                            })
-                                            .show();
+                                    BNRoutePlanNode sNode = new BNRoutePlanNode.Builder()
+                                            .latitude(Double.parseDouble(lat1))
+                                            .longitude(Double.parseDouble(log1))
+                                            .coordinateType(BNRoutePlanNode.CoordinateType.WGS84)
+                                            .build();
+                                    BNRoutePlanNode eNode = new BNRoutePlanNode.Builder()
+                                            .latitude(Double.parseDouble(lat2))
+                                            .longitude(Double.parseDouble(log2))
+                                            .coordinateType(BNRoutePlanNode.CoordinateType.WGS84)
+                                            .build();
+
+                                    routePlanToNavi(sNode, eNode);
                                 }
                             }
                         });
-                        Log.d("initStart_class", "initStart: "+"success");
+                        Log.d("initStart_class", "initStart: " + "success");
                         // 初始化tts
 
                     }
 
                     @Override
                     public void initFailed(int errCode) {
-                        Log.d("initStart_class", "initStart: "+"fail");
+                        Log.d("initStart_class", "initStart: " + "fail");
                     }
 
                 });
 
     }
+
     private void routePlanToNavi(BNRoutePlanNode sNode, BNRoutePlanNode eNode) {
         List<BNRoutePlanNode> list = new ArrayList<>();
         list.add(sNode);
@@ -282,7 +355,7 @@ public class MapActivity extends BaseActivity {
                                 Intent intent = new Intent(MapActivity.this,
                                         DemoGuideActivity.class);
 
-                               startActivity(intent);
+                                startActivity(intent);
                                 break;
                             default:
                                 // nothing
@@ -365,18 +438,18 @@ public class MapActivity extends BaseActivity {
         LocationClientOption locationOption = new LocationClientOption();
         locationOption.setOpenGps(true);
         MyLocationListener myLocationListener = new MyLocationListener();
-      //注册监听函数
+        //注册监听函数
         locationClient.registerLocationListener(myLocationListener);
 
-     //可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
+        //可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
         locationOption.setCoorType("bd09ll");
-    //可选，默认0，即仅定位一次，设置发起连续定位请求的间隔需要大于等于1000ms才是有效的
+        //可选，默认0，即仅定位一次，设置发起连续定位请求的间隔需要大于等于1000ms才是有效的
         locationOption.setScanSpan(0);
-   //可选，设置是否需要地址信息，默认不需要
+        //可选，设置是否需要地址信息，默认不需要
         locationOption.setIsNeedAddress(true);
-   //可选，设置是否需要地址描述
+        //可选，设置是否需要地址描述
         locationOption.setIsNeedLocationDescribe(true);
-   //可选，设置是否需要设备方向结果
+        //可选，设置是否需要设备方向结果
         locationOption.setNeedDeviceDirect(true);
 
 //可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
@@ -424,7 +497,11 @@ public class MapActivity extends BaseActivity {
             double longitude = location.getLongitude();
             Log.d("location_class", "onReceiveLocation: " + latitude);
             Log.d("location_class", "onReceiveLocation: " + longitude);
-            Toast(latitude+" "+longitude);
+            //   Toast(latitude+" "+longitude);
+            MyAddressActivity.lat = String.valueOf(latitude);
+            MyAddressActivity.log = String.valueOf(longitude);
+            tv_parklotAddress.setText(location.getLocationDescribe());
+            tv_parkLotName.setText(String.valueOf(latitude) + String.valueOf(longitude));
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
                     // 此处设置开发者获取到的方向信息，顺时针0-360
@@ -432,7 +509,6 @@ public class MapActivity extends BaseActivity {
                     .latitude(location.getLatitude())
                     .longitude(location.getLongitude()).build();
             baiduMap.setMyLocationData(locData);
-
 
 
             LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
@@ -452,5 +528,54 @@ public class MapActivity extends BaseActivity {
         MyLocationData myLocationData = data.build();
         baiduMap.setMyLocationData(myLocationData);
 
+    }
+
+
+    /**
+     * 获取周围数据
+     */
+    private void getData() {
+        NewsRequest newsRequest = new NewsRequest();
+        newsRequest.setUserId(LoginActivity.ID);//提示用户输入
+        Log.d("route_class", "getData: " + Constants.FindSharePark + newsRequest.toStringShareParkLot());
+        request = new Request.Builder().
+                url(Constants.FindAllPark + newsRequest.toStringFindAllparklotr()).
+                build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if (response.isSuccessful()) {
+                        String body = response.body().string();
+                        Log.d("onResponse_body_class", "onResponse: " + body);
+                        Gson gson = new Gson();
+                        JSONObject jsonObject = new JSONObject(body);
+                        String state = jsonObject.optString("state");
+
+                        if (state.equals("0")) {
+                            handler.sendEmptyMessage(FAIL);
+                        } else {
+                            Type jsontype = new TypeToken<BaseResponse<List<ParkingLot>>>() {
+                            }.getType();
+                            BaseResponse<List<ParkingLot>> newsListResponese
+                                    = gson.fromJson(body, jsontype);
+                            for (ParkingLot parkingLot : newsListResponese.getData()) {
+                                parkingLots.add(parkingLot);
+                            }
+                            handler.sendEmptyMessage(SUCCESS);
+                        }
+                    } else {
+                        handler.sendEmptyMessage(FAIL);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

@@ -85,6 +85,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public void OnItemClick(ParkingLot items, int id);
 
         public void OnItemClick(ParkingLot items);
+        public void OnItemCollectClick(ParkingLot items);
 
         public void OnItemClickToDetail(ParkingLot items);
 
@@ -133,11 +134,15 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((SurroundAdapter.ViewHolderOne) viewHolder).tv_parkLotName.setText(items.getPark_name());
 
             ((ViewHolderOne) viewHolder).tv_address.setText(items.getPark_address());
+            ((ViewHolderOne) viewHolder).tv_collectNumber.setText(items.getPark_collect());
             ((ViewHolderOne) viewHolder).tv_price.setText(items.getPark_price() + "元/hour");
             ((ViewHolderOne) viewHolder).tv_distance.setText("距离" + String.format("%.2f", items.getPark_distance()) + "米");
 
-
+            //获取图片
             Glide.with(context).load(items.getParklotImage()).into(((SurroundAdapter.ViewHolderOne) viewHolder).iv_carimage);
+
+
+
             ((SurroundAdapter.ViewHolderOne) viewHolder).iv_carimage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -163,22 +168,33 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     listener.OnItemClick(items);
                 }
             });
-            ((ViewHolderOne) viewHolder).view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int postition = viewHolder.getAdapterPosition();
-                    ParkingLot items = items_List.get(postition);
-                    listener.OnItemClickToDetail(items);
-                }
-            });
+//            ((ViewHolderOne) viewHolder).view.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    int postition = viewHolder.getAdapterPosition();
+//                    ParkingLot items = items_List.get(postition);
+//                    listener.OnItemClickToDetail(items);
+//                }
+//            });
+            if(items.getPark_collect().equals("0"))
+            {
+                ((ViewHolderOne) viewHolder).iv_favorite.setImageResource(R.mipmap.common_item_zan);
+            }
+            else
+            {
+                ((ViewHolderOne) viewHolder).iv_favorite.setImageResource(R.mipmap.common_item_zanpick);
+            }
+
             ((ViewHolderOne) viewHolder).iv_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (switchs)
-                        ((ViewHolderOne) viewHolder).iv_favorite.setImageResource(R.mipmap.common_item_zanpick);
-                    else
-                        ((ViewHolderOne) viewHolder).iv_favorite.setImageResource(R.mipmap.common_item_zan);
-                    switchs = !switchs;
+                    if(listener!=null)
+                    {
+                        int postition = viewHolder.getAdapterPosition();
+                        ParkingLot items = items_List.get(postition);
+                        listener.OnItemCollectClick(items);
+                    }
+
                 }
             });
             ((ViewHolderOne) viewHolder).iv_commend.setOnClickListener(new View.OnClickListener() {
@@ -231,6 +247,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static class ViewHolderOne extends RecyclerView.ViewHolder {
         TextView tv_parkLotName; //车位名字
         TextView tv_address; //车位地址状态
+        TextView tv_collectNumber; //车位地址状态
 
         TextView tv_distance;//距离
         ImageView iv_carimage;//车位图片
@@ -255,6 +272,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             iv_favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
             ly_nagivation = (LinearLayout) itemView.findViewById(R.id.ly_nagivation);
             iv_commend = (LinearLayout) itemView.findViewById(R.id.iv_commend);
+            tv_collectNumber = (TextView) itemView.findViewById(R.id.tv_collectNumber);
 //            iv_delete = (ImageView) itemView.findViewById(R.id.iv_delete);
 //            switch_share = (SwitchButton) itemView.findViewById(R.id.switch_share);  //共享
 //            switch_open = (SwitchButton) itemView.findViewById(R.id.switch_open);//开关
@@ -280,7 +298,7 @@ public class SurroundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         @Override
         public void loadImage(int position, @NonNull Object url, @NonNull ImageView imageView) {
             //必须指定Target.SIZE_ORIGINAL，否则无法拿到原图，就无法享用天衣无缝的动画
-            Glide.with(imageView).load(url).apply(new RequestOptions().placeholder(R.mipmap.ic_launcher_round).
+            Glide.with(imageView).load(url).apply(new RequestOptions().placeholder(R.mipmap.app_logo).
                     override(Target.SIZE_ORIGINAL)).into(imageView);
         }
 

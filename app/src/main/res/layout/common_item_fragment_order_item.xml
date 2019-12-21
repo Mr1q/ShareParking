@@ -25,7 +25,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/parkName"
+                android:id="@+id/tv_parkName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="桂林电子科技大学 "
@@ -77,6 +77,14 @@
                 android:layout_gravity="center"
                 android:textColor="@android:color/black"
                 android:textSize="20dp" />
+            <Button
+                android:id="@+id/bt_open"
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/White"
+                android:background="@drawable/common_select_grident"
+                android:text="开始使用"/>
         </LinearLayout>
 
     </LinearLayout>

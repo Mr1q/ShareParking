@@ -25,8 +25,11 @@ import com.example.qjh.comprehensiveactivity.constant.Constants;
 import com.example.qjh.comprehensiveactivity.controler.BaseActivity;
 import com.example.qjh.comprehensiveactivity.utils.CreamUtils;
 import com.example.qjh.comprehensiveactivity.beans.NewsRequest;
+import com.example.qjh.comprehensiveactivity.utils.LoginRegisterUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.impl.LoadingPopupView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +47,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
+
     private TextView iv_common_register;
     private Button bt_login;
     private EditText et_login_username;
@@ -65,6 +69,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public static final String EXTRA_KEY_User_CHECKED = "EXTRA_KEY_User_CHECKED";
     public static final String EXTRA_KEY_User_PHOTO = "EXTRA_KEY_User_PHOTO";
     public static final String EXTRA_KEY_User_DEFAULTCAR = "EXTRA_KEY_User_DEFAULTCAR";
+    public static final String EXTRA_KEY_User_PHOTOS = "EXTRA_KEY_User_PHOTOS";
     //持久化技术
     public static SharedPreferences sharedPreferences;
     public SharedPreferences.Editor editor;
@@ -74,12 +79,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public  static  String Username;//用户名
     public  static  String defaultCar;//默认车牌号
     public  static  String userHeadPhoto;//用户头像路径
-
+    public static String CarID;
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SUCCESS:
+                    loadingPopup.dismiss();
                     Toast("登录成功");
                     if (cb_login_Rember.isChecked()) {
                         editor.putBoolean(EXTRA_KEY_User_CHECKED, true);
@@ -91,6 +97,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         editor.putString(EXTRA_KEY_User_ADDTIME, user.getMyaddtime());
                         editor.putString(EXTRA_KEY_User_PASSWORD, user.getMypasswprd());
                         editor.putString(EXTRA_KEY_User_PHOTO, user.getHeadPhotoURL());
+                        editor.putString(EXTRA_KEY_User_PHOTOS, user.getPhotoURL());
                         editor.putString(EXTRA_KEY_User_DEFAULTCAR, user.getCar_number());
                     } else {
                         editor.clear();
@@ -110,17 +117,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     ID=user.getMyid();
                     Username=user.getMyusername();
                     defaultCar=user.getCar_number();
-                    userHeadPhoto=user.getHeadPhotoURL();
+                    userHeadPhoto=user.getPhotoURL();
                     startActivity(intent);
                     finish();
                     break;
                 case FAIL:
+                    loadingPopup.dismiss();
                     Toast("登录失败");
                     break;
             }
         }
     };
     private boolean switchs = false;  //选择是否隐藏密码
+    private LoadingPopupView loadingPopup;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -158,6 +167,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             String addtime = sharedPreferences.getString(EXTRA_KEY_User_ADDTIME, "");
             String pasword = sharedPreferences.getString(EXTRA_KEY_User_PASSWORD, "");
             String photo = sharedPreferences.getString(EXTRA_KEY_User_PHOTO, "");
+            String photos = sharedPreferences.getString(EXTRA_KEY_User_PHOTOS, "");
             String defaultCars = sharedPreferences.getString(EXTRA_KEY_User_DEFAULTCAR, "");
             Intent intent = new Intent(LoginActivity.this, TotalActivity.class);
             intent.putExtra(EXTRA_KEY_User_USERNAME, username);
@@ -172,7 +182,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             ID=myid;
             Username=username;
             defaultCar=defaultCars;
-            userHeadPhoto=photo;
+            userHeadPhoto=photos;
             startActivity(intent);
             finish();
 
@@ -185,11 +195,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         Intent intent;
         switch (v.getId()) {
             case R.id.iv_common_register:
+
                 intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
                 //Toast.makeText(LoginActivity.this,"正在开发中..",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bt_login:
+                loadingPopup = (LoadingPopupView) new XPopup.Builder(LoginActivity.this)
+                        .dismissOnBackPressed(false)
+                        .asLoading("正在加载中")
+                        .show();
                 tologin();
                 break;
             case R.id.iv_common_hide:
@@ -213,7 +228,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         newsRequest.setPassword(et_login_password.getText().toString().trim());
         RequestBody requestBody=new FormBody.Builder()
                 .add("username",et_login_username.getText().toString().trim())
-                .add("password",et_login_password.getText().toString().trim()).build();
+                .add("password", LoginRegisterUtils.getMD5(et_login_password.getText().toString().trim())).build();
         request = new Request.Builder().
                 post(requestBody).
                 url(Constants.Login).

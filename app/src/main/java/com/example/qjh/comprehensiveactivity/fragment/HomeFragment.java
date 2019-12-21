@@ -82,7 +82,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private final int SHARE_FAIL = -3;
     private final int CANCELSHARE_SUCCESS = 4;
     private final int CANCELSHARE_FAIL = -4;
+    private final int USING_SUCCESS = 5;
+    private final int USING_FAIL = -5;
+    private final int UN_USING_SUCCESS = 6;
+    private final int UN_USING_FAIL = -6;
     private List<ParkingLot> parkingLots = new ArrayList<>();
+    private LoadingPopupView loadingPopup;
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -156,49 +161,37 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
                         @Override
                         public void OnItemClick2(ParkingLot items, int id, Boolean Sch, SwitchButton switchButton) {
-                                switch (id)
-                                {
-                                    case R.id.switch_share:
-                                        if(Sch)
-                                        {
-                                            handler.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    toShare(items);
-                                                }
-                                            }, 1000);
+                            switch (id) {
+                                case R.id.switch_share:
+                                    loadingPopup = (LoadingPopupView) new XPopup.Builder(getContext())
+                                            .dismissOnBackPressed(false)
+                                            .asLoading("正在加载中")
+                                            .show();
+                                    if (Sch) {
+                                        toShare(items);
+                                    } else {
+                                        toCancelShare(items);
+                                    }
+                                    break;
+                                case R.id.switch_open:
+                                    loadingPopup = (LoadingPopupView) new XPopup.Builder(getContext())
+                                            .dismissOnBackPressed(false)
+                                            .asLoading("正在加载中")
+                                            .show();
+                                    if (Sch) {
 
-                                        }else
-                                        {
-                                            handler.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    toCancelShare(items);
-                                                }
-                                            }, 1000);
-                                        }
-                                        break;
-                                    case R.id.switch_open:
-                                        if(Sch)
-                                        {
-                                            handler.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    toUsingParkLot(items);
-                                                }
-                                            }, 1000);
+                                        toUsingParkLot(items);
 
-                                        }else
-                                        {
-                                            handler.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    toUnUsingParkLot(items);
-                                                }
-                                            }, 1000);
-                                        }
-                                        break;
-                                }
+                                    } else {
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                toUnUsingParkLot(items);
+                                            }
+                                        }, 1000);
+                                    }
+                                    break;
+                            }
                         }
                     });
                     myParkingLotAdapter.setOnItemClick_Add(new MyParkingLotAdapter.OnItemClickListenerAdd() {
@@ -210,24 +203,48 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     });
                     recyclerView.setAdapter(myParkingLotAdapter);
                     myParkingLotAdapter.notifyDataSetChanged();
-                   //Toast.makeText(getContext(), "获取成功！！！", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "获取成功！！！", Toast.LENGTH_SHORT).show();
                     refresh_parklot.setRefreshing(false);
                     break;
                 case SHARE_SUCCESS:
+                    loadingPopup.dismiss();
                     getData();
                     Toast.makeText(getContext(), "分享成功！！！", Toast.LENGTH_SHORT).show();
                     break;
 
                 case SHARE_FAIL:
+                    loadingPopup.dismiss();
                     Toast.makeText(getContext(), "分享失败！！！", Toast.LENGTH_SHORT).show();
                     break;
                 case CANCELSHARE_SUCCESS:
+                    loadingPopup.dismiss();
                     getData();
                     Toast.makeText(getContext(), "取消分享成功！！！", Toast.LENGTH_SHORT).show();
                     break;
 
                 case CANCELSHARE_FAIL:
+                    loadingPopup.dismiss();
                     Toast.makeText(getContext(), "取消分享失败！！！", Toast.LENGTH_SHORT).show();
+                    break;
+                case USING_SUCCESS:
+                    getData();
+                    loadingPopup.dismiss();
+                    Toast.makeText(getContext(), "开锁成功！！！", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case USING_FAIL:
+                    loadingPopup.dismiss();
+                    Toast.makeText(getContext(), "开锁失败！！！", Toast.LENGTH_SHORT).show();
+                    break;
+                case UN_USING_SUCCESS:
+                    loadingPopup.dismiss();
+                    getData();
+                    Toast.makeText(getContext(), "关锁成功！！！", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case UN_USING_FAIL:
+                    loadingPopup.dismiss();
+                    Toast.makeText(getContext(), "关锁失败！！！", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -236,7 +253,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private int ID;
     private OnItemClickListener listener;
     private Request request;
-    private OkHttpClient okHttpClient=new OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS)
+    private OkHttpClient okHttpClient = new OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
             .build();
@@ -265,9 +282,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         banner.setOnBannerListener(new OnBannerListener() {
             @Override
             public void OnBannerClick(int position) {
-               // Toast.makeText(getContext(), position, Toast.LENGTH_SHORT).show();
-                Log.d("class_class", "OnBannerClick: "+position);
-
+                Toast.makeText(getContext(), position, Toast.LENGTH_SHORT).show();
+                // Log.d("class_class", "OnBannerClick: " + position);
             }
         });
 
@@ -294,7 +310,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 listener.OnItemClick(R.id.ly_controlcar);
                 break;
             case R.id.ly_quickPark:
-                Intent intent=new Intent(getContext(), BookParkLotActivity.class);
+                Intent intent = new Intent(getContext(), BookParkLotActivity.class);
 //                intent.getStringExtra()
                 startActivity(intent);
                 break;
@@ -340,13 +356,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         refresh_parklot.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        getData();
-                    }
-                }, 1000);//3秒后执行Runnable中的run方法
-
+                getData();
             }
         });
         fl_addcar.setOnClickListener(new View.OnClickListener() {
@@ -359,13 +369,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
     private void getData() {
         refresh_parklot.setRefreshing(true);
-        NewsRequest newsRequest=new NewsRequest(); //get请求参数
+        NewsRequest newsRequest = new NewsRequest(); //get请求参数
         newsRequest.setParkOwnerId(LoginActivity.ID); //当前用户的ID
         request = new Request.Builder().
-                url(Constants.FindMyParkingLot+newsRequest.toStringFindMyPark()).
+                url(Constants.FindMyParkingLot + newsRequest.toStringFindMyPark()).
                 build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -445,8 +454,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void toCancelShare(ParkingLot items) {
-        RequestBody requestBody=new FormBody.Builder()
-                .add("parkId",items.getPark_id()).build();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("parkId", items.getPark_id()).build();
         request = new Request.Builder().
                 url(Constants.CancelShareMyParkingLot).
                 post(requestBody).
@@ -482,8 +491,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void toUsingParkLot(ParkingLot items) {
-        RequestBody requestBody=new FormBody.Builder()
-                .add("parkId",items.getPark_id()).build();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("parkId", items.getPark_id()).build();
         request = new Request.Builder().
                 url(Constants.UsingParkLot).
                 post(requestBody).
@@ -504,12 +513,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         JSONObject jsonObject = new JSONObject(body);
                         String state = jsonObject.optString("state");
                         if (state.equals("0")) {
-                            handler.sendEmptyMessage(CANCELSHARE_FAIL);
+                            handler.sendEmptyMessage(USING_FAIL);
                         } else {
-                            handler.sendEmptyMessage(CANCELSHARE_SUCCESS);
+                            handler.sendEmptyMessage(USING_SUCCESS);
                         }
                     } else {
-                        handler.sendEmptyMessage(CANCELSHARE_FAIL);
+                        handler.sendEmptyMessage(USING_FAIL);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -519,8 +528,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void toUnUsingParkLot(ParkingLot items) {
-        RequestBody requestBody=new FormBody.Builder()
-                .add("parkId",items.getPark_id()).build();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("parkId", items.getPark_id()).build();
         request = new Request.Builder().
                 url(Constants.UnUsingParkLot).
                 post(requestBody).
@@ -541,12 +550,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         JSONObject jsonObject = new JSONObject(body);
                         String state = jsonObject.optString("state");
                         if (state.equals("0")) {
-                            handler.sendEmptyMessage(CANCELSHARE_FAIL);
+                            handler.sendEmptyMessage(UN_USING_FAIL);
                         } else {
-                            handler.sendEmptyMessage(CANCELSHARE_SUCCESS);
+                            handler.sendEmptyMessage(UN_USING_SUCCESS);
                         }
                     } else {
-                        handler.sendEmptyMessage(CANCELSHARE_FAIL);
+                        handler.sendEmptyMessage(UN_USING_FAIL);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -556,8 +565,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void toShare(ParkingLot items) {
-        RequestBody requestBody=new FormBody.Builder()
-                .add("parkId",items.getPark_id()).build();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("parkId", items.getPark_id()).build();
         request = new Request.Builder().
                 url(Constants.ShareMyParkingLot).
                 post(requestBody).
@@ -593,8 +602,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void toDelete(ParkingLot items) {
-        RequestBody requestBody=new FormBody.Builder()
-                .add("parkId",items.getPark_id()).build();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("parkId", items.getPark_id()).build();
         request = new Request.Builder().
                 url(Constants.DeleteMyParkingLot).
                 post(requestBody).

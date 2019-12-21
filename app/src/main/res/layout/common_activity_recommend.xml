@@ -42,7 +42,7 @@
 
 
         <EditText
-            android:id="@+id/MyAdviceContent"
+            android:id="@+id/ed_MyAdviceContent"
             android:layout_width="match_parent"
             android:layout_height="190dp"
             android:background="@android:color/white"

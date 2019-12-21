@@ -265,7 +265,7 @@ public class AddParkingLotActivity extends TakePhotoActivity implements View.OnC
                 .addFormDataPart("park_latitude", tv_lat.getText().toString().trim())
                 .addFormDataPart("park_latitude", tv_lat.getText().toString().trim())
                 .addFormDataPart("park_distance", "123")
-                .addFormDataPart("park_price", "123")
+                .addFormDataPart("park_price",price )
                 .addFormDataPart("file","parklot_photourl",
                         RequestBody.create(MediaType.parse("image/jpg"), new File(Path)))
                 .build();

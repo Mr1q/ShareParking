@@ -37,46 +37,165 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
-
 
 
 public class OrderListActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private ImageView RTU;
     private Request request;
-    private OkHttpClient okHttpClient=new OkHttpClient();
+    private OkHttpClient okHttpClient = new OkHttpClient();
     private String count;
     private final int SUCCESS = 1;
     private final int FAIL = -1;
-    private List<Order> orderList=new ArrayList<>();
+    private final int OPENSUCCESS = 2;
+    private final int OPENFAIL = -2;
+    private final int CLOSESUCCESS = 3;
+    private final int CLOSEFAIL = -3;
+    private List<Order> orderList = new ArrayList<>();
     private OrderListAdapter orderListAdapter;
+    private View nullview;
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case SUCCESS:
-                    orderListAdapter=new OrderListAdapter(OrderListActivity.this,orderList);
+                    if (orderList.size() == 0) {
+                        nullview.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.INVISIBLE);
+                    } else {
+                        nullview.setVisibility(View.INVISIBLE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
+                    orderListAdapter = new OrderListAdapter(OrderListActivity.this, orderList);
+                    orderListAdapter.setOnItemClick(new OrderListAdapter.OnItemClickListener() {
+                        @Override
+                        public void OnItemClick(Order items, String status) {
+                            switch (status) {
+                                case "0":
+                                    toOpen(items);
+                                    break;
+                                case "1":
+                                    toClose(items);
+                                    break;
+                            }
+                        }
+                    });
+
                     recyclerView.setAdapter(orderListAdapter);
                     orderListAdapter.notifyDataSetChanged();
-                  break;
+                    break;
                 case FAIL:
-                      Toast.makeText(OrderListActivity.this, "重新获取！！！", Toast.LENGTH_SHORT).show();
-                    //  getData();
+                    Toast.makeText(OrderListActivity.this, "重新获取！！！", Toast.LENGTH_SHORT).show();
+                    //   getData();
+                    break;
+                case OPENSUCCESS:
+                    Toast.makeText(OrderListActivity.this, "打开成功！！！", Toast.LENGTH_SHORT).show();
+                    getData();
+                    break;
+                case OPENFAIL:
+                    Toast.makeText(OrderListActivity.this, "打开失败！！！", Toast.LENGTH_SHORT).show();
+                    //   getData();
+                    break;
+                case CLOSESUCCESS:
+                    Toast.makeText(OrderListActivity.this, "结束使用成功！！！", Toast.LENGTH_SHORT).show();
+                    getData();
+                    break;
+                case CLOSEFAIL:
+                    Toast.makeText(OrderListActivity.this, "结束失败！！！", Toast.LENGTH_SHORT).show();
+                    //   getData();
                     break;
             }
         }
     };
+
+    private void toOpen(Order order) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("id", order.getId()).build();
+        request = new Request.Builder().
+                url(Constants.OpenOrderParklot).
+                post(requestBody).
+                build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if (response.isSuccessful()) {
+                        String body = response.body().string();
+                        Log.d("onResponse_body", "onResponse: " + body);
+                        Gson gson = new Gson();
+                        JSONObject jsonObject = new JSONObject(body);
+                        String state = jsonObject.optString("state");
+                        if (state.equals("0")) {
+                            handler.sendEmptyMessage(OPENFAIL);
+                        } else {
+                            handler.sendEmptyMessage(OPENSUCCESS);
+                        }
+                    } else {
+                        handler.sendEmptyMessage(OPENFAIL);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void toClose(Order order) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("id", order.getId()).build();
+        request = new Request.Builder().
+                url(Constants.CloseOrderParklot).
+                post(requestBody).
+                build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if (response.isSuccessful()) {
+                        String body = response.body().string();
+                        Log.d("onResponse_body", "onResponse: " + body);
+                        Gson gson = new Gson();
+                        JSONObject jsonObject = new JSONObject(body);
+                        String state = jsonObject.optString("state");
+                        if (state.equals("0")) {
+                            handler.sendEmptyMessage(CLOSEFAIL);
+                        } else {
+                            handler.sendEmptyMessage(CLOSESUCCESS);
+                        }
+                    } else {
+                        handler.sendEmptyMessage(CLOSEFAIL);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.common_activity_orderlist);
-        recyclerView=findViewById(R.id.recyclerView);
-        RTU=findViewById(R.id.RTU);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
+        recyclerView = findViewById(R.id.recyclerView);
+        RTU = findViewById(R.id.RTU);
+        nullview = findViewById(R.id.nullview);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         getData();
 
@@ -86,7 +205,6 @@ public class OrderListActivity extends BaseActivity {
                 finish();
             }
         });
-
 
 
     }
@@ -122,7 +240,7 @@ public class OrderListActivity extends BaseActivity {
                             }.getType();
                             BaseResponse<List<Order>> newsListResponese
                                     = gson.fromJson(body, jsontype);
-                                orderList.clear();
+                            orderList.clear();
                             for (Order parkingLot : newsListResponese.getCarData()) {
                                 orderList.add(parkingLot);
                             }

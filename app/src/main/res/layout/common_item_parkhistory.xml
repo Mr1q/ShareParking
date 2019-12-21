@@ -4,9 +4,9 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    app:cardCornerRadius="5dp"
-    app:cardElevation="5dp"
+    android:layout_margin="7dp"
+    app:cardCornerRadius="7dp"
+    app:cardElevation="8dp"
     android:padding="20dp">
 
     <LinearLayout
@@ -24,18 +24,27 @@
             android:textSize="25sp"
             android:textStyle="bold"/>
         <TextView
-            android:id="@+id/tv_car"
+            android:id="@+id/tv_CarNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15dp"
             android:text="车牌号:闽A xxxx"/>
         <TextView
-            android:id="@+id/itemTime"
+            android:id="@+id/tv_startTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
-            android:text="时间：2016年12月22日"/>
+            android:text="开始时间：2016年12月22日" />
 
+        <TextView
+            android:id="@+id/tv_endTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="结束时间：2016年12月22日" />
+        <TextView
+            android:id="@+id/tv_costtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="总用时：1h" />
         <TextView
             android:id="@+id/tv_address"
             android:layout_width="wrap_content"
@@ -44,14 +53,14 @@
             android:text="停车地址:桂林电子科技大学"/>
     </LinearLayout>
     <TextView
-        android:id="@+id/itemNum"
-        android:layout_gravity="right"
-        android:layout_margin="13dp"
+        android:id="@+id/tv_price"
+        android:layout_gravity="right|center"
+        android:layout_margin="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/holo_red_dark"
         android:text="10元"
-        android:textSize="20dp"/>
+        android:textSize="30dp"/>
 <!--    <LinearLayout-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->

@@ -22,13 +22,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.example.qjh.comprehensiveactivity.R;
-import com.example.qjh.comprehensiveactivity.activity.DetailParklotActivity;
+
 import com.example.qjh.comprehensiveactivity.activity.LoginActivity;
 import com.example.qjh.comprehensiveactivity.activity.MapActivity;
 import com.example.qjh.comprehensiveactivity.adapter.SurroundAdapter;
@@ -55,15 +56,22 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class SurroundFragment extends Fragment {
     public static final String EXTRA_LOG = "EXTRA_LOG";
     public static final String EXTRA_LAT = "EXTRA_LAT";
+    public static final String EXTRA_PARNAME = "EXTRA_PARNAME";
+    public static final String EXTRA_ADDRESS = "EXTRA_ADDRESS";
+    public static final String EXTRA_MYADDRESS = "ETRA_MYADDRESS";
+    public static final String EXTRA_ID = "EXTRA_ID";
     private ImageView iv_map;
     private RecyclerView rl_surroundCar;
+    private View nullview;
     private EditText search_home;
     private SmartRefreshLayout swipe;
     private int visitPosition;
@@ -72,6 +80,10 @@ public class SurroundFragment extends Fragment {
     private OkHttpClient okHttpClient = new OkHttpClient();
     private final int SUCCESS = 1;
     private final int FAIL = -1;
+    private final int COLLECTSUCCESS = 2;
+    private final int COLLECTFAIL = -2;
+    private final int CANCEL_COLLECTSUCCESS = 3;
+    private final int CANCEL_COLLECTFAIL = -3;
     private int PageNum = 1; //第一页
     private int PageNumAdd = 1; //
     private String longitude;//经度
@@ -84,11 +96,23 @@ public class SurroundFragment extends Fragment {
             super.handleMessage(msg);
             switch (msg.what) {
                 case SUCCESS:
+                    if(parkingLots.size()!=0)
+                    {
+                        nullview.setVisibility(View.INVISIBLE);
+                        rl_surroundCar.setVisibility(View.VISIBLE);
+                    }else
+                    {
+                        nullview.setVisibility(View.VISIBLE);
+                        rl_surroundCar.setVisibility(View.INVISIBLE);
+                    }
                     if (count.equals(String.valueOf(parkingLots.size()))) {
                         pageSize = String.valueOf(parkingLots.size());
                         Log.d("handleMessages", "handleMessage: " + pageSize);
                         swipe.setLoadmoreFinished(true);
+                    } else {
+                        swipe.setLoadmoreFinished(false);
                     }
+
                     surroundAdapter.notifyDataSetChanged();
                     surroundAdapter.setOnItemClick(new SurroundAdapter.OnItemClickListener() {
                         @Override
@@ -102,14 +126,26 @@ public class SurroundFragment extends Fragment {
                             Log.d("OnItemClick", "OnItemClick: " + items.getPark_longitude());
                             Log.d("OnItemClick", "OnItemClick: " + items.getPark_latitude());
                             intent.putExtra(EXTRA_LOG, items.getPark_longitude());
+                            intent.putExtra(EXTRA_PARNAME, items.getPark_name());
+                            intent.putExtra(EXTRA_ADDRESS, items.getPark_address());
                             intent.putExtra(EXTRA_LAT, items.getPark_latitude());
+                            intent.putExtra(EXTRA_ID, items.getPark_id());
                             startActivity(intent);
                         }
 
                         @Override
+                        public void OnItemCollectClick(ParkingLot items) {
+                            if (items.getPark_collect().equals("0")) {
+                                toCollect(items);
+                            } else {
+                                toCancelCollect(items);
+                            }
+
+                        }
+
+                        @Override
                         public void OnItemClickToDetail(ParkingLot items) {
-                            Intent intent = new Intent(getContext(), DetailParklotActivity.class);
-                            startActivity(intent);
+
                         }
 
                         @Override
@@ -124,12 +160,103 @@ public class SurroundFragment extends Fragment {
                     });
                     // Toast.makeText(getContext(), "取消分享成功！！！", Toast.LENGTH_SHORT).show();
                     break;
-                case FAIL:
-                    //   Toast.makeText(getContext(), "取消分享失败！！！", Toast.LENGTH_SHORT).show();
+                case COLLECTSUCCESS:
+                    getData(false);
+                    Toast.makeText(getContext(), "收藏成功！！！", Toast.LENGTH_SHORT).show();
+                    break;
+                case COLLECTFAIL:
+                    Toast.makeText(getContext(), "收藏失败！！！", Toast.LENGTH_SHORT).show();
+                    break;
+                case CANCEL_COLLECTSUCCESS:
+                    getData(false);
+                    Toast.makeText(getContext(), "取消收藏成功！！！", Toast.LENGTH_SHORT).show();
+                    break;
+                case CANCEL_COLLECTFAIL:
+                    Toast.makeText(getContext(), "取消收藏失败！！！", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
     };
+
+
+    private void toCancelCollect(ParkingLot parkingLot) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("parkId", parkingLot.getPark_id())
+                .add("userId", LoginActivity.ID).
+                        build();
+        request = new Request.Builder().
+                url(Constants.CancelCollectParklot).
+                post(requestBody).
+                build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if (response.isSuccessful()) {
+                        String body = response.body().string();
+                        Log.d("onResponse_body", "onResponse: " + body);
+                        Gson gson = new Gson();
+                        JSONObject jsonObject = new JSONObject(body);
+                        String state = jsonObject.optString("state");
+                        if (state.equals("0")) {
+                            handler.sendEmptyMessage(CANCEL_COLLECTFAIL);
+                        } else {
+                            handler.sendEmptyMessage(CANCEL_COLLECTSUCCESS);
+                        }
+                    } else {
+                        handler.sendEmptyMessage(CANCEL_COLLECTFAIL);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void toCollect(ParkingLot parkingLot) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("parkId", parkingLot.getPark_id())
+                .add("userId", LoginActivity.ID).
+                        build();
+        request = new Request.Builder().
+                url(Constants.CollectParklot).
+                post(requestBody).
+                build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if (response.isSuccessful()) {
+                        String body = response.body().string();
+                        Log.d("onResponse_body", "onResponse: " + body);
+                        Gson gson = new Gson();
+                        JSONObject jsonObject = new JSONObject(body);
+                        String state = jsonObject.optString("state");
+                        if (state.equals("0")) {
+                            handler.sendEmptyMessage(COLLECTFAIL);
+                        } else {
+                            handler.sendEmptyMessage(COLLECTSUCCESS);
+                        }
+                    } else {
+                        handler.sendEmptyMessage(COLLECTFAIL);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     private List<ParkingLot> parkingLots = new ArrayList<>();
     private String pageSize = "2";
 
@@ -168,6 +295,7 @@ public class SurroundFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), MapActivity.class);
+                intent.putExtra(EXTRA_MYADDRESS, "-1");
                 startActivity(intent);
             }
         });
@@ -181,6 +309,7 @@ public class SurroundFragment extends Fragment {
         search_home = view.findViewById(R.id.search_home);
         swipe = (SmartRefreshLayout) view.findViewById(R.id.swipe);
         rl_surroundCar = (RecyclerView) view.findViewById(R.id.rl_surroundCar);
+        nullview = (View) view.findViewById(R.id.nullview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rl_surroundCar.setLayoutManager(linearLayoutManager);
         //getData();
@@ -224,7 +353,7 @@ public class SurroundFragment extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     toSearch(search_home.getText().toString().trim());
                     hideKeyboard(search_home);
-                    return  true;
+                    return true;
                 }
                 return false;
             }
@@ -234,6 +363,7 @@ public class SurroundFragment extends Fragment {
 
     /**
      * 隐藏软键盘
+     *
      * @param view
      */
     public static void hideKeyboard(View view) {
@@ -243,10 +373,10 @@ public class SurroundFragment extends Fragment {
     }
 
     private void toSearch(String searchString) {
-       // List<ParkingLot> parks = new ArrayList<>();
+        // List<ParkingLot> parks = new ArrayList<>();
         for (int i = 0; i < parkingLots.size(); i++) {
             if (!parkingLots.get(i).getPark_name().equals(searchString)) {
-              parkingLots.remove(i);
+                parkingLots.remove(i);
             }
         }
 
@@ -395,11 +525,10 @@ public class SurroundFragment extends Fragment {
         }
     }
 
-    private void toRecommend(ParkingLot parkingLot)
-    {
+    private void toRecommend(ParkingLot parkingLot) {
         new XPopup.Builder(getContext())
                 .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
-                .asCustom(new BottomCommentPopup(getContext(),parkingLot.getPark_id())/*.enableDrag(false)*/)
+                .asCustom(new BottomCommentPopup(getContext(), parkingLot.getPark_id())/*.enableDrag(false)*/)
                 .show();
     }
 

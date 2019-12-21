@@ -9,6 +9,18 @@ public class Order {
     @SerializedName("endTime")
     private String endTime;
 
+    public String getParkName() {
+        return parkName;
+    }
+
+    public void setParkName(String parkName) {
+        this.parkName = parkName;
+    }
+
+    @SerializedName("parkName")
+    private String parkName;
+
+
     //订单号
     @SerializedName("id")
     private String id;
@@ -19,6 +31,17 @@ public class Order {
 
     @SerializedName("carNumber") //车牌号信息
     private String carNumber;
+
+    @SerializedName("useTime") //持续时间
+    private String useTime;
+
+    public String getUseTime() {
+        return useTime;
+    }
+
+    public void setUseTime(String useTime) {
+        this.useTime = useTime;
+    }
 
     public String getStartTime() {
         return startTime;

@@ -6,10 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.qjh.comprehensiveactivity.R;
 import com.example.qjh.comprehensiveactivity.beans.Order;
+import com.example.qjh.comprehensiveactivity.beans.ParkingLot;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +25,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
 
     public interface OnItemClickListener {
         /*注意参数*/
-        public void OnItemClick(HashMap<String, String> items);
+        public void OnItemClick( Order items,String status);
 
     }
 
@@ -53,7 +55,25 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
             viewHolder.tv_startTime.setText("开始时间："+order.getStartTime());
             viewHolder.tv_endTime.setText("结束时间:");
             viewHolder.tv_price.setText(order.getPrice()+"/每小时");
-
+            viewHolder.tv_parkName.setText(order.getParkName());
+            if(order.getStatus().equals("0")) //未使用
+            {
+                viewHolder.bt_open.setBackground(context.getResources().getDrawable(R.drawable.common_select_grident));
+            }else
+            {
+                viewHolder.bt_open.setBackground(context.getResources().getDrawable(R.drawable.common_item_gridents));
+                viewHolder.bt_open.setText("结束使用");
+            }
+            viewHolder.bt_open.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        int postition = viewHolder.getAdapterPosition();
+                        Order items = orders.get(postition);
+                        listener.OnItemClick(items,order.getStatus());
+                    }
+                }
+            });
     }
 
     @Override
@@ -67,6 +87,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         private TextView tv_startTime;
         private TextView tv_endTime;
         private TextView tv_price;
+        private TextView tv_parkName;
+        private Button bt_open;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,6 +97,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
             tv_startTime=itemView.findViewById(R.id.tv_startTime);
             tv_endTime=itemView.findViewById(R.id.tv_endTime);
             tv_price=itemView.findViewById(R.id.tv_price);
+            bt_open=itemView.findViewById(R.id.bt_open);
+            tv_parkName=itemView.findViewById(R.id.tv_parkName);
 
         }
     }

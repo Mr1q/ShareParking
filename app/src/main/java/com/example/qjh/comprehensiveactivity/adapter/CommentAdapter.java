@@ -17,6 +17,8 @@ import com.example.qjh.comprehensiveactivity.beans.Order;
 import java.util.HashMap;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
 
 
@@ -54,7 +56,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         View view;
-        ImageView iv_headphoto;
+        CircleImageView iv_headphoto;
         TextView tv_username;
         TextView comment;
         TextView tv_time;

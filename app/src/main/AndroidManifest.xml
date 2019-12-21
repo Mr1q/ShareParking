@@ -74,11 +74,11 @@
         <activity android:name=".Baiduapi.DemoGuideActivity"/>
         <service android:name=".Baiduapi.ForegroundService" />
         <activity android:name=".activity.ModifyPwdActivity"/>
-        <activity android:name=".activity.DetailParklotActivity"/>
         <activity android:name=".activity.BookParkLotActivity"/>
         <activity android:name=".activity.ParkHistoryActivity"/>
         <activity android:name=".activity.RecommendActivity"/>
         <activity android:name=".activity.OrderListActivity"/>
+        <activity android:name=".activity.CollectActivity"/>
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

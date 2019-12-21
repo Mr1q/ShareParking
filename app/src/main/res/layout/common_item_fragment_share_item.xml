@@ -143,6 +143,7 @@
                     android:layout_gravity="center"
                     android:src="@mipmap/common_item_zan" />
                 <TextView
+                    android:id="@+id/tv_collectNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

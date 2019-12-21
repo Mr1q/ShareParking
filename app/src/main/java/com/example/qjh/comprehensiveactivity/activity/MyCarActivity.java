@@ -76,6 +76,15 @@ public class MyCarActivity extends BaseActivity implements View.OnClickListener 
             super.handleMessage(msg);
             switch (msg.what) {
                 case SUCCESS:
+                    if(carArrayList.size()!=0)
+                    {
+                        nullview.setVisibility(View.INVISIBLE);
+                        rl_allcar.setVisibility(View.VISIBLE);
+                    }else
+                    {
+                        nullview.setVisibility(View.VISIBLE);
+                        rl_allcar.setVisibility(View.INVISIBLE);
+                    }
                     carAllAdapter = new CarAllAdapter(carArrayList, MyCarActivity.this);
                     rl_allcar.setAdapter(carAllAdapter);
                     carAllAdapter.notifyDataSetChanged();
@@ -199,6 +208,7 @@ public class MyCarActivity extends BaseActivity implements View.OnClickListener 
             }
         }
     };
+    private View nullview;
 
 
     private void toDelete(Car car) {
@@ -347,6 +357,7 @@ public class MyCarActivity extends BaseActivity implements View.OnClickListener 
     private void initData() {
         rl_allcar = (RecyclerView) findViewById(R.id.rl_allcar);
         bt_carfragment_add = (Button) findViewById(R.id.bt_carfragment_add);
+        nullview =  findViewById(R.id.nullview);
         RTU = (ImageView) findViewById(R.id.RTU);
         RTU.setOnClickListener(this);
         carArrayList = new ArrayList<Car>();

@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:gravity="center"
-            android:text="添加车辆"
+            android:text="添加车位"
             android:textColor="@color/White"
             android:textSize="19dp" />
 

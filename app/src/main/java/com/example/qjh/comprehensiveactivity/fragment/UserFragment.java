@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.qjh.comprehensiveactivity.R;
 import com.example.qjh.comprehensiveactivity.activity.AboutAppActivity;
+import com.example.qjh.comprehensiveactivity.activity.CollectActivity;
 import com.example.qjh.comprehensiveactivity.activity.LoginActivity;
 import com.example.qjh.comprehensiveactivity.activity.MyAddressActivity;
 import com.example.qjh.comprehensiveactivity.activity.MyCarActivity;
@@ -78,6 +79,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rl_myaddress;
     private RelativeLayout rl_advice;
     private LinearLayout ly_orderList; //订单记录
+    private LinearLayout ly_collect; //收藏记录
     public TextView station_id;
     public Button bt_userfragment_logout;
     public LinearLayout ly_remain;//剩余金额
@@ -117,6 +119,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         message_image = (CircleImageView) view.findViewById(R.id.message_image);
         setting = (RelativeLayout) view.findViewById(R.id.settings);
         ly_orderList = (LinearLayout) view.findViewById(R.id.ly_orderList);
+        ly_collect = (LinearLayout) view.findViewById(R.id.ly_collect);
         rl_mycars = (RelativeLayout) view.findViewById(R.id.rl_mycars);
         rl_myaddress = (RelativeLayout) view.findViewById(R.id.rl_myaddress);
         ly_remain = (LinearLayout) view.findViewById(R.id.ly_remain);
@@ -167,6 +170,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         rl_advice.setOnClickListener(this);
         ly_remain.setOnClickListener(this);
         ly_orderList.setOnClickListener(this);
+        ly_collect.setOnClickListener(this);
     }
 
 
@@ -240,6 +244,10 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.ly_orderList:
                 intent2 = new Intent(getContext(), OrderListActivity.class);
+                startActivity(intent2);
+                break;
+            case R.id.ly_collect:
+                intent2 = new Intent(getContext(), CollectActivity.class);
                 startActivity(intent2);
                 break;
         }

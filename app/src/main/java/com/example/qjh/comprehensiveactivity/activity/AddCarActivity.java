@@ -234,6 +234,7 @@ public class AddCarActivity extends TakePhotoActivity implements View.OnClickLis
                 .addFormDataPart("car_address", et_carAddress.getText().toString())
                 .addFormDataPart("car_userId", LoginActivity.ID)
                 .addFormDataPart("car_number", CarNumber)
+
                 .addFormDataPart("file", "car_photourl",
                         RequestBody.create(MediaType.parse("image/jpg"), new File(Path)))
                 .build();

@@ -51,6 +51,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class BookParkLotActivity extends BaseActivity implements View.OnClickListener {
+    public static final String EXTRA_NAVI = "EXTRA_NAVI";
     private ImageView RTU;
     private TextView tv_parklotName;
     private TextView tv_time;
@@ -69,25 +70,50 @@ public class BookParkLotActivity extends BaseActivity implements View.OnClickLis
             super.handleMessage(msg);
             switch (msg.what) {
                 case SUCCESS:
-                    Toast.makeText(BookParkLotActivity.this, "预订成功！！！", Toast.LENGTH_SHORT).show();
-                    new XPopup.Builder(BookParkLotActivity.this)
+                    loadingPopup.dismiss();
+                    if (id == 0) {
+                        Toast.makeText(BookParkLotActivity.this, "预订成功！！！", Toast.LENGTH_SHORT).show();
+
+                        new XPopup.Builder(BookParkLotActivity.this)
 //                         .dismissOnTouchOutside(false)
 //                         .autoDismiss(false)
-                            .popupAnimation(PopupAnimation.ScaleAlphaFromCenter)
-                            .setPopupCallback(new SimpleCallback()).asConfirm("提醒", "是否进入导航",
-                            "取消", "确定",
-                            new OnConfirmListener() {
-                                @Override
-                                public void onConfirm() {
-                                        Intent intent=new Intent(BookParkLotActivity.this,MapActivity.class);
-                                        intent.putExtra("asd","asd");
+                                .popupAnimation(PopupAnimation.ScaleAlphaFromCenter)
+                                .setPopupCallback(new SimpleCallback()).asConfirm("提醒", "是否进入导航",
+                                "取消", "确定",
+                                new OnConfirmListener() {
+                                    @Override
+                                    public void onConfirm() {
+                                        Intent intent = new Intent(BookParkLotActivity.this, MapActivity.class);
+                                        intent.putExtra("lat", lat);
+                                        intent.putExtra("lot", lot);
+                                        intent.putExtra(EXTRA_NAVI, "0");
+                                        //todo 这里要做 通过seTResulr来设计
                                         startActivity(intent);
+                                        // setResult(RESULT_OK,intent);
                                         finish();
-                                }
-                            }, null, false)
-                            .show();
-
-
+                                    }
+                                }, null, false)
+                                .show();
+                    } else {
+                        new XPopup.Builder(BookParkLotActivity.this)
+                                .popupAnimation(PopupAnimation.ScaleAlphaFromCenter)
+                                .setPopupCallback(new SimpleCallback()).asConfirm("提醒", "是否进入导航",
+                                "取消", "确定",
+                                new OnConfirmListener() {
+                                    @Override
+                                    public void onConfirm() {
+                                        Intent intent = new Intent();
+                                        intent.putExtra("lat", lat);
+                                        intent.putExtra("lot", lot);
+                                        //intent.putExtra(EXTRA_NAVI, "0");
+//                                        //todo 这里要做 通过seTResulr来设计
+//                                       // startActivity(intent);
+                                        setResult(RESULT_OK, intent);
+                                        finish();
+                                    }
+                                }, null, false)
+                                .show();
+                    }
 
 
                     break;
@@ -95,10 +121,13 @@ public class BookParkLotActivity extends BaseActivity implements View.OnClickLis
                     Toast.makeText(BookParkLotActivity.this, "预订失败！！！", Toast.LENGTH_SHORT).show();
                     break;
                 case GET_SUCCESS:
+                    id = 0;
+                    loadingPopup.dismiss();
                     tv_parklotName.setText(parkingLots.get(0).getPark_name());
                     tv_price.setText(parkingLots.get(0).getPark_price() + "/每小时");
                     break;
                 case GET_FAIL:
+                    loadingPopup.dismiss();
                     Toast("重新获取");
                     break;
             }
@@ -109,6 +138,12 @@ public class BookParkLotActivity extends BaseActivity implements View.OnClickLis
             .readTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
             .build();
+    private String price;
+    private String parkId;
+    private String parkName;
+    private String lot;
+    private String lat;
+    private LoadingPopupView loadingPopup;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,6 +165,23 @@ public class BookParkLotActivity extends BaseActivity implements View.OnClickLis
         bt_book.setOnClickListener(this);
         tv_time.setText(GetDate.StringTime());
 //        tv_price.setText();
+        Intent intent = getIntent();
+        if (intent != null) {
+            price = intent.getStringExtra("price");
+            parkId = intent.getStringExtra("parkId");
+            parkName = intent.getStringExtra("parkName");
+
+            lat = intent.getStringExtra("lat");
+            lot = intent.getStringExtra("lot");
+            if (lat != null) {
+                id = 1;
+            }
+            Toast(lat + lot);
+            if (price != null) {
+                tv_parklotName.setText(parkName);
+                tv_price.setText(price + "/每小时");
+            }
+        }
     }
 
     @Override
@@ -139,6 +191,10 @@ public class BookParkLotActivity extends BaseActivity implements View.OnClickLis
                 finish();
                 break;
             case R.id.tv_parklotName:
+                loadingPopup = (LoadingPopupView) new XPopup.Builder(BookParkLotActivity.this)
+                        .dismissOnBackPressed(false)
+                        .asLoading("正在加载中")
+                        .show();
                 getShortDistance(); //获取最近的停车位
                 break;
             case R.id.tv_CarNumber:
@@ -157,10 +213,16 @@ public class BookParkLotActivity extends BaseActivity implements View.OnClickLis
                         .show();
                 break;
             case R.id.bt_book:
-                toOrder();
+                loadingPopup = (LoadingPopupView) new XPopup.Builder(BookParkLotActivity.this)
+                        .dismissOnBackPressed(false)
+                        .asLoading("正在加载中")
+                        .show();
+                toOrder(id);
                 break;
         }
     }
+
+    private int id;
 
     private void getShortDistance() {
         // TODO: 2019/12/20 ;获取随机距离
@@ -203,6 +265,8 @@ public class BookParkLotActivity extends BaseActivity implements View.OnClickLis
                             parkingLot.setPark_address(jsonArray.optString("park_address"));
                             parkingLot.setPark_price(jsonArray.optString("park_price"));
                             parkingLot.setParklotImage(jsonArray.optString("park_photoURL"));
+                            lat = jsonArray.optString("park_latitude");
+                            lot = jsonArray.optString("park_longitude");
                             parkingLots.add(parkingLot);
 //                            BaseResponse<ParkingLot> newsListResponese
 //                                    = gson.fromJson(body, jsontype);
@@ -227,15 +291,26 @@ public class BookParkLotActivity extends BaseActivity implements View.OnClickLis
     /**
      * 预订车位
      */
-    private void toOrder() {
+    private void toOrder(int id) {
+        RequestBody requestBody;
+        if (id == 0) {
+            requestBody = new FormBody.Builder()
+                    .add("price", String.valueOf(parkingLots.get(0).getPark_price()))
+                    .add("userId", LoginActivity.ID)
+                    .add("carNumber", tv_CarNumber.getText().toString())
+                    .add("parkId", parkingLots.get(0).getPark_id())
+                    .add("parkName", parkingLots.get(0).getPark_name())
+                    .build();
+        } else {
+            requestBody = new FormBody.Builder()
+                    .add("price", price)
+                    .add("userId", LoginActivity.ID)
+                    .add("carNumber", tv_CarNumber.getText().toString())
+                    .add("parkId", parkId)
+                    .add("parkName", parkName)
+                    .build();
+        }
 
-        RequestBody requestBody = new FormBody.Builder()
-                .add("price", String.valueOf(parkingLots.get(0).getPark_price()))
-                .add("userId", LoginActivity.ID)
-                .add("carNumber", tv_CarNumber.getText().toString())
-                .add("carId", parkingLots.get(0).getPark_id())
-                .add("parkId",parkingLots.get(0).getPark_id())
-                .build();
         request = new Request.Builder().
                 url(Constants.OrderParklot).
                 post(requestBody).

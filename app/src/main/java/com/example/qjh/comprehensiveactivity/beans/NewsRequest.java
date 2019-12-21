@@ -27,7 +27,11 @@ public class NewsRequest {
                 pageNo+"&pageSize="+pageSize;
         return retValue;
     }
-
+    public String toStringFindAllparklotr() {
+        String retValue;
+        retValue = "?" + "&parkOwnerId=" +userId;
+        return retValue;
+    }
     /**
      *
      * @return预约车辆请求

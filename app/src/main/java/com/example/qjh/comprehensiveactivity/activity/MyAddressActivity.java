@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +39,10 @@ public class MyAddressActivity extends BaseActivity implements View.OnClickListe
     private TextView tv_lat;
     private TextView tv_log;
     private TextView tv_area;
-    public static String log;
-    public static String lat;
+    public static String log="";
+    public static String lat="";
+    public static String address="";
+    private ImageView RTU;
 
 
     @Override
@@ -52,14 +55,18 @@ public class MyAddressActivity extends BaseActivity implements View.OnClickListe
         bt_getlocatioin.setOnClickListener(this);
         requestPermission();
         initLocationOption();
-
+        tv_lat.setText(lat);
+        tv_log.setText(log);
+        tv_area.setText(address);
     }
 
     private void initData() {
         bt_getlocatioin=(Button)findViewById(R.id.bt_getlocatioin);
+        RTU=(ImageView) findViewById(R.id.RTU);
         tv_lat=(TextView) findViewById(R.id.tv_lat);
         tv_log=(TextView)findViewById(R.id.tv_log);
         tv_area=(TextView)findViewById(R.id.tv_area);
+        RTU.setOnClickListener(this);
     }
 
     @Override
@@ -68,6 +75,9 @@ public class MyAddressActivity extends BaseActivity implements View.OnClickListe
         {
             case R.id.bt_getlocatioin:
                 locationClient.start();
+                break;
+            case R.id.RTU:
+                finish();
                 break;
         }
     }
@@ -169,6 +179,7 @@ public class MyAddressActivity extends BaseActivity implements View.OnClickListe
 
             log=String.valueOf(longitude);
             lat= String.valueOf(latitude);
+            address= location.getLocationDescribe();
             tv_lat.setText(String.valueOf(latitude));
             tv_log.setText(String.valueOf(longitude));
             tv_area.setText(String.valueOf(location.getLocationDescribe()));
