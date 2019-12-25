@@ -89,10 +89,10 @@ public class ParkingLot {
         this.park_collect = park_collect;
     }
 
-   // final public String prefix = "http://120.79.18.242:8080/test";
+    final public String prefix = "http://120.79.18.242:8080/test";
     //final public String prefix = "http://10.34.7.132:8080/test";
 
-    final public String prefix = "http://192.168.43.61:8080/test";
+    // final public String prefix = "http://192.168.43.61:8080/test";
     public String getParklotImage() {
         return prefix + parklotImage;
     }

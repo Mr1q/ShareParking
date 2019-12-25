@@ -85,8 +85,9 @@ public class MapActivity extends BaseActivity {
     private FloatingActionButton common_fa_loc;
     private TextView tv_parklotAddress;
     private TextView tv_parkLotName;
-
     private BaiduMap baiduMap;
+    private String lat;
+    private String lot;
 
     private Request request;
     private OkHttpClient okHttpClient = new OkHttpClient();
@@ -125,6 +126,10 @@ public class MapActivity extends BaseActivity {
                     break;
                 case FAIL:
 
+                    break;
+                case 200:
+                    tv_parklotAddress.setText(lat);
+                    tv_parkLotName.setText(lat + lot);
                     break;
             }
         }
@@ -169,10 +174,12 @@ public class MapActivity extends BaseActivity {
 
                 locationClient.start();
             }
+
+
             //导航
             if (intent.getStringExtra(BookParkLotActivity.EXTRA_NAVI) != null) {
 
-                Tonavigate(MyAddressActivity.log, MyAddressActivity.lat,
+                Tonavigate("25", "110",
                         intent.getStringExtra("lot"), intent.getStringExtra("lat"));
 //               locationClient.start();
             }
@@ -262,7 +269,6 @@ public class MapActivity extends BaseActivity {
         BaiduNaviManagerFactory.getBaiduNaviManager().init(this,
                 "qjh", "com.example.qjh.comprehensiveactivity",
                 new IBaiduNaviManager.INaviInitListener() {
-
                     @Override
                     public void onAuthResult(int status, String msg) {
                         Log.d("initStart_class", "initStart: " + status);
@@ -500,8 +506,11 @@ public class MapActivity extends BaseActivity {
             //   Toast(latitude+" "+longitude);
             MyAddressActivity.lat = String.valueOf(latitude);
             MyAddressActivity.log = String.valueOf(longitude);
-            tv_parklotAddress.setText(location.getLocationDescribe());
-            tv_parkLotName.setText(String.valueOf(latitude) + String.valueOf(longitude));
+            lat = String.valueOf(latitude);
+            lot = String.valueOf(longitude);
+            handler.sendEmptyMessage(200);
+//            tv_parklotAddress.setText(location.getLocationDescribe());
+//            tv_parkLotName.setText(String.valueOf(latitude) + String.valueOf(longitude));
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
                     // 此处设置开发者获取到的方向信息，顺时针0-360

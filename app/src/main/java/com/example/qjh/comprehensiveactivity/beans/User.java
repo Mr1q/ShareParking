@@ -49,8 +49,8 @@ public class User {
         return  headPhotoURL;
     }
 
-   // final public String prefix = "http://120.79.18.242:8080/test";
-   final public String prefix = "http://192.168.43.61:8080/test";
+    final public String prefix = "http://120.79.18.242:8080/test";
+   //final public String prefix = "http://192.168.43.61:8080/test";
     public void setHeadPhotoURL(String headPhotoURL) {
         this.headPhotoURL = headPhotoURL;
     }

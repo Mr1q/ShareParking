@@ -13,9 +13,10 @@ public interface Constants {
 
 
     //final  String prefix="http://10.34.5.236:2080";
-    // final public String prefix = "http://120.79.18.242:8080/test";
-   // final public String prefix = "http://10.34.7.132:8080/test";
-    final public String prefix = "http://192.168.43.61:8080/test";
+    final public String prefix = "http://120.79.18.242:8080/test";
+    //final public String prefix = "http://10.34.7.132:8080/test";
+
+    //final public String prefix = "http://192.168.43.61:8080/test";
 
     final String test = prefix + "/user/test";
     final String Login = prefix + "/user/login";
